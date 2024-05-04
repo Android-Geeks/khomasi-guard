@@ -1,4 +1,4 @@
-package com.company.app.theme
+package com.company.khomasiguard.theme
 
 import android.os.Build
 import androidx.compose.foundation.background
@@ -12,38 +12,31 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.company.app.presentation.components.ConnectivityMonitor
-import com.company.app.presentation.components.GenericDialog
-import com.company.app.presentation.components.GenericDialogInfo
+import com.company.khomasiguard.presentation.components.ConnectivityMonitor
+import com.company.khomasiguard.presentation.components.GenericDialog
+import com.company.khomasiguard.presentation.components.GenericDialogInfo
 import java.util.Queue
 
 private val lightThemeColors = lightColorScheme(
-    primary = AppColor,
-    primaryContainer = Blue400,
-    onPrimary = Black2,
-    secondary = Color.White,
-    secondaryContainer = Teal300,
-    error = RedErrorDark,
-    onError = RedErrorLight,
-    background = Grey1,
-    onBackground = Color.Black,
-    surface = Color.White
+    primary = lightPrimary,
+    onPrimary = lightBackground,
+    secondary = lightSecondary,
+    background = lightBackground,
+    surface = lightCard,
+    tertiary = lightSubText,
+    outline = lightHint,
 )
 
 private val darkThemeColors = darkColorScheme(
-    primary = AppColor,
-    onPrimary = Color.White,
-    secondary = Black1,
-    onSecondary = Color.White,
-    error = RedErrorLight,
-    background = Color.Black,
-    onBackground = Color.White,
-    surface = Black1,
-    onSurface = Color.White
+    primary = darkPrimary,
+    onPrimary = darkBackground,
+    secondary = darkSecondary,
+    background = darkBackground,
+    surface = darkCard,
+    tertiary = darkSubText,
+    outline = darkHint,
 )
 
 data class UIState(
@@ -53,11 +46,10 @@ data class UIState(
     val empty: Boolean = false
 )
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun AppTheme(
+fun KhomasiGuardTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     uiState: UIState = UIState(),
     dialogQueue: Queue<GenericDialogInfo>? = null,
     content: @Composable () -> Unit
@@ -79,7 +71,7 @@ fun AppTheme(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = if (!darkTheme) Grey1 else Color.Black)
+                .background(color = MaterialTheme.colorScheme.background)
         ) {
             Column {
                 if (uiState == UIState(offline = true)) {

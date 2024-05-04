@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">خماسي جارد</string>
+    <string name="internet_connection_lost">لقد فقدت الاتصال بالانترنت…!</string>
+    <string name="check_network_status">يرجى التاكد من حالة الشبكة</string>
+    <string name="retry">اعادة المحاولة</string>
+</resources>
