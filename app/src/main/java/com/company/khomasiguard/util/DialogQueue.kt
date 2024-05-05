@@ -1,9 +1,9 @@
-package com.company.app.util
+package com.company.khomasiguard.util
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.company.app.presentation.components.GenericDialogInfo
-import com.company.app.presentation.components.PositiveAction
+import com.company.khomasiguard.presentation.components.GenericDialogInfo
+import com.company.khomasiguard.presentation.components.PositiveAction
 import java.util.ArrayDeque
 import java.util.LinkedList
 import java.util.Queue
