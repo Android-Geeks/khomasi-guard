@@ -1,4 +1,4 @@
-package com.company.app
+package com.company.khomasiguard
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
