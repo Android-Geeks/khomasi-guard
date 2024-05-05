@@ -1,4 +1,4 @@
-package com.company.app.presentation.components
+package com.company.khomasiguard.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

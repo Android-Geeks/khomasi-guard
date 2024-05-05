@@ -1,8 +1,9 @@
-package com.company.app.util
+package com.company.khomasiguard.util
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LifecycleOwner
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,7 +16,7 @@ constructor(
     private val connectionLiveData = ConnectionLiveData(application)
 
     // observe this in ui
-    val isNetworkAvailable = mutableStateOf(true)
+    val isNetworkAvailable = MutableStateFlow(true)
 
     fun registerConnectionObserver(lifecycleOwner: LifecycleOwner) {
         connectionLiveData.observe(lifecycleOwner) { isConnected ->

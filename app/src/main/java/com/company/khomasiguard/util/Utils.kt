@@ -1,4 +1,4 @@
-package com.waseefakhtar.doseapp.util
+package com.company.khomasiguard.util
 
 import androidx.navigation.NavHostController
 

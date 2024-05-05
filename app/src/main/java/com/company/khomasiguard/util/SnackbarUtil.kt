@@ -1,4 +1,4 @@
-package com.company.app.util
+package com.company.khomasiguard.util
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,8 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
-import com.company.app.theme.Grey1
 import kotlinx.coroutines.launch
 
 class SnackbarUtil {
@@ -56,7 +56,7 @@ class SnackbarUtil {
                 ) {
                     Snackbar(
                         snackbarData = it,
-                        containerColor = Grey1,
+                        containerColor = Color.Gray,
                         contentColor = androidx.compose.ui.graphics.Color.White
                     )
                 }
