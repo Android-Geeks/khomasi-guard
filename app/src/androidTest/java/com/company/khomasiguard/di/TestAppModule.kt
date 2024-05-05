@@ -1,22 +1,26 @@
-package com.company.app.di
+package com.company.khomasiguard.di
 
-
-import com.company.app.data.data_source.remote.RetrofitService
-import com.company.app.util.BASE_URL
-import com.google.gson.GsonBuilder
+import android.app.Application
+import androidx.room.Room
+import com.company.khomasiguard.data.data_source.local.AppDatabase
+import com.company.khomasiguard.data.data_source.remote.RetrofitService
+import com.company.khomasiguard.domain.use_case.*
+import com.company.khomasiguard.util.BASE_URL
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule {
+object TestAppModule {
 
     @Provides
     @Singleton
@@ -34,10 +38,8 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
             .build()
             .create(RetrofitService::class.java)
     }
-
-
 }

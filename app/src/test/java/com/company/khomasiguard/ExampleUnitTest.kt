@@ -1,4 +1,4 @@
-package com.company.app
+package com.company.khomasiguard
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

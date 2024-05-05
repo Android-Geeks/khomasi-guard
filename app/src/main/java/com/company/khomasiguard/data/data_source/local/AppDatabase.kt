@@ -1,4 +1,4 @@
-package com.company.app.data.data_source.local
+package com.company.khomasiguard.data.data_source.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
