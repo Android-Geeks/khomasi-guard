@@ -10,6 +10,20 @@ data class NavItem(
     val route: String
 )
 
-//val listOfNavItems = listOf(
-//
-//)
+val listOfNavItems = listOf(
+    NavItem(
+        label = R.string.home,
+        icon = R.drawable.housesimple,
+        route = Screens.KhomasiNavigation.Home.route
+    ),
+    NavItem(
+        label = R.string.bookings,
+        icon = R.drawable.ticket,
+        route = Screens.KhomasiNavigation.Bookings.route
+    ),
+    NavItem(
+        label = R.string.playgrounds,
+        icon = R.drawable.soccerball,
+        route = Screens.KhomasiNavigation.Playgrounds.route
+    )
+)
