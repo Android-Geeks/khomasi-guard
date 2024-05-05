@@ -1,4 +1,4 @@
-package com.company.app.util
+package com.company.khomasiguard.util
 
 import android.util.Log
 import java.io.IOException

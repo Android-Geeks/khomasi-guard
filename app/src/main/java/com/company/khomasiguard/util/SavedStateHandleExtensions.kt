@@ -1,4 +1,4 @@
-package com.company.app.util
+package com.company.khomasiguard.util
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
