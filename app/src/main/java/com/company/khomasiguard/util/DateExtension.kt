@@ -29,6 +29,12 @@ fun Date.toFormattedTimeString(): String {
     val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
     return timeFormat.format(this)
 }
+fun Date.toAddTime(min: Int): Date {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    calendar.add(Calendar.MINUTE, min)
+    return calendar.time
+}
 
 fun Date.hasPassed(): Boolean {
     val calendar = Calendar.getInstance()

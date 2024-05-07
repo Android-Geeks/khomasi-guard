@@ -6,7 +6,7 @@
     <string name="internet_connection_lost">Internet connection lost…!</string>
     <string name="check_network_status">Please check network status</string>
     <string name="retry">Retry</string>
-    <string name= "fees_for_booking">%1$d EGP | Cash</string>
+    <string name="fees_for_booking">%1$d EGP | Cash</string>
     <string name="view_booking">View booking</string>
     <string name="call">Call</string>
     <string name="playground">Playground</string>
@@ -15,5 +15,24 @@
     <string name="booking_time">Booking time</string>
     <string name="otp_code">PIN code</string>
     <string name="cancel_booking">Cancel booking</string>
+    <string name="cancel">Cancel</string>
     <string name="to">to</string>
+    <string name="rate">Rate</string>
+    <string name="confirm_cancel_booking">Are you sure you want to cancel the booking?</string>
+    <string name="action_will_cancel_booking">By taking this action, the booking for %1$s Field will be cancelled.</string>
+    <string name="back">Back</string>
+    <string name="logout">Logout</string>
+    <string name="sad_to_see_you_go">Sad to see you go!</string>
+    <string name="confirm_logout">Are you sure you want to logout?</string>
+    <string name="bookable">Bookable</string>
+    <string name="not_bookable">Not bookable</string>
+    <string name="fees_per_hour">%1$d EGP / hour</string>
+    <string name="num_completed_booking">Number of completed bookings</string>
+    <string name="booking">booking</string>
+    <string name="activation">Activation</string>
+    <string name="deactivate">De-Activate</string>
+    <string name="top_rating">Top rate</string>
+    <string name = "booking_first">Booking first</string>
+    <string name="save">Save</string>
+
 </resources>

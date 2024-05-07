@@ -28,11 +28,10 @@ import androidx.compose.ui.unit.dp
 import com.company.app.R
 import com.company.khomasiguard.domain.model.booking.Booking
 import com.company.khomasiguard.theme.KhomasiGuardTheme
+import com.company.khomasiguard.util.toAddTime
 import com.company.khomasiguard.util.toDateTime
 import com.company.khomasiguard.util.toFormattedDateString
 import com.company.khomasiguard.util.toFormattedTimeString
-import com.company.khomasiguard.util.toLocalTime
-import org.threeten.bp.format.DateTimeFormatter
 
 @Composable
 fun BookingCardDetails(
@@ -43,12 +42,12 @@ fun BookingCardDetails(
     context: Context = LocalContext.current,
     onClickCancelBooking: () -> Unit
 ) {
-    val bookingStartTime =
-        remember { bookingDetails.bookingTime.toDateTime()?.toFormattedTimeString() }
+    val bookingStartTime = remember {
+        bookingDetails.bookingTime.toDateTime()?.toFormattedTimeString()
+    }
     val bookingEndTime = remember {
-        bookingStartTime?.toLocalTime()?.plusMinutes(bookingDetails.duration.toLong())?.format(
-            DateTimeFormatter.ofPattern("hh:mm a")
-        )
+        bookingDetails.bookingTime.toDateTime()?.toAddTime(bookingDetails.duration)
+            ?.toFormattedTimeString()
     }
     val bookingDate =
         remember { bookingDetails.bookingTime.toDateTime()?.toFormattedDateString() }
@@ -82,7 +81,7 @@ fun BookingCardDetails(
             )
             HeaderText(
                 mainText = stringResource(id = R.string.booking_time),
-                subText = "$bookingStartTime ${stringResource(id = R.string.to)} ${bookingEndTime ?: "55:55 AM"}"
+                subText = "$bookingStartTime ${stringResource(id = R.string.to)} ${bookingEndTime ?: "null"}"
             )
             HorizontalDivider(
                 thickness = 1.dp,
@@ -175,7 +174,7 @@ fun BookingCard2Preview() {
     KhomasiGuardTheme {
         BookingCardDetails(
             bookingDetails = Booking(
-                bookingTime = "2024-05-05T22:15:00",
+                bookingTime = "2024-05-05T04:15:00",
                 userName = "userName",
                 profilePicture = "profilePicture",
                 rating = 4,
