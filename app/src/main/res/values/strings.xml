@@ -6,6 +6,7 @@
     <string name="internet_connection_lost">Internet connection lost…!</string>
     <string name="check_network_status">Please check network status</string>
     <string name="retry">Retry</string>
-    <string name= "fees_for_booking">%1$d EGP | cash</string>
+    <string name= "fees_for_booking">%1$.1f EGP | cash</string>
     <string name="view_booking">View booking</string>
+    <string name="call">Call</string>
 </resources>

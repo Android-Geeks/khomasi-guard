@@ -1,11 +1,11 @@
 package com.company.khomasiguard.presentation.components
 
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -33,8 +32,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
@@ -45,65 +46,123 @@ import com.company.khomasiguard.util.convertToBitmap
 
 
 @Composable
-fun PlaygroundBookingCard(
+fun ShortBookingCard(
+    modifier: Modifier = Modifier,
     userName: String,
     playgroundName: String,
     userRate: String,
     userPicture: String?,
-    bookingPrice: Int,
+    bookingPrice: Double,
     bookingDate: String,
     bookingDuration: String,
-    modifier: Modifier = Modifier,
-    verificationCode: String
+    context: Context = LocalContext.current,
+    onClickViewBooking: () -> Unit,
+    onClickCall: () -> Unit
 ) {
-
     Card(
         modifier.fillMaxWidth(),
         shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
-        colors = CardDefaults.cardColors(Color.Transparent)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            SubcomposeAsyncImage(
-                model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(userPicture?.convertToBitmap() ?: "").crossfade(true).build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                loading = { CircularProgressIndicator() },
-                error = {
-                    Image(
-                        painter = painterResource(id = R.drawable.user_img),
-                        contentDescription = null
-                    )
-                },
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.background)
+            UserDefinition(
+                userName = userName,
+                userImg = userPicture,
+                userRate = userRate,
+                onClickCall = onClickCall
+            )
+            HorizontalDivider(
+                thickness = 1.dp,
+                modifier = Modifier.padding(8.dp),
+                color = MaterialTheme.colorScheme.primary
             )
 
+            BookingCardContent(
+                playgroundName = playgroundName,
+                bookingDate = bookingDate,
+                bookingDuration = bookingDuration,
+                bookingPrice = bookingPrice,
+                context = context,
+                onClickViewBooking = onClickViewBooking
+            )
         }
 
     }
+}
 
+@Composable
+fun UserDefinition(
+    userName: String,
+    userImg: String?,
+    userRate: String,
+    onClickCall: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.Start,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        SubcomposeAsyncImage(
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(userImg?.convertToBitmap() ?: "").crossfade(true).build(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            loading = { CircularProgressIndicator() },
+            error = {
+                Image(
+                    painter = painterResource(id = R.drawable.user_img),
+                    contentDescription = null
+                )
+            },
+            modifier = Modifier
+                .size(50.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.background)
+        )
+
+        Column(
+            Modifier.padding(start = 4.dp), verticalArrangement = Arrangement.Top
+        ) {
+            Text(
+                text = userName,
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier
+
+            )
+
+            TextWithIcon(text = userRate, iconId = R.drawable.star)
+        }
+        Spacer(modifier = Modifier.weight(1f))
+
+        TextWithIcon(
+            text = stringResource(id = R.string.call),
+            iconId = R.drawable.phone,
+            color = MaterialTheme.colorScheme.primary,
+            textStyle = MaterialTheme.typography.titleLarge,
+            textDecoration = TextDecoration.Underline,
+            onClick = onClickCall
+        )
+
+    }
 }
 
 @Composable
 fun BookingCardContent(
     playgroundName: String,
     bookingDate: String,
-    booDuration: String,
+    bookingDuration: String,
     bookingPrice: Double,
-    context: Context = LocalContext.current,
+    context: Context,
     onClickViewBooking: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, top = 8.dp, bottom = 16.dp)
+            .padding(start = 8.dp)
             .background(color = Color.Transparent)
     ) {
         Row(
@@ -118,7 +177,7 @@ fun BookingCardContent(
             )
             Spacer(modifier = Modifier.weight(1f))
             Card(
-                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
                 shape = MaterialTheme.shapes.small,
 
                 ) {
@@ -135,33 +194,44 @@ fun BookingCardContent(
             text = bookingDate,
             iconId = R.drawable.calendar,
         )
-        TextWithIcon(text = booDuration, iconId = R.drawable.clock)
+        TextWithIcon(text = bookingDuration, iconId = R.drawable.clock)
 
         HorizontalDivider(
             thickness = 1.dp,
             modifier = Modifier.padding(top = 16.dp, bottom = 13.dp),
             color = MaterialTheme.colorScheme.outline
         )
-        MyButton(text = R.string.view_booking, onClick = { onClickViewBooking() })
     }
+    MyButton(
+        text = R.string.view_booking,
+        onClick = { onClickViewBooking() },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        icon = R.drawable.arrowupleft
+    )
+    Spacer(modifier = Modifier.height(16.dp))
 }
 
 @Composable
 fun TextWithIcon(
+    modifier: Modifier = Modifier,
     text: String,
     @DrawableRes iconId: Int,
     textStyle: TextStyle = MaterialTheme.typography.titleSmall,
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
+    color: Color = MaterialTheme.colorScheme.tertiary,
+    textDecoration: TextDecoration = TextDecoration.None,
+    onClick: () -> Unit = {}
 ) {
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
+        modifier = modifier.clickable { onClick() }
     ) {
         Icon(
             painter = painterResource(id = iconId),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.tertiary,
+            tint = color,
             modifier = Modifier.size(16.dp)
         )
 
@@ -170,8 +240,9 @@ fun TextWithIcon(
         Text(
             text = text,
             style = textStyle,
-            color = MaterialTheme.colorScheme.tertiary,
-            textAlign = TextAlign.Start
+            color = color,
+            textAlign = TextAlign.Start,
+            textDecoration = textDecoration
         )
     }
 }
@@ -180,22 +251,16 @@ fun TextWithIcon(
 @Composable
 private fun BookingCardPreview() {
     KhomasiGuardTheme {
-//        PlaygroundBookingCard(
-//            userName = "Ahmed",
-//            userRate = "4.5",
-//            userPicture = "",
-//            bookingPrice = 100,
-//            bookingDate = "2022-10-10",
-//            bookingDuration = "2 hours",
-//            verificationCode = "1234",
-//            playgroundName = "Playground Name"
-//        )
-        BookingCardContent(
-            playgroundName = "Playground Name",
-            bookingDate = "2022-10-10",
-            booDuration = "7 AM - 9 AM",
+        ShortBookingCard(
+            userName = "Ahmed",
+            userRate = "4.5",
+            userPicture = "",
             bookingPrice = 100.0,
-            onClickViewBooking = {}
+            bookingDate = "2022-10-10",
+            bookingDuration = "2 hours",
+            playgroundName = "Playground Name",
+            onClickViewBooking = {},
+            onClickCall = {}
         )
     }
 }
