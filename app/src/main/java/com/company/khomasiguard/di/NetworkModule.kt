@@ -4,6 +4,12 @@ package com.company.khomasiguard.di
 import com.company.khomasiguard.data.data_source.remote.RetrofitService
 import com.company.khomasiguard.data.repository.RemoteGuardRepositoryImpl
 import com.company.khomasiguard.domain.repository.RemoteGuardRepository
+import com.company.khomasiguard.domain.use_case.auth.AuthUseCase
+import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
+import com.company.khomasiguard.domain.use_case.remote_guard.GetGuardBookingsUseCase
+import com.company.khomasiguard.domain.use_case.remote_guard.GetGuardPlaygroundsUseCase
+import com.company.khomasiguard.domain.use_case.auth.LoginUseCase
+import com.company.khomasiguard.domain.use_case.remote_guard.RatePlayerUseCase
 import com.company.khomasiguard.util.BASE_URL
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -51,5 +57,22 @@ object NetworkModule {
     fun provideRemoteGuardRepository(
         retrofitService: RetrofitService
     ): RemoteGuardRepository = RemoteGuardRepositoryImpl(retrofitService)
+    @Provides
+    @Singleton
+    fun provideAuthUseCases(
+        remoteGuardRepository: RemoteGuardRepository
+    ): AuthUseCase = AuthUseCase(
+        LoginUseCase(remoteGuardRepository)
+    )
+    @Provides
+    @Singleton
+    fun provideRemoteUseCases(
+        remoteGuardRepository: RemoteGuardRepository
+    ): RemoteUseCases = RemoteUseCases(
+        getGuardBookingsUseCase = GetGuardBookingsUseCase(remoteGuardRepository),
+        getGuardPlaygroundsUseCase = GetGuardPlaygroundsUseCase(remoteGuardRepository),
+        ratePlayerUseCase = RatePlayerUseCase(remoteGuardRepository)
+
+    )
 
 }

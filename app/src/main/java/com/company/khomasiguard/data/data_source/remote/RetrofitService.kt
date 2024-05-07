@@ -4,9 +4,11 @@ import com.company.khomasiguard.domain.model.RatingRequest
 import com.company.khomasiguard.domain.model.LoginResponse
 import com.company.khomasiguard.domain.model.MessageResponse
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
+import com.company.khomasiguard.domain.model.login.GuardLoginResponse
 import com.company.khomasiguard.domain.model.playground.PlaygroundsResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -18,6 +20,11 @@ interface RetrofitService {
         @Query("email") email: String,
         @Query("passwd") password: String
     ): Response<LoginResponse>
+    @POST("Account/login")
+    suspend fun loginGuard(
+        @Query("email") email: String,
+        @Query("passwd") password: String
+    ): Response<GuardLoginResponse>
 
     @POST("Guard/rating")
     suspend fun ratePlayer(
@@ -25,13 +32,13 @@ interface RetrofitService {
         @Body guardRating: RatingRequest
     ): Response<MessageResponse>
 
-    @POST("Guard/playgrounds")
+    @GET("Guard/playgrounds")
     suspend fun getGuardPlaygrounds(
         @Header("Authorization") token: String,
         @Query("guardID") guardID: String
     ): Response<PlaygroundsResponse>
 
-    @POST("Guard/bookings")
+    @GET("Guard/bookings")
     suspend fun getGuardBookings(
         @Header("Authorization") token: String,
         @Query("guardID") guardID: String,
