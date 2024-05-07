@@ -6,7 +6,14 @@
     <string name="internet_connection_lost">Internet connection lost…!</string>
     <string name="check_network_status">Please check network status</string>
     <string name="retry">Retry</string>
-    <string name= "fees_for_booking">%1$.1f EGP | cash</string>
+    <string name= "fees_for_booking">%1$d EGP | Cash</string>
     <string name="view_booking">View booking</string>
     <string name="call">Call</string>
+    <string name="playground">Playground</string>
+    <string name="booking_price">Booking price</string>
+    <string name="booking_date">Booking date</string>
+    <string name="booking_time">Booking time</string>
+    <string name="otp_code">PIN code</string>
+    <string name="cancel_booking">Cancel booking</string>
+    <string name="to">to</string>
 </resources>

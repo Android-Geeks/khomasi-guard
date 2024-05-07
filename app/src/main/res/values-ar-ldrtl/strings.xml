@@ -7,7 +7,14 @@
     <string name="internet_connection_lost">لقد فقدت الاتصال بالانترنت…!</string>
     <string name="check_network_status">يرجى التاكد من حالة الشبكة</string>
     <string name="retry">اعادة المحاولة</string>
-    <string name="fees_for_booking">%1$.1f ج.م | كاش</string>
+    <string name="fees_for_booking">%1$d ج.م | كاش</string>
     <string name="view_booking">عرض الحجز</string>
     <string name="call">اتصال</string>
+    <string name="playground">الملعب</string>
+    <string name="booking_price">سعر الحجز</string>
+    <string name="booking_date">تاريخ الحجز</string>
+    <string name="booking_time">وقت الحجز</string>
+    <string name="otp_code">رمز التحقق</string>
+    <string name="cancel_booking">الغاء الحجز</string>
+    <string name="to">الى</string>
 </resources>
