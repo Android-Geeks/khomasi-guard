@@ -1,7 +1,6 @@
 package com.company.khomasiguard.data.data_source.remote
 
 import com.company.khomasiguard.domain.model.RatingRequest
-import com.company.khomasiguard.domain.model.LoginResponse
 import com.company.khomasiguard.domain.model.MessageResponse
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.domain.model.login.GuardLoginResponse
@@ -15,11 +14,6 @@ import retrofit2.http.Query
 
 
 interface RetrofitService {
-    @POST("Account/login")
-    suspend fun loginUser(
-        @Query("email") email: String,
-        @Query("passwd") password: String
-    ): Response<LoginResponse>
     @POST("Account/login")
     suspend fun loginGuard(
         @Query("email") email: String,
