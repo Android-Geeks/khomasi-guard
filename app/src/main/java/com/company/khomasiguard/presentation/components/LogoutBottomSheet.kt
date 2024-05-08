@@ -26,7 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.company.app.R
+import com.company.khomasiguard.R
 import com.company.khomasiguard.theme.KhomasiGuardTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

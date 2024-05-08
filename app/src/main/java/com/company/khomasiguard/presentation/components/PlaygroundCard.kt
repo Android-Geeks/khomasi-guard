@@ -32,7 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import com.company.app.R
+import com.company.khomasiguard.R
 import com.company.khomasiguard.domain.model.playground.Playground
 import com.company.khomasiguard.domain.model.playground.PlaygroundInfo
 import com.company.khomasiguard.domain.model.playground.PlaygroundX

@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import com.company.app.R
+import com.company.khomasiguard.R
 import com.company.khomasiguard.util.convertToBitmap
 
 @Composable
