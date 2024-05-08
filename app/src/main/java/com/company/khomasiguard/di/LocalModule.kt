@@ -29,5 +29,4 @@ object LocalModule {
         readAppEntry = ReadAppEntry(localGuardRepository),
         saveIsLogin = SaveIsLogin(localGuardRepository)
     )
-
 }

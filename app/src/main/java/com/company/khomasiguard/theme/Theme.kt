@@ -25,8 +25,10 @@ private val lightThemeColors = lightColorScheme(
     secondary = lightSecondary,
     background = lightBackground,
     surface = lightCard,
+    surfaceContainer = lightOverlay,
     tertiary = lightSubText,
     outline = lightHint,
+    error = lightErrorColor
 )
 
 private val darkThemeColors = darkColorScheme(
@@ -35,8 +37,10 @@ private val darkThemeColors = darkColorScheme(
     secondary = darkSecondary,
     background = darkBackground,
     surface = darkCard,
+    surfaceContainer = darkOverlay,
     tertiary = darkSubText,
     outline = darkHint,
+    error = darkErrorColor
 )
 
 data class UIState(

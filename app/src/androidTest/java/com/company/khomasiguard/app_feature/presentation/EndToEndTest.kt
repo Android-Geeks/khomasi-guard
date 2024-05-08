@@ -13,27 +13,8 @@ import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Rule
 
-@HiltAndroidTest
-@UninstallModules(LocalModule::class, NetworkModule::class)
 class EndToEndTest {
 
-    @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule(order = 1)
-    val composeRule = createAndroidComposeRule<MainActivity>()
-
-    @ExperimentalAnimationApi
-    @Before
-    fun setUp() {
-        hiltRule.inject()
-        composeRule.activity.setContent {
-            KhomasiGuardTheme(
-                darkTheme = true,
-            ) {
-
-            }
-        }
-    }
 
 }

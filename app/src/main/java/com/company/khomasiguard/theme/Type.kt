@@ -6,7 +6,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.company.app.R
+import com.company.khomasiguard.R
 
 val Cairo = FontFamily(
     Font(R.font.cairo, FontWeight.Normal),

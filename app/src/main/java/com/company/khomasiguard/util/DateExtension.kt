@@ -6,7 +6,7 @@ import java.util.Date
 import java.util.Locale
 
 fun Date.toFormattedDateString(): String {
-    val sdf = SimpleDateFormat("EEEE, LLLL dd", Locale.getDefault())
+    val sdf = SimpleDateFormat("EEEE,  dd LLLL yyyy", Locale.getDefault())
     return sdf.format(this)
 }
 
@@ -26,8 +26,14 @@ fun Long.toFormattedDateString(): String {
 }
 
 fun Date.toFormattedTimeString(): String {
-    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
     return timeFormat.format(this)
+}
+fun Date.toAddTime(min: Int): Date {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    calendar.add(Calendar.MINUTE, min)
+    return calendar.time
 }
 
 fun Date.hasPassed(): Boolean {
