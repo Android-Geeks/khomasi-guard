@@ -9,12 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.company.khomasiguard.navigation.Screens
 import com.company.khomasiguard.presentation.components.connectionStates.LossConnection
+import com.company.khomasiguard.presentation.login.TestDataStoreViewModel
 import com.company.khomasiguard.theme.KhomasiGuardTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -45,13 +47,7 @@ fun MyApp(
                     }
                 }
                 composable(Screens.AuthNavigation.route) {
-                    if (isNetworkAvailable) {
-                        Text(text = "Connected")
-                    } else {
-                        LossConnection {
-                            Log.d("MyApp", "not connected")
-                        }
-                    }
+                    val testDataStoreViewModel: TestDataStoreViewModel = hiltViewModel()
                 }
             }
         }

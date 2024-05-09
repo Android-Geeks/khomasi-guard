@@ -5,8 +5,5 @@ import com.company.khomasiguard.domain.repository.RemoteGuardRepository
 class LoginUseCase(
     private val remoteGuardRepository: RemoteGuardRepository
 ) {
-    suspend operator fun invoke(email: String, password: String){
-        remoteGuardRepository.loginGuard(email,password)
-    }
-
+    suspend operator fun invoke(email: String, password: String) = remoteGuardRepository.loginGuard(email,password)
 }
