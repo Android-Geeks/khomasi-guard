@@ -6,6 +6,9 @@ import com.company.khomasiguard.domain.repository.LocalGuardRepository
 import com.company.khomasiguard.domain.use_case.app_entry.AppEntryUseCases
 import com.company.khomasiguard.domain.use_case.app_entry.ReadAppEntry
 import com.company.khomasiguard.domain.use_case.app_entry.SaveIsLogin
+import com.company.khomasiguard.domain.use_case.local_guard.GetLocalGuard
+import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
+import com.company.khomasiguard.domain.use_case.local_guard.SaveLocalGuard
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,10 +26,19 @@ object LocalModule {
 
     @Provides
     @Singleton
-    fun provideUseCases(
+    fun provideAppEntryUseCases(
         localGuardRepository: LocalGuardRepository
     ): AppEntryUseCases = AppEntryUseCases(
         readAppEntry = ReadAppEntry(localGuardRepository),
         saveIsLogin = SaveIsLogin(localGuardRepository)
+    )
+
+    @Provides
+    @Singleton
+    fun provideLocalGuardUseCases(
+        localGuardRepository: LocalGuardRepository
+    ): LocalGuardUseCases = LocalGuardUseCases(
+        getLocalGuard = GetLocalGuard(localGuardRepository),
+        saveLocalGuard = SaveLocalGuard(localGuardRepository)
     )
 }
