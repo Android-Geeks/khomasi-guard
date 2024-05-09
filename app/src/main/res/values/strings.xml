@@ -34,5 +34,7 @@
     <string name="top_rating">Top rate</string>
     <string name = "booking_first">Booking first</string>
     <string name="save">Save</string>
+    <string name="hello_captain">Hello Captain, have a good day!</string>
+    <string name="reservations_today">Reservations today</string>
 
 </resources>
