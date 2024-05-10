@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -46,7 +44,7 @@ fun HomeScreen(){
         TopCard()
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(top = 16.dp, start = 16.dp,end = 16.dp)
+                modifier = Modifier.padding(top = 8.dp, start = 16.dp,end = 16.dp)
 
             ) {
                 item() {
@@ -165,7 +163,7 @@ fun TopCard(
                             MaterialTheme.colorScheme.background,
                             MaterialTheme.shapes.medium
                         )
-                        .padding(bottom = 8.dp, start = 8.dp, top = 10.dp)
+                        .padding(bottom = 8.dp, start = 8.dp, top = 5.dp)
                         .weight(2f)
                 ) {
                     Row(
@@ -175,7 +173,6 @@ fun TopCard(
                         Box(
                             modifier = Modifier
                                 .height(44.dp)
-                                .width(44.dp)
                                 .background(
                                     MaterialTheme.colorScheme.surfaceContainer,
                                     MaterialTheme.shapes.medium
@@ -187,7 +184,6 @@ fun TopCard(
                                 tint = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier
                                     .padding(10.dp)
-                                    .size(24.dp)
                             )
                         }
                         Text(
@@ -253,11 +249,12 @@ fun TopCard(
 
 
     }
-//    Text(
-//        text = stringResource(id = R.string.bookings_today),
-//        style = MaterialTheme.typography.displayMedium,
-//        modifier = Modifier.padding(horizontal = 16.dp)
-//    )
+    Text(
+        text = stringResource(id = R.string.bookings_today),
+        style = MaterialTheme.typography.displayMedium,
+        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+
+    )
 }
 
 @Preview(name = "light", uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
