@@ -37,5 +37,7 @@
     <string name="save">حفظ</string>
     <string name="hello_captain">مرحبا يا كابتن طاب يومك</string>
     <string name="reservations_today">الحجوزات اليوم</string>
+    <string name="activated">مفعل</string>
+    <string name="not_activated">غير مفعل</string>
 
 </resources>
