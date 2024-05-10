@@ -47,5 +47,7 @@
     <string name="our_app">Our app?</string>
     <string name="activated">Activated</string>
     <string name="not_activated">Not Activated</string>
+    <string name="confirm_deactivate_playground">Are you sure you want to deactivate the playground?</string>
+    <string name="deactivate_confirmation_message">By proceeding with this action, the %1$s will be deactivated and will not be available for booking.</string>
 
 </resources>

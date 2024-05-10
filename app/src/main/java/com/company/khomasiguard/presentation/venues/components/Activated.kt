@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,11 +17,32 @@ import com.company.khomasiguard.domain.model.playground.PlaygroundInfo
 import com.company.khomasiguard.domain.model.playground.PlaygroundX
 import com.company.khomasiguard.presentation.components.PlaygroundCard
 import com.company.khomasiguard.theme.KhomasiGuardTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.material3.rememberModalBottomSheetState
+import com.company.khomasiguard.R
+import com.company.khomasiguard.presentation.components.BottomSheetWarning
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Activated(
 ) {
-
+    val sheetState = rememberModalBottomSheetState()
+    var isOpen by remember { mutableStateOf(false) }
+    if (isOpen){
+        BottomSheetWarning(
+            sheetState = sheetState,
+            onDismissRequest = { isOpen=false },
+            userName = "------",
+            onClickCancel = { },
+            mainTextId = R.string.confirm_deactivate_playground,
+            subTextId = R.string.deactivate_confirmation_message,
+            mainButtonTextId =R.string.deactivate ,
+            subButtonTextId = R.string.back
+        )
+    }
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
@@ -28,7 +50,7 @@ fun Activated(
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
     ) {
-        item() {
+        item {
             PlaygroundCard(
                 playground = Playground(
                     playgroundInfo = PlaygroundInfo(
@@ -48,7 +70,7 @@ fun Activated(
                 ),
                 onViewPlaygroundClick = {},
                 onClickActive = {},
-                onClickDeActive = {}
+                onClickDeActive = {isOpen=true}
             )
 
         }

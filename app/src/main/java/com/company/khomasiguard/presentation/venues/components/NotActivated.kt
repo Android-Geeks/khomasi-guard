@@ -28,7 +28,7 @@ fun NotActivated(
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
     ) {
-        item() {
+        item{
             PlaygroundCard(
                 playground = Playground(
                     playgroundInfo = PlaygroundInfo(
