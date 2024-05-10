@@ -28,7 +28,9 @@ private val lightThemeColors = lightColorScheme(
     surfaceContainer = lightOverlay,
     tertiary = lightSubText,
     outline = lightHint,
-    error = lightErrorColor
+    error = lightErrorColor,
+    onBackground = lightIconMask,
+    onSurface = lightText
 )
 
 private val darkThemeColors = darkColorScheme(
@@ -40,7 +42,10 @@ private val darkThemeColors = darkColorScheme(
     surfaceContainer = darkOverlay,
     tertiary = darkSubText,
     outline = darkHint,
-    error = darkErrorColor
+    error = darkErrorColor,
+    onBackground = darkIconMask,
+    onSurface = darkText,
+
 )
 
 data class UIState(

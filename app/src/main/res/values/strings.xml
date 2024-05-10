@@ -35,8 +35,6 @@
     <string name = "booking_first">Booking first</string>
     <string name="save">Save</string>
     <string name="hello_captain">Hello Captain, have a good day!</string>
-    <string name="reservations_today">Reservations today</string>
-
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="login">Log in</string>
@@ -46,5 +44,7 @@
     <string name="fivefold_partner">Fivefold Partner</string>
     <string name="partners_app_message">Only for our partners. Are you looking for</string>
     <string name="our_app">Our app?</string>
+    <string name="bookings_today">bookings today</string>
+
 
 </resources>
