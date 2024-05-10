@@ -30,7 +30,8 @@ private val lightThemeColors = lightColorScheme(
     outline = lightHint,
     error = lightErrorColor,
     onBackground = lightIconMask,
-    onSurface = lightText
+    onSurface = lightText,
+    onSurfaceVariant = lightIcon
 )
 
 private val darkThemeColors = darkColorScheme(
@@ -45,7 +46,7 @@ private val darkThemeColors = darkColorScheme(
     error = darkErrorColor,
     onBackground = darkIconMask,
     onSurface = darkText,
-
+    onSurfaceVariant = darkIcon
 )
 
 data class UIState(
