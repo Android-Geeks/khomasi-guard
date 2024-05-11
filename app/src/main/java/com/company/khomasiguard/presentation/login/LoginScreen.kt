@@ -1,6 +1,7 @@
 package com.company.khomasiguard.presentation.login
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,7 +17,12 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -35,7 +41,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.company.khomasiguard.R
+import com.company.khomasiguard.domain.DataState
+import com.company.khomasiguard.domain.model.login.GuardLoginResponse
 import com.company.khomasiguard.presentation.components.MyButton
 import com.company.khomasiguard.presentation.components.MyTextField
 import com.company.khomasiguard.theme.Cairo
@@ -44,10 +53,13 @@ import com.company.khomasiguard.theme.darkSubText
 import com.company.khomasiguard.theme.darkText
 import com.company.khomasiguard.theme.lightSubText
 import com.company.khomasiguard.theme.lightText
+import kotlinx.coroutines.flow.StateFlow
+
 @Composable
 fun LoginScreen(
     isDark: Boolean = isSystemInDarkTheme(),
-    loginUiState: State<LoginUiState>,
+    uiState: State<LoginUiState>,
+    loginState: StateFlow<DataState<GuardLoginResponse>>,
     updatePassword: (String) -> Unit,
     updateEmail: (String) -> Unit,
     login: () -> Unit,
@@ -55,6 +67,8 @@ fun LoginScreen(
     ourApp: () -> Unit,
     isValidEmailAndPassword: (String, String) -> Boolean,
 ) {
+    var showLoading by remember { mutableStateOf(false) }
+    val loginResponse = loginState.collectAsStateWithLifecycle().value
     val keyboardController = LocalSoftwareKeyboardController.current
     val localFocusManager = LocalFocusManager.current
     val keyboardActions = KeyboardActions(
@@ -64,7 +78,30 @@ fun LoginScreen(
         }
     )
 
-    val uiState = loginUiState.value
+    val uiState =uiState.value
+
+    LaunchedEffect(key1 = loginResponse) {
+        when (loginResponse) {
+            is DataState.Loading -> {
+                showLoading = true
+                keyboardController?.hide()
+            }
+
+            is DataState.Success -> {
+                showLoading = false
+                Log.d("LoginScreen", "LoginScreen: ${loginResponse.data}")
+            }
+
+            is DataState.Error -> {
+                showLoading = false
+                Log.d("LoginScreen", "LoginScreen: ${loginResponse.message}")
+            }
+
+            is DataState.Empty -> {
+                Log.d("LoginScreen", "LoginScreen: Empty")
+            }
+        }
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -209,8 +246,9 @@ fun LoginPreview() {
             updatePassword = mockViewModel::updatePassword,
             updateEmail = mockViewModel::updateEmail,
             login = mockViewModel::login,
+            loginState = mockViewModel.loginState,
             isValidEmailAndPassword = mockViewModel::isValidEmailAndPassword,
-            loginUiState = mockViewModel.uiState,
+            uiState = mockViewModel.uiState,
             contactUs = mockViewModel::contactUs,
             ourApp = mockViewModel::ourApp
         )
