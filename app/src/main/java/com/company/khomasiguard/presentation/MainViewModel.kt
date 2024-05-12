@@ -7,9 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.use_case.app_entry.AppEntryUseCases
 import com.company.khomasiguard.navigation.Screens
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -18,9 +15,6 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     appEntryUseCases: AppEntryUseCases
 ) : ViewModel() {
-
-    private val _splashCondition = mutableStateOf(true)
-    val splashCondition: State<Boolean> = _splashCondition
 
     private val _startDestination = mutableStateOf(Screens.KhomasiNavigation.route)
     val startDestination: State<String> = _startDestination
@@ -34,8 +28,6 @@ class MainViewModel @Inject constructor(
                 else -> {
                     _startDestination.value = Screens.KhomasiNavigation.route}
             }
-            delay(300)
-            _splashCondition.value = false
         }.launchIn(viewModelScope)
     }
 }
