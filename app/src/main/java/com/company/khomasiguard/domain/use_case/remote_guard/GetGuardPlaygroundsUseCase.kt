@@ -6,7 +6,7 @@ class GetGuardPlaygroundsUseCase(
     private val remoteGuardRepository: RemoteGuardRepository
 
 ){
-    suspend operator fun invoke(token: String,guardID: String){
+    suspend operator fun invoke(token: String,guardID: String)=
         remoteGuardRepository.getGuardPlaygrounds(token,guardID)
-    }
+
 }

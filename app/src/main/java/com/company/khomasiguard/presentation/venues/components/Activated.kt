@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -22,13 +23,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.company.khomasiguard.R
+import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.presentation.components.BottomSheetWarning
+import com.company.khomasiguard.presentation.venues.MockVenuesViewModel
+import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Activated(
+    uiState: StateFlow<VenuesUiState>,
 ) {
+    val state = uiState.collectAsStateWithLifecycle().value
     val sheetState = rememberModalBottomSheetState()
     var isOpen by remember { mutableStateOf(false) }
     if (isOpen){
@@ -50,24 +58,9 @@ fun Activated(
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
     ) {
-        item {
+        itemsIndexed(state.activated) {index ,playground ->
             PlaygroundCard(
-                playground = Playground(
-                    playgroundInfo = PlaygroundInfo(
-                        playground = PlaygroundX(
-                            id = 1,
-                            name = "ZSC Playground",
-                            feesForHour = 50,
-                            address = "Nile Street, Zsc District, Cairo.",
-                            isBookable = true
-                        ),
-                        picture = ""
-                    ),
-                    newBookings = 10,
-                    finishedBookings = 23,
-                    totalBookings = 33
-
-                ),
+                playground = playground,
                 onViewPlaygroundClick = {},
                 onClickActive = {},
                 onClickDeActive = {isOpen=true}
@@ -83,6 +76,10 @@ fun Activated(
 @Composable
 fun ActivatedPreview() {
     KhomasiGuardTheme {
-        Activated()
+        val mockViewModel: MockVenuesViewModel = viewModel()
+
+        Activated(
+            uiState = mockViewModel.uiState
+        )
     }
 }
