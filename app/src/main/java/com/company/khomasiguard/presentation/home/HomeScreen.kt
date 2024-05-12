@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,41 +30,44 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.company.khomasiguard.R
-import com.company.khomasiguard.domain.model.booking.Booking
+import com.company.khomasiguard.domain.DataState
+import com.company.khomasiguard.domain.model.booking.GuardBooking
 import com.company.khomasiguard.presentation.components.ShortBookingCard
 import com.company.khomasiguard.theme.Cairo
 import com.company.khomasiguard.theme.KhomasiGuardTheme
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun HomeScreen(){
+fun HomeScreen(
+    uiStateFlow: StateFlow<HomeUiState>,
+    homeState: StateFlow<DataState<GuardBooking>>,
+    getHomeScreenBooking: () -> Unit
+
+){
+    LaunchedEffect(Unit) {
+        getHomeScreenBooking()
+    }
     Column(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.background(MaterialTheme.colorScheme.background
         )) {
-        TopCard()
+        val uiState = uiStateFlow.collectAsStateWithLifecycle().value
+        val homeState = homeState.collectAsStateWithLifecycle().value
+        if (homeState is DataState.Success){
+        TopCard(homeState.data, uiStateFlow )
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.padding(top = 8.dp, start = 16.dp,end = 16.dp)
 
             ) {
-                item() {
+                itemsIndexed(uiState.bookingList) { index,item ->
                     ShortBookingCard(
-                        bookingDetails = Booking(
-                            bookingTime = "2024-05-05T00:15:00",
-                            userName = "userName",
-                            profilePicture = "profilePicture",
-                            rating = 4,
-                            cost = 50,
-                            email = "email",
-                            phoneNumber = "phoneNumber",
-                            bookingNumber = 1,
-                            confirmationCode = "2345",
-                            isCanceled = false,
-                            duration = 47
-                        ),
-                        playgroundName = "Playground Name",
+                        bookingDetails = item,
+                        playgroundName = "playgroundName",
                         onClickViewBooking = {},
                         onClickCall = {}
                     )
@@ -70,9 +75,11 @@ fun HomeScreen(){
             }
         }
 
-}
+}}
 @Composable
 fun TopCard(
+    booking: GuardBooking,
+    uiState: StateFlow<HomeUiState>,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -115,7 +122,7 @@ fun TopCard(
                                 fontSize = 14.sp
                             )
                         ) {
-                            append("-----------------------date")
+                            append(uiState.value.date)
                         }
 
                     })
@@ -196,7 +203,7 @@ fun TopCard(
                                     )
                                 )
                                 {
-                                    append("----" +"\n")
+                                    append(booking.bookingsCount.toString())
                                 }
                                 withStyle(
                                     style = SpanStyle(
@@ -205,7 +212,7 @@ fun TopCard(
                                         fontSize = 16.sp
                                     )
                                 ) {
-                                    append(stringResource(id = R.string.bookings_today))
+                                    append("\n"+stringResource(id = R.string.bookings_today))
                                 }
                             },
                             color = MaterialTheme.colorScheme.onSurface,
@@ -262,6 +269,11 @@ fun TopCard(
 @Composable
 fun LoginPreview() {
     KhomasiGuardTheme {
-        HomeScreen()
+        val mockViewModel : HomeMockViewModel = viewModel()
+        HomeScreen(
+            uiStateFlow =mockViewModel.uiState,
+            homeState = mockViewModel.homeState,
+            getHomeScreenBooking = mockViewModel::getHomeScreenBooking
+        )
     }
 }
