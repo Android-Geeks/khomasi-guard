@@ -54,7 +54,6 @@ fun HomeScreen(
         var isRate by remember { mutableStateOf(false) }
         val sheetState = rememberModalBottomSheetState()
         val rateSheetState = rememberModalBottomSheetState()
-
         TopCard(uiState.guardBooking, uiStateFlow)
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),

@@ -210,7 +210,6 @@ fun TopCard(
             }
         }
 
-
     }
     Text(
         text = stringResource(id = R.string.bookings_today),

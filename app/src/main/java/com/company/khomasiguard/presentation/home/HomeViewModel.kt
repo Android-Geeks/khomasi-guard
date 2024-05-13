@@ -32,7 +32,6 @@ class HomeViewModel @Inject constructor(
         viewModelScope, SharingStarted.WhileSubscribed(5_000), LocalGuard()
     )
     val localGuard: StateFlow<LocalGuard> = _localGuard
-
     fun getHomeScreenBooking() {
         viewModelScope.launch() {
             remoteUseCases.getGuardBookingsUseCase(

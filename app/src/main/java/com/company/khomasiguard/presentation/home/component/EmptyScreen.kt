@@ -43,7 +43,6 @@ fun EmptyScreen(
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurface
         )
-
     }
 }
 @Preview(name = "light", uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
