@@ -11,7 +11,7 @@ data class HomeUiState(
     val guardBookingList: List<GuardBooking> = listOf(),
     val guardBooking: GuardBooking = GuardBooking(
         playgroundId = 1,
-        bookingsCount = 1,
+        bookingsCount = 0,
         bookings = bookingList
     ),
     val bookingDetails :Booking = Booking(

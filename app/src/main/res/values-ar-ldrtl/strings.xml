@@ -37,6 +37,7 @@
     <string name="save">حفظ</string>
     <string name="hello_captain">مرحبا يا كابتن طاب يومك</string>
     <string name="bookings_today">حجوزات اليوم</string>
+    <string name="no_new_bookings">لاتوجد حجوزات جديدة حتى هذه اللحظة.</string>
     <string name="password">كلمة المرور</string>
     <string name="email">البريد الإلكتروني</string>
     <string name="login">تسجيل الدخول</string>
