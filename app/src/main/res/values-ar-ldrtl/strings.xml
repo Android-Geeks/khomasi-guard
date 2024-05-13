@@ -46,6 +46,8 @@
     <string name="contact_us">تواصل معنا</string>
     <string name="partnership_text">كن شريكا</string>
     <string name="fivefold_partner">شريك خماسي</string>
+    <string name="activated">مفعله</string>
+    <string name="not_activated">غير مفعله</string>
     <string name="partners_app_message"> فقط لشركائنا. تبحث عن</string>
     <string name="our_app">تطبيقنا؟</string>
     <string name="confirm_deactivate_playground">هل أنت متأكد أنك تريد إلغاء تفعيل الملعب؟</string>

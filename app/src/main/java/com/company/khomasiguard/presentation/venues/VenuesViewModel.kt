@@ -1,5 +1,6 @@
 package com.company.khomasiguard.presentation.venues
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
@@ -43,6 +44,8 @@ class VenuesViewModel @Inject constructor(
                 token = "Bearer ${_localGuard.value.token ?: ""}",
                 guardID = _localGuard.value.guardID ?: "",
             ).collect { dataState ->
+                Log.d("TestPlayground", "LocalGuard: $dataState")
+                //LocalGuard: Error(code=401, message=Unauthorized)
                 if (dataState is DataState.Success) {
                     _uiState.value = _uiState.value.copy(
                         activated = dataState.data.playgrounds.filter { playground ->

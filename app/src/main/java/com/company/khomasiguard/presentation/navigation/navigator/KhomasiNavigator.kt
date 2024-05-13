@@ -8,6 +8,8 @@ import androidx.navigation.navigation
 import com.company.khomasiguard.navigation.Screens
 import com.company.khomasiguard.presentation.home.HomeScreen
 import com.company.khomasiguard.presentation.home.HomeViewModel
+import com.company.khomasiguard.presentation.venues.VenuesScreen
+import com.company.khomasiguard.presentation.venues.VenuesViewModel
 
 
 fun NavGraphBuilder.khomasiNavigator(
@@ -30,10 +32,15 @@ fun NavGraphBuilder.khomasiNavigator(
         composable(route = Screens.KhomasiNavigation.Bookings.route) {
 
 
+
         }
 
         composable(route = Screens.KhomasiNavigation.Playgrounds.route) {
-
+            val venuesViewModel: VenuesViewModel = hiltViewModel()
+            VenuesScreen(
+                getGuardPlaygrounds = venuesViewModel::getGuardPlaygrounds,
+                uiState = venuesViewModel.uiState
+            )
         }
     }
 
