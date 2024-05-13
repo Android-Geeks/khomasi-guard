@@ -52,19 +52,4 @@ class BookingViewModel @Inject constructor(
             }
         }
     }
-
-    fun review(){
-        viewModelScope.launch {
-            remoteUseCases.ratePlayerUseCase(
-                token = "Bearer ${_localGuard.value.token ?: ""}",
-                guardRating = RatingRequest(
-                    userEmail =_localGuard.value.email ?:"",
-                    guardId = _localGuard.value.guardID ?:"",
-                    ratingValue = _uiState.value.ratingValue
-                )
-            ).collect{
-
-            }
-        }
-    }
 }
