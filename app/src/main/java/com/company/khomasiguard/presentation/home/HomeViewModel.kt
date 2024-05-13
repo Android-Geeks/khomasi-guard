@@ -63,6 +63,4 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
-
 }

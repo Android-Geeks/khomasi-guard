@@ -208,7 +208,6 @@ fun TopCard(
                     }
                 }
             }
-
         }
 
 

@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.company.khomasiguard.R
 import com.company.khomasiguard.theme.KhomasiGuardTheme
-
 @Composable
 fun EmptyScreen(
     modifier: Modifier = Modifier,

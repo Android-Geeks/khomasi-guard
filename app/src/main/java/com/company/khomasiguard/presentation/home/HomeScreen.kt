@@ -59,7 +59,6 @@ fun HomeScreen(
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.padding(top = 8.dp, start = 16.dp,end = 16.dp)
-
             ) {
                 if (uiState.bookingList.isNotEmpty()){
                 itemsIndexed(uiState.bookingList) { _,item ->

@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.StateFlow
 class HomeMockViewModel: ViewModel() {
     private val _responseState: MutableStateFlow<DataState<BookingsResponse>> =
         MutableStateFlow(DataState.Empty)
-
     val responseState: StateFlow<DataState<BookingsResponse>> = _responseState
     private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState

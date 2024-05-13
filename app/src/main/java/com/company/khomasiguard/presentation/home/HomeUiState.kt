@@ -2,7 +2,6 @@ package com.company.khomasiguard.presentation.home
 
 import com.company.khomasiguard.domain.model.booking.Booking
 import com.company.khomasiguard.domain.model.booking.GuardBooking
-
 data class HomeUiState(
     val bookingList:List<Booking> = listOf(),
     val date: String="",
