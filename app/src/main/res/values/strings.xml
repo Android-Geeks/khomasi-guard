@@ -36,7 +36,7 @@
     <string name = "booking_first">Booking first</string>
     <string name="save">Save</string>
     <string name="hello_captain">Hello Captain, have a good day!</string>
-    <string name="reservations_today">Reservations today</string>
+    <string name="bookings_today">Booking Today</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="login">Log in</string>
@@ -46,9 +46,6 @@
     <string name="fivefold_partner">Fivefold Partner</string>
     <string name="partners_app_message">Only for our partners. Are you looking for</string>
     <string name="our_app">Our app?</string>
-    <string name="activated">Activated</string>
-    <string name="not_activated">Not Activated</string>
-    <string name="confirm_deactivate_playground">Are you sure you want to deactivate the playground?</string>
-    <string name="deactivate_confirmation_message">By proceeding with this action, the %1$s will be deactivated and will not be available for booking.</string>
+
 
 </resources>

@@ -1,5 +1,6 @@
 package com.company.khomasiguard.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
@@ -40,6 +41,8 @@ class HomeViewModel @Inject constructor(
                 guardID = _localGuard.value.guardID ?: "",
                 date = _uiState.value.bookingDetails.bookingTime
             ).collect{dataState->
+                Log.d("TestHomeViewModel", "LocalGuard: $dataState")
+                //LocalGuard: Error(code=401, message=Unauthorized)
                 if (dataState is DataState.Success){
                     _uiState.value = _uiState.value.copy(
                         guardBookingList =dataState.data.guardBookings ,
@@ -59,6 +62,8 @@ class HomeViewModel @Inject constructor(
                     ratingValue = _uiState.value.ratingValue
                 )
             ).collect{
+                Log.d("TestReview", "LocalGuard: $it")
+
 
             }
         }
