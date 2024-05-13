@@ -40,7 +40,9 @@ fun BookingCardDetails(
     onClickCall: () -> Unit,
     playgroundName: String,
     context: Context = LocalContext.current,
-    onClickCancelBooking: () -> Unit
+    onClickCancelBooking: () -> Unit,
+    toRate: () -> Unit
+
 ) {
     val bookingStartTime = remember {
         bookingDetails.bookingTime.toDateTime()?.toFormattedTimeString()
@@ -117,7 +119,10 @@ fun BookingCardDetails(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            MyButton(text =R.string.rate, onClick = { toRate() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp, start = 16.dp, end = 16.dp, bottom = 20.dp))
         }
 
     }
@@ -188,7 +193,8 @@ fun BookingCard2Preview() {
             ),
             onClickCall = {},
             playgroundName = "playgroundName",
-            onClickCancelBooking = {}
+            onClickCancelBooking = {},
+            toRate = {}
         )
     }
 
