@@ -80,7 +80,9 @@ fun TopCard(
                             append(uiState.value.date)
                         }
 
-                    })
+                    },
+                    color = MaterialTheme.colorScheme.onSurface
+                )
                 Box(
                     modifier = Modifier
                         .height(32.dp)
