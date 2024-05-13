@@ -5,15 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.model.LocalGuard
-import com.company.khomasiguard.domain.model.booking.BookingsResponse
-import com.company.khomasiguard.domain.model.booking.GuardBooking
 import com.company.khomasiguard.domain.model.playground.PlaygroundsResponse
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
-import com.company.khomasiguard.presentation.home.HomeUiState
 import com.company.khomasiguard.presentation.venues.components.VenuesUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

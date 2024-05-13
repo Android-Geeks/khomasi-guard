@@ -1,5 +1,6 @@
 package com.company.khomasiguard.presentation.booking
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
@@ -39,6 +40,8 @@ class BookingViewModel @Inject constructor(
                 guardID = _localGuard.value.guardID ?: "",
                 date = _uiState.value.bookingDetails.bookingTime
             ).collect{dataState->
+                Log.d("TestBooking", "LocalGuard: $dataState")
+                //LocalGuard: Error(code=401, message=Unauthorized)
                 if (dataState is DataState.Success){
                     _uiState.value = _uiState.value.copy(
                         guardBookingList =dataState.data.guardBookings
