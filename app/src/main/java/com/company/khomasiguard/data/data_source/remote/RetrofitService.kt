@@ -2,7 +2,7 @@ package com.company.khomasiguard.data.data_source.remote
 
 import com.company.khomasiguard.domain.model.RatingRequest
 import com.company.khomasiguard.domain.model.MessageResponse
-import com.company.khomasiguard.domain.model.booking.GuardBooking
+import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.domain.model.login.GuardLoginResponse
 import com.company.khomasiguard.domain.model.playground.PlaygroundsResponse
 import retrofit2.Response
@@ -37,5 +37,5 @@ interface RetrofitService {
         @Header("Authorization") token: String,
         @Query("guardID") guardID: String,
         @Query("date") date: String
-    ): Response<GuardBooking>
+    ): Response<BookingsResponse>
 }

@@ -4,12 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.model.LocalGuard
+import com.company.khomasiguard.domain.model.RatingRequest
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
-import com.company.khomasiguard.domain.model.booking.GuardBooking
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,10 +22,6 @@ class HomeViewModel @Inject constructor(
     private val remoteUseCases: RemoteUseCases
     ) : ViewModel()
 {
-    private val _homeState: MutableStateFlow<DataState<GuardBooking>> =
-        MutableStateFlow(DataState.Empty)
-    val homeState: StateFlow<DataState<GuardBooking>> = _homeState
-
     private val _responseState: MutableStateFlow<DataState<BookingsResponse>> =
         MutableStateFlow(DataState.Empty)
     val responseState: StateFlow<DataState<BookingsResponse>> = _responseState
@@ -39,23 +34,33 @@ class HomeViewModel @Inject constructor(
     val localGuard: StateFlow<LocalGuard> = _localGuard
 
     fun getHomeScreenBooking() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch() {
             remoteUseCases.getGuardBookingsUseCase(
                 token = "Bearer ${_localGuard.value.token ?: ""}",
                 guardID = _localGuard.value.guardID ?: "",
                 date = _uiState.value.bookingDetails.bookingTime
             ).collect{dataState->
                 if (dataState is DataState.Success){
-                    val bookingList = dataState.data.bookings
                     _uiState.value = _uiState.value.copy(
-                        bookingList = bookingList,
-                        bookingListNum = dataState.data.bookingsCount
+                        guardBookingList =dataState.data.guardBookings ,
                     )
                 }
 
             }
+        }
+    }
+    fun review(){
+        viewModelScope.launch {
+            remoteUseCases.ratePlayerUseCase(
+                token = "Bearer ${_localGuard.value.token ?: ""}",
+                guardRating = RatingRequest(
+                    userEmail =_localGuard.value.email ?:"",
+                    guardId = _localGuard.value.guardID ?:"",
+                    ratingValue = _uiState.value.ratingValue
+                )
+            ).collect{
 
-
+            }
         }
     }
 

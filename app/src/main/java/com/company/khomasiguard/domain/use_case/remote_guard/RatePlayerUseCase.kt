@@ -7,7 +7,7 @@ class RatePlayerUseCase(
     private val remoteGuardRepository: RemoteGuardRepository
 
 ) {
-    suspend operator fun invoke(token: String, guardRating: RatingRequest){
+    suspend operator fun invoke(token: String, guardRating: RatingRequest)=
         remoteGuardRepository.ratePlayer(token,guardRating)
-    }
+
 }
