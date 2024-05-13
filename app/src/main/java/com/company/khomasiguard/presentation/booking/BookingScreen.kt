@@ -133,7 +133,7 @@ fun TopBar() {
 @Composable
 fun BookingScreenPreview() {
     KhomasiGuardTheme {
-        val mockViewModel:BookingMockViewModel= viewModel()
+        val mockViewModel:MockBookingViewModel= viewModel()
        BookingScreen(
            uiStateFlow = mockViewModel.uiState,
            getBooking = mockViewModel::getBooking
