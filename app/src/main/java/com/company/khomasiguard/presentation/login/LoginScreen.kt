@@ -169,6 +169,7 @@ fun LoginScreen(
                         uiState.password
                     )
                 ) {
+                   // Log.d("TestLogin", "LocalGuard: $login")
                     login()
                 }
             },
