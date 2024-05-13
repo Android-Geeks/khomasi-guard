@@ -36,19 +36,15 @@
     <string name="booking_first">الحاجز اولا</string>
     <string name="save">حفظ</string>
     <string name="hello_captain">مرحبا يا كابتن طاب يومك</string>
-    <string name="reservations_today">الحجوزات اليوم</string>
-    <string name="activated">مفعل</string>
-    <string name="not_activated">غير مفعل</string>
+    <string name="bookings_today">حجوزات اليوم</string>
+    <string name="no_new_bookings">لاتوجد حجوزات جديدة حتى هذه اللحظة.</string>
     <string name="password">كلمة المرور</string>
     <string name="email">البريد الإلكتروني</string>
     <string name="login">تسجيل الدخول</string>
     <string name="do_not_have_an_account">لا تملك حساب؟</string>
-    <string name="contact_us">تواصل معنا</string>
+    <string name="contact_us">Contact us</string>
     <string name="partnership_text">كن شريكا</string>
     <string name="fivefold_partner">شريك خماسي</string>
     <string name="partners_app_message"> فقط لشركائنا. تبحث عن</string>
     <string name="our_app">تطبيقنا؟</string>
-    <string name="confirm_deactivate_playground">هل أنت متأكد أنك تريد إلغاء تفعيل الملعب؟</string>
-    <string name="deactivate_confirmation_message">باتخاذك لهذا الإجراء، سيتم إلغاء تفعيل %1$s ولن يكون قابلًا للحجز.</string>
-
 </resources>

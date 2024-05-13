@@ -18,6 +18,7 @@
     <string name="cancel">Cancel</string>
     <string name="to">to</string>
     <string name="rate">Rate</string>
+    <string name="no_new_bookings">No new bookings until this moment.</string>
     <string name="confirm_cancel_booking">Are you sure you want to cancel the booking?</string>
     <string name="action_will_cancel_booking">By taking this action, the booking for %1$s Field will be cancelled.</string>
     <string name="back">Back</string>
