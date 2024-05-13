@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.model.LocalGuard
+import com.company.khomasiguard.domain.model.RatingRequest
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
@@ -52,5 +53,18 @@ class BookingViewModel @Inject constructor(
         }
     }
 
+    fun review(){
+        viewModelScope.launch {
+            remoteUseCases.ratePlayerUseCase(
+                token = "Bearer ${_localGuard.value.token ?: ""}",
+                guardRating = RatingRequest(
+                    userEmail =_localGuard.value.email ?:"",
+                    guardId = _localGuard.value.guardID ?:"",
+                    ratingValue = _uiState.value.ratingValue
+                )
+            ).collect{
 
+            }
+        }
+    }
 }
