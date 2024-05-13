@@ -28,7 +28,8 @@
     <string name="bookable">قابل للحجز</string>
     <string name="not_bookable">غير قابل للحجز</string>
     <string name="fees_per_hour">%1$d جنيه / ساعة</string>
-    <string name="num_completed_booking">عدد الحجوزات المنتهيه</string>
+    <string name="num_current_booking">عدد الحجوزات الحاليه</string>
+    <string name="num_expired_booking">عدد الحجوزات المنتهيه</string>
     <string name="booking">حجز</string>
     <string name="activation">تفعيل</string>
     <string name="deactivate">الغاء التفعيل</string>
@@ -42,9 +43,12 @@
     <string name="email">البريد الإلكتروني</string>
     <string name="login">تسجيل الدخول</string>
     <string name="do_not_have_an_account">لا تملك حساب؟</string>
-    <string name="contact_us">Contact us</string>
+    <string name="contact_us">تواصل معنا</string>
     <string name="partnership_text">كن شريكا</string>
     <string name="fivefold_partner">شريك خماسي</string>
     <string name="partners_app_message"> فقط لشركائنا. تبحث عن</string>
     <string name="our_app">تطبيقنا؟</string>
+    <string name="confirm_deactivate_playground">هل أنت متأكد أنك تريد إلغاء تفعيل الملعب؟</string>
+    <string name="deactivate_confirmation_message">باتخاذك لهذا الإجراء، سيتم إلغاء تفعيل %1$s ولن يكون قابلًا للحجز.</string>
+
 </resources>

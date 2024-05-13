@@ -28,7 +28,8 @@
     <string name="bookable">Bookable</string>
     <string name="not_bookable">Not bookable</string>
     <string name="fees_per_hour">%1$d EGP / hour</string>
-    <string name="num_completed_booking">Number of completed bookings</string>
+    <string name="num_current_booking">Number of current bookings</string>
+    <string name="num_expired_booking">Number of expired bookings</string>
     <string name="booking">booking</string>
     <string name="activation">Activation</string>
     <string name="deactivate">De-Activate</string>
@@ -46,6 +47,11 @@
     <string name="fivefold_partner">Fivefold Partner</string>
     <string name="partners_app_message">Only for our partners. Are you looking for</string>
     <string name="our_app">Our app?</string>
+    <string name="activated">Activated</string>
+    <string name="not_activated">Not Activated</string>
+    <string name="confirm_deactivate_playground">Are you sure you want to deactivate the playground?</string>
+    <string name="deactivate_confirmation_message">By proceeding with this action, the %1$s will be deactivated and will not be available for booking.</string>
 
+>>>>>>>>> Temporary merge branch 2
 
 </resources>

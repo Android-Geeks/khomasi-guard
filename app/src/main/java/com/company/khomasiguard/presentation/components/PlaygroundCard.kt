@@ -126,21 +126,44 @@ fun PlaygroundActionButton(
 
 @Composable
 fun PlaygroundBookingInfo(playground: Playground) {
+    val playgroundData = remember(playground) {
+        playground.playgroundInfo
+    }
+    if (playgroundData.playground.isBookable) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = stringResource(R.string.num_completed_booking),
+            text = stringResource(R.string.num_current_booking),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.tertiary
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = "${playground.finishedBookings} ${stringResource(R.string.booking)}",
+            text = "${playground.totalBookings} ${stringResource(R.string.booking)}",
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.primary
         )
+    }
+    }
+    else{
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(R.string.num_expired_booking),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.tertiary
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "${playground.finishedBookings} ${stringResource(R.string.booking)}",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }
 
