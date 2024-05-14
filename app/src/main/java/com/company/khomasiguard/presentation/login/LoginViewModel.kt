@@ -1,8 +1,6 @@
 package com.company.khomasiguard.presentation.login
 
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
@@ -12,7 +10,6 @@ import com.company.khomasiguard.domain.use_case.app_entry.AppEntryUseCases
 import com.company.khomasiguard.domain.use_case.auth.AuthUseCase
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,8 +22,8 @@ class LoginViewModel @Inject constructor(
     private val authUseCase: AuthUseCase,
     private val appEntryUseCases: AppEntryUseCases
 ) : ViewModel() {
-    private val _uiState = mutableStateOf(LoginUiState())
-    val uiState: State<LoginUiState> = _uiState
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState: StateFlow<LoginUiState> = _uiState
 
     private val _loginState: MutableStateFlow<DataState<GuardLoginResponse>> =
         MutableStateFlow(DataState.Empty)
@@ -39,6 +36,7 @@ class LoginViewModel @Inject constructor(
             ).collect {
                 _loginState.value = it
                 if (it is DataState.Success) {
+                    Log.d("TestLoginViewModel", "LocalGuard: $it")
                     onLoginSuccess()
                     localGuardUseCases.saveLocalGuard(
                         LocalGuard(
@@ -72,17 +70,6 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             appEntryUseCases.saveIsLogin(true)
         }
-    }
-
-    fun isValidEmailAndPassword(email: String, password: String): Boolean {
-        // Use a regular expression to validate email format
-        val isEmailValid = email.matches(Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"))
-
-        // Password should have at least 12 characters, a number, a symbol, and no spaces
-        val isPasswordValid =
-            password.matches(Regex("^(?=.*[0-9])(?=.*[!@#$%^&*])(?=\\S+\$).{12,}\$"))
-
-        return isEmailValid && isPasswordValid
     }
 
     fun contactUs() {

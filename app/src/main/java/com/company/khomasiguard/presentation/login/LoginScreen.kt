@@ -18,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,14 +57,13 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun LoginScreen(
     isDark: Boolean = isSystemInDarkTheme(),
-    uiState: State<LoginUiState>,
+    uiState: StateFlow<LoginUiState>,
     loginState: StateFlow<DataState<GuardLoginResponse>>,
     updatePassword: (String) -> Unit,
     updateEmail: (String) -> Unit,
     login: () -> Unit,
     contactUs: () -> Unit,
     ourApp: () -> Unit,
-    isValidEmailAndPassword: (String, String) -> Boolean,
 ) {
     var showLoading by remember { mutableStateOf(false) }
     val loginResponse = loginState.collectAsStateWithLifecycle().value
@@ -78,7 +76,7 @@ fun LoginScreen(
         }
     )
 
-    val uiState =uiState.value
+    val uiState =uiState.collectAsStateWithLifecycle().value
 
     LaunchedEffect(key1 = loginResponse) {
         when (loginResponse) {
@@ -164,14 +162,8 @@ fun LoginScreen(
         )
         MyButton(
             onClick = {
-                if (isValidEmailAndPassword(
-                        uiState.email,
-                        uiState.password
-                    )
-                ) {
-                   // Log.d("TestLogin", "LocalGuard: $login")
+                    Log.d("TestLogin", "LocalGuard: $login")
                     login()
-                }
             },
             text = R.string.login,
             modifier = Modifier
@@ -199,7 +191,7 @@ fun LoginScreen(
                 ) {
                     append(stringResource(id = R.string.contact_us))
                     Modifier.clickable {
-                        contactUs
+                        contactUs()
                     }
                 }
                 withStyle(
@@ -226,7 +218,7 @@ fun LoginScreen(
                 ) {
                     append(stringResource(id = R.string.our_app))
                     Modifier.clickable {
-                      ourApp
+                      ourApp()
                     }
                 }
             },
@@ -248,7 +240,6 @@ fun LoginPreview() {
             updateEmail = mockViewModel::updateEmail,
             login = mockViewModel::login,
             loginState = mockViewModel.loginState,
-            isValidEmailAndPassword = mockViewModel::isValidEmailAndPassword,
             uiState = mockViewModel.uiState,
             contactUs = mockViewModel::contactUs,
             ourApp = mockViewModel::ourApp

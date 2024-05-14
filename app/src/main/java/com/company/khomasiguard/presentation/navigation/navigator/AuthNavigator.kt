@@ -24,7 +24,6 @@ fun NavGraphBuilder.authNavigator(
                 updatePassword = loginViewModel::updatePassword,
                 updateEmail = loginViewModel::updateEmail,
                 login = loginViewModel::login,
-                isValidEmailAndPassword = loginViewModel::isValidEmailAndPassword,
                 contactUs = loginViewModel::contactUs,
                 ourApp = loginViewModel::ourApp
             )

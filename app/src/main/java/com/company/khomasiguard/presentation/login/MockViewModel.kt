@@ -1,7 +1,5 @@
 package com.company.khomasiguard.presentation.login
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.model.login.GuardLoginResponse
@@ -9,8 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class MockLoginViewModel : ViewModel() {
-    private val _uiState = mutableStateOf(LoginUiState())
-    val uiState: State<LoginUiState> = _uiState
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState: StateFlow<LoginUiState> = _uiState
 
     private val _loginState: MutableStateFlow<DataState<GuardLoginResponse>> =
         MutableStateFlow(DataState.Empty)
@@ -21,7 +19,6 @@ class MockLoginViewModel : ViewModel() {
     fun updateEmail(newEmail: String) {
 
     }
-
     fun login() {
     }
 
@@ -29,9 +26,5 @@ class MockLoginViewModel : ViewModel() {
     }
 
     fun ourApp() {
-    }
-
-    fun isValidEmailAndPassword(email: String, password: String): Boolean {
-        return true
     }
 }

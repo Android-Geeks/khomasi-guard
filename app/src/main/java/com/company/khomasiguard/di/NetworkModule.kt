@@ -62,7 +62,7 @@ object NetworkModule {
     fun provideAuthUseCases(
         remoteGuardRepository: RemoteGuardRepository
     ): AuthUseCase = AuthUseCase(
-        LoginUseCase(remoteGuardRepository)
+       loginUseCase =  LoginUseCase(remoteGuardRepository)
     )
     @Provides
     @Singleton
