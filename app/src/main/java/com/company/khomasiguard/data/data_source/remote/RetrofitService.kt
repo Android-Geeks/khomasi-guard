@@ -29,13 +29,13 @@ interface RetrofitService {
     @GET("Guard/playgrounds")
     suspend fun getGuardPlaygrounds(
         @Header("Authorization") token: String,
-        @Query("guardID") guardID: String
+        @Query("guardId") guardID: String
     ): Response<PlaygroundsResponse>
 
     @GET("Guard/bookings")
     suspend fun getGuardBookings(
         @Header("Authorization") token: String,
-        @Query("guardID") guardID: String,
+        @Query("guardId") guardID: String,
         @Query("date") date: String
     ): Response<BookingsResponse>
 }
