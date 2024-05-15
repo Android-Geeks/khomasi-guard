@@ -20,8 +20,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val localGuardUseCases: LocalGuardUseCases,
     private val remoteUseCases: RemoteUseCases
-) : ViewModel()
-{
+) : ViewModel() {
     private val _responseState: MutableStateFlow<DataState<BookingsResponse>> =
         MutableStateFlow(DataState.Empty)
     val responseState: StateFlow<DataState<BookingsResponse>> = _responseState
@@ -33,33 +32,45 @@ class HomeViewModel @Inject constructor(
     )
     val localGuard: StateFlow<LocalGuard> = _localGuard
     fun getHomeScreenBooking() {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             remoteUseCases.getGuardBookingsUseCase(
                 token = "Bearer ${_localGuard.value.token ?: ""}",
                 guardID = _localGuard.value.guardID ?: "",
+                //date = date
                 date = _uiState.value.bookingDetails.bookingTime
-            ).collect{dataState->
-                if (dataState is DataState.Success){
-                    _uiState.value = _uiState.value.copy(
-                        guardBookingList =dataState.data.guardBookings ,
-                    )
+            ).collect { dataState ->
+                _responseState.value = dataState
+                if (dataState is DataState.Success) {
+                    dataState.data.guardBookings.forEach { guardBooking ->
+                        _uiState.value = _uiState.value.copy(
+                            guardBookingList = dataState.data.guardBookings,
+                        )
+                        _uiState.value = _uiState.value.copy(
+                            guardBooking = guardBooking,
+                        )
+                        guardBooking.bookings.forEach { booking ->
+                            _uiState.value = _uiState.value.copy(
+                                bookingDetails = booking,
+                            )
+                        }
+                    }
                 }
-
             }
         }
     }
-    fun review(){
+
+    fun review() {
         viewModelScope.launch {
             remoteUseCases.ratePlayerUseCase(
                 token = "Bearer ${_localGuard.value.token ?: ""}",
                 guardRating = RatingRequest(
-                    userEmail =_localGuard.value.email ?:"",
-                    guardId = _localGuard.value.guardID ?:"",
+                    userEmail = _localGuard.value.email ?: "",
+                    guardId = _localGuard.value.guardID ?: "",
                     ratingValue = _uiState.value.ratingValue
                 )
-            ).collect{
+            ).collect {
 
             }
         }
-    }
-}
+            }
+        }

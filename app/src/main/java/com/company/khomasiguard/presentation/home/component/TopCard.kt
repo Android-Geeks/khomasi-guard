@@ -25,10 +25,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.company.khomasiguard.R
 import com.company.khomasiguard.domain.model.booking.GuardBooking
 import com.company.khomasiguard.presentation.home.HomeUiState
 import com.company.khomasiguard.theme.Cairo
+import com.company.khomasiguard.util.extractDateFromTimestamp
+import com.company.khomasiguard.util.parseTimestamp
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
@@ -36,6 +39,8 @@ fun TopCard(
     booking: GuardBooking,
     uiState: StateFlow<HomeUiState>,
 ) {
+    val state = uiState.collectAsStateWithLifecycle().value
+    val date = extractDateFromTimestamp(parseTimestamp(state.date), format = "dd MMMM yyyy")
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -77,7 +82,7 @@ fun TopCard(
                                 fontSize = 14.sp
                             )
                         ) {
-                            append(uiState.value.date)
+                            append(date)
                         }
 
                     },

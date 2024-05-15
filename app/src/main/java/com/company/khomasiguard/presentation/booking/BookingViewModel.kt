@@ -7,7 +7,6 @@ import com.company.khomasiguard.domain.model.LocalGuard
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
-import com.company.khomasiguard.presentation.booking.BookingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,14 +37,25 @@ class BookingViewModel @Inject constructor(
                 token = "Bearer ${_localGuard.value.token ?: ""}",
                 guardID = _localGuard.value.guardID ?: "",
                 date = _uiState.value.bookingDetails.bookingTime
-            ).collect{dataState->
-                if (dataState is DataState.Success){
-                    _uiState.value = _uiState.value.copy(
-                        guardBookingList =dataState.data.guardBookings ,
-                    )
+                ).collect { dataState ->
+                _responseState.value = dataState
+                if (dataState is DataState.Success) {
+                    dataState.data.guardBookings.forEach { guardBooking ->
+                        _uiState.value = _uiState.value.copy(
+                            guardBookingList = dataState.data.guardBookings,
+                        )
+                        _uiState.value = _uiState.value.copy(
+                            guardBooking =  guardBooking,
+                        )
+                        guardBooking.bookings.forEach { booking ->
+                            _uiState.value = _uiState.value.copy(
+                                bookingDetails = booking,
+                            )
+                        }
+                    }
                 }
+            }
 
             }
         }
     }
-}

@@ -81,10 +81,13 @@ fun HomeScreen(
                     bookingDetails = uiState.bookingDetails,
                     onClickCall = { },
                     playgroundName = "",
-                    onClickCancelBooking ={isOpen=true},
+                    onClickCancelBooking ={
+                        openDialog = false
+                        isOpen=true},
                     toRate = {
+                        openDialog = false
                         review()
-                    isRate = true
+                        isRate = true
                     }
                 )
 
