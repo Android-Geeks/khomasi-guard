@@ -1,5 +1,6 @@
 package com.company.khomasiguard.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
@@ -39,6 +40,7 @@ class HomeViewModel @Inject constructor(
                 //date = date
                 date = _uiState.value.bookingDetails.bookingTime
             ).collect { dataState ->
+                Log.d("HomeViewModel","HomeResponse:${dataState}")
                 _responseState.value = dataState
                 if (dataState is DataState.Success) {
                     dataState.data.guardBookings.forEach { guardBooking ->
