@@ -67,10 +67,7 @@ class LocalGuardRepositoryImpl(
     }
 }
 
-private val readOnlyProperty = preferencesDataStore(name = "user_preferences")
-
-val Context.dataStore: DataStore<Preferences> by readOnlyProperty
-
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 private object PreferenceKeys {
     val IS_LOGIN = booleanPreferencesKey("is_login")
     val GUARD_ID = stringPreferencesKey("guard_id")
