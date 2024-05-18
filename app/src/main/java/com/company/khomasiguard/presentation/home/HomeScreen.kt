@@ -86,7 +86,6 @@ fun HomeScreen(
                         isOpen=true},
                     toRate = {
                         openDialog = false
-                        review()
                         isRate = true
                     }
                 )
@@ -110,9 +109,13 @@ fun HomeScreen(
                 bookingDetails = uiState.bookingDetails,
                 playgroundName = "",
                 sheetState = rateSheetState,
-                onDismissRequest = { isRate =false }) {
+                onDismissRequest = { isRate =false },
+                onClickButtonRate = {
+                    isRate = false
+                    review()
+                }
+            )
 
-            }
         }
     }
 }

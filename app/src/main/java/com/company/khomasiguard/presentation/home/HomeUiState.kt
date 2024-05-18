@@ -16,7 +16,7 @@ data class HomeUiState(
         isCanceled = false,
         duration = 47
     ),
-    val bookingList:List<Booking> = listOf(bookingDetails),
+    val bookingList:List<Booking> = listOf(),
     val date: String="",
     val bookingListNum: Int = 1,
     val ratingValue: Int= 1,
@@ -24,8 +24,5 @@ data class HomeUiState(
         playgroundId = 1,
         bookingsCount = 0,
         bookings = bookingList
-    ),
-    val guardBookingList: List<GuardBooking> = listOf(guardBooking),
-
-
+    )
 )
