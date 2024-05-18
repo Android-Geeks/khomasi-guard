@@ -13,9 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.company.khomasiguard.domain.model.playground.Playground
-import com.company.khomasiguard.domain.model.playground.PlaygroundInfo
-import com.company.khomasiguard.domain.model.playground.PlaygroundX
 import com.company.khomasiguard.presentation.components.PlaygroundCard
 import com.company.khomasiguard.theme.KhomasiGuardTheme
 import androidx.compose.runtime.getValue
@@ -26,7 +23,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.company.khomasiguard.R
-import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.presentation.components.BottomSheetWarning
 import com.company.khomasiguard.presentation.venues.MockVenuesViewModel
 import kotlinx.coroutines.flow.StateFlow
@@ -43,7 +39,7 @@ fun Activated(
         BottomSheetWarning(
             sheetState = sheetState,
             onDismissRequest = { isOpen=false },
-            userName = "------",
+            userName = state.playgroundName,
             onClickCancel = { },
             mainTextId = R.string.confirm_deactivate_playground,
             subTextId = R.string.deactivate_confirmation_message,
@@ -58,7 +54,7 @@ fun Activated(
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
     ) {
-        itemsIndexed(state.activated) {index ,playground ->
+        itemsIndexed(state.activated) {_ ,playground ->
             PlaygroundCard(
                 playground = playground,
                 onViewPlaygroundClick = {},

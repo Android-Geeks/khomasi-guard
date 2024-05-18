@@ -35,22 +35,50 @@ class VenuesViewModel @Inject constructor(
     val localGuard: StateFlow<LocalGuard> = _localGuard
 
     fun getGuardPlaygrounds() {
-        viewModelScope.launch() {
+        viewModelScope.launch {
+            val token =
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlcjI2QGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiR3VhcmQiLCJleHAiOjE3MTgzMDQ1OTksImlzcyI6IldlYkFQSURlbW8iLCJhdWQiOiJXZWJBUElEZW1vIn0.meTiTWIMG1vROhBANdYc__JLeOdTCEfbfa7ftnuCAKo"
+            val guardID = "08b37a90-831e-49cc-9ec9-f2326e705eb9"
+            // val token = _localGuard.value.token ?: ""
+            // val guardID = _localGuard.value.guardID ?: ""
+            if (token.isEmpty() || guardID.isEmpty()) {
+                Log.e("VenuesViewModel", "Token or Guard ID is missing")
+                return@launch
+            }
             remoteUseCases.getGuardPlaygroundsUseCase(
-                token = "Bearer ${_localGuard.value.token ?: ""}",
-                guardID = _localGuard.value.guardID ?: "",
+                token = "Bearer $token",
+                guardID = guardID,
             ).collect { dataState ->
                 Log.d("TestPlayground", "LocalGuard: $dataState")
-                //LocalGuard: Error(code=401, message=Unauthorized)
-                if (dataState is DataState.Success) {
+                when (dataState) {
+                    is DataState.Success -> {
+                        dataState.data.playgrounds.forEach { playground ->
+                            _uiState.value = _uiState.value.copy(
+                                playgroundName = playground.playgroundInfo.playground.name
+                            )
+                        }
+
                     _uiState.value = _uiState.value.copy(
                         activated = dataState.data.playgrounds.filter { playground ->
                             playground.playgroundInfo.playground.isBookable
                         },notActivated = dataState.data.playgrounds.filter { playground ->
                             !playground.playgroundInfo.playground.isBookable
-                        }
-
+                        },
                     )
+                }
+
+                    is DataState.Error -> {
+                        Log.e("VenuesViewModel", "Error fetching playgrounds: ${dataState.message}")
+                    }
+
+                    is DataState.Empty -> {
+
+
+                    }
+
+                    is DataState.Loading -> {
+
+                    }
                 }
 
             }
