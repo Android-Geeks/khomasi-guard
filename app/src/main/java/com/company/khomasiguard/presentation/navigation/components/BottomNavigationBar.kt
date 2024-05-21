@@ -4,8 +4,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,7 +30,9 @@ fun BottomNavigationBar(
         exit = slideOutVertically(targetOffsetY = { it }),
     )
     {
-        NavigationBar {
+        NavigationBar(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
@@ -47,12 +51,19 @@ fun BottomNavigationBar(
                     icon = {
                         Icon(
                             painter = painterResource(id = navItem.icon),
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     },
                     label = {
                         Text(text = stringResource(id = navItem.label))
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        indicatorColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f),
+                        unselectedIconColor =MaterialTheme.colorScheme.onSecondary,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSecondary,
+                    )
                 )
             }
         }
