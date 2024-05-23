@@ -32,7 +32,7 @@ fun MyApp(
     if (isNetworkAvailable == ConnectivityObserver.Status.Unavailable ||
         isNetworkAvailable == ConnectivityObserver.Status.Lost
     ) {
-        LossConnection(onClickRetry = {})
+        LossConnection()
         return
     }
     Scaffold(
