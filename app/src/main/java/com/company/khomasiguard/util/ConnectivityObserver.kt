@@ -2,7 +2,7 @@ package com.company.khomasiguard.util
 
 import kotlinx.coroutines.flow.Flow
 
-interface ConnectivityObserver {
+ fun interface ConnectivityObserver {
 
     fun observe(): Flow<Status>
 
@@ -10,3 +10,4 @@ interface ConnectivityObserver {
         Available, Unavailable, Losing, Lost
     }
 }
+

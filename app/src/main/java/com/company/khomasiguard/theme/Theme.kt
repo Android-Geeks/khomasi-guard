@@ -24,7 +24,9 @@ private val lightThemeColors = lightColorScheme(
     onSurface = lightText,
     onSurfaceVariant = lightIcon,
     onSecondary = lightNavBarIcon,
-    surfaceVariant = lightNavBar
+    surfaceVariant = lightNavBar,
+    inversePrimary = lightSuccess
+
 )
 
 private val darkThemeColors = darkColorScheme(
@@ -41,7 +43,8 @@ private val darkThemeColors = darkColorScheme(
     onSurface = darkText,
     onSurfaceVariant = darkIcon,
     onSecondary = darkNavBarIcon,
-    surfaceVariant = darkNavBar
+    surfaceVariant = darkNavBar,
+    inversePrimary = darkSuccess
 )
 
 

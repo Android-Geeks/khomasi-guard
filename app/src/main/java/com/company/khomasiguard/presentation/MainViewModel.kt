@@ -1,12 +1,12 @@
 package com.company.khomasiguard.presentation
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.use_case.app_entry.AppEntryUseCases
 import com.company.khomasiguard.navigation.Screens
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -16,8 +16,8 @@ class MainViewModel @Inject constructor(
     appEntryUseCases: AppEntryUseCases
 ) : ViewModel() {
 
-    private val _startDestination = mutableStateOf(Screens.KhomasiNavigation.route)
-    val startDestination: State<String> = _startDestination
+    private val _startDestination = MutableStateFlow(Screens.KhomasiNavigation.route)
+    val startDestination: StateFlow<String> = _startDestination
 
     init {
         appEntryUseCases.readAppEntry().onEach { startingRoute ->

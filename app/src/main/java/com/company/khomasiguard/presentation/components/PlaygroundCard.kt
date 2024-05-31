@@ -1,6 +1,7 @@
 package com.company.khomasiguard.presentation.components
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -236,7 +237,8 @@ fun PlaygroundImage(playgroundImage: Bitmap?, isBookable: Boolean) {
     }
 }
 
-@Preview
+@Preview(name = "Night", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ar")
 @Composable
 fun PlaygroundCardPreview() {
     KhomasiGuardTheme {

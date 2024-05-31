@@ -12,7 +12,7 @@ import com.company.khomasiguard.util.parseTimestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,28 +27,28 @@ class BookingViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<BookingUiState> = MutableStateFlow(BookingUiState())
     val uiState: StateFlow<BookingUiState> = _uiState
 
-    fun getBooking() {
-        viewModelScope.launch() {
-            val localGuard = localGuardUseCases.getLocalGuard().first()
+    fun getBooking(date: String) {
+        viewModelScope.launch {
+            val localGuard = localGuardUseCases.getLocalGuard().firstOrNull()
+            if (localGuard == null) {
+                Log.e("BookingViewModel", "Local guard data is null")
+                return@launch
+            }
             val token = localGuard.token ?: ""
             val guardID = localGuard.guardID ?: ""
-            val date = extractDateFromTimestamp(parseTimestamp(_uiState.value.date), format = "dd MMMM yyyy")
             remoteUseCases.getGuardBookingsUseCase(
                 token = "Bearer $token",
                 guardID = guardID,
-                date = date
-                ).collect { dataState ->
+                date = extractDateFromTimestamp(parseTimestamp(date), format = "dd MMMM yyyy")
+            ).collect { dataState ->
+                _responseState.value=dataState
+                Log.d("BookingResponse", "BookingResponse: $dataState")
                 _responseState.value = dataState
                 if (dataState is DataState.Success) {
-                    Log.d("BookingViewModel","BookingResponse:${dataState}")
                     dataState.data.guardBookings.forEach { guardBooking ->
                         _uiState.value = _uiState.value.copy(
-                            guardBookingList = dataState.data.guardBookings,
-                        )
-                        _uiState.value = _uiState.value.copy(
-                            guardBooking =  guardBooking,
-                        )
-                        _uiState.value = _uiState.value.copy(
+                            guardBooking = guardBooking,
+                            bookingListNum = guardBooking.bookingsCount,
                             bookingList = guardBooking.bookings,
                         )
                         guardBooking.bookings.forEach { booking ->
@@ -57,9 +57,14 @@ class BookingViewModel @Inject constructor(
                             )
                         }
                     }
+                } else if (dataState is DataState.Error) {
+                    Log.e(
+                        "BookingError",
+                        "Error code: ${dataState.code}, message: ${dataState.message}"
+                    )
                 }
+            }
             }
 
             }
         }
-    }
