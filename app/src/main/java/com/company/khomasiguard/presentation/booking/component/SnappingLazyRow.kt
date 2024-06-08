@@ -1,21 +1,28 @@
 package com.company.khomasiguard.presentation.booking.component
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberLazyListSnapperLayoutInfo
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
+import kotlinx.coroutines.launch
 import kotlin.math.abs
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalSnapperApi::class)
 @Composable
 fun <T> SnappingLazyRow(
@@ -23,7 +30,7 @@ fun <T> SnappingLazyRow(
     itemWidth: Dp,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
-    reverseLayout: Boolean = false,
+    reverseLayout: Boolean = true,
     horizontalArrangement: Arrangement.Horizontal =
         if (!reverseLayout)
             Arrangement.Start
