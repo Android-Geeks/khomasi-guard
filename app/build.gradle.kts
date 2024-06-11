@@ -69,6 +69,8 @@ android {
 
 dependencies {
 
+    implementation ("com.jakewharton.threetenabp:threetenabp:1.4.7")
+
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
 
