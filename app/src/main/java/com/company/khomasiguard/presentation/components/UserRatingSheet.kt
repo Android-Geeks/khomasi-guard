@@ -73,7 +73,7 @@ fun UserRatingSheet(
         ) {
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(bookingDetails.profilePicture.convertToBitmap() ?: "").crossfade(true)
+                    .data(bookingDetails.profilePicture?.convertToBitmap() ?: "").crossfade(true)
                     .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,

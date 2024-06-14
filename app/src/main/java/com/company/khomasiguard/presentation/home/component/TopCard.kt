@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.company.khomasiguard.R
-import com.company.khomasiguard.domain.model.booking.GuardBooking
 import com.company.khomasiguard.presentation.home.HomeUiState
 import com.company.khomasiguard.theme.Cairo
 import com.company.khomasiguard.util.extractDateFromTimestamp
@@ -36,7 +35,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun TopCard(
-    booking: GuardBooking,
     uiState: StateFlow<HomeUiState>,
 ) {
     val state = uiState.collectAsStateWithLifecycle().value
@@ -165,7 +163,7 @@ fun TopCard(
                                     )
                                 )
                                 {
-                                    append(booking.bookingsCount.toString())
+                                    append(state.guardBookings.size.toString())
                                 }
                                 withStyle(
                                     style = SpanStyle(

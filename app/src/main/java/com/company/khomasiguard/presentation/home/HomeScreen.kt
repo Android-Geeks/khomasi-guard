@@ -38,6 +38,8 @@ import com.company.khomasiguard.presentation.components.connectionStates.ThreeBo
 import com.company.khomasiguard.presentation.home.component.EmptyScreen
 import com.company.khomasiguard.presentation.home.component.TopCard
 import com.company.khomasiguard.theme.KhomasiGuardTheme
+import com.company.khomasiguard.util.extractDateFromTimestamp
+import com.company.khomasiguard.util.parseTimestamp
 import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,13 +47,13 @@ import kotlinx.coroutines.flow.StateFlow
 fun HomeScreen(
     responseState: StateFlow<DataState<BookingsResponse>>,
     uiStateFlow: StateFlow<HomeUiState>,
-    getHomeScreenBooking: () -> Unit,
+    getHomeScreenBooking: (date: String) -> Unit,
     review: () -> Unit,
 ){
     val bookingPlaygrounds by responseState.collectAsStateWithLifecycle()
-
     var showLoading by remember { mutableStateOf(false) }
     var responseData by remember { mutableStateOf(listOf<Booking>()) }
+    val uiState = uiStateFlow.collectAsStateWithLifecycle().value
 
     LaunchedEffect(bookingPlaygrounds) {
         showLoading =
@@ -71,21 +73,24 @@ fun HomeScreen(
 
         Log.d("HomeScreenState", "HomeScreenState: $bookingPlaygrounds")
     }
-    LaunchedEffect(Unit) {
-        getHomeScreenBooking()
+    val date = extractDateFromTimestamp(
+        parseTimestamp(uiState.date),
+        format = "dd MMMM yyyy"
+    )
+    LaunchedEffect(date) {
+        getHomeScreenBooking(date)
     }
     Column(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.background(MaterialTheme.colorScheme.background
         )) {
-        val uiState = uiStateFlow.collectAsStateWithLifecycle().value
         var openDialog by remember { mutableStateOf(false) }
         var isOpen by remember { mutableStateOf(false) }
         var isRate by remember { mutableStateOf(false) }
         val sheetState = rememberModalBottomSheetState()
         val rateSheetState = rememberModalBottomSheetState()
-        TopCard(uiState.guardBooking, uiStateFlow)
+        TopCard(uiStateFlow)
         if (showLoading) {
             ThreeBounce(
                 color = MaterialTheme.colorScheme.primary,
@@ -99,13 +104,13 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.padding(top = 8.dp, start = 16.dp,end = 16.dp)
             ) {
-                if (uiState.bookingList.isNotEmpty()){
-                itemsIndexed(uiState.bookingList) { _,item ->
+                if (uiState.guardBookings.isNotEmpty()) {
+                    itemsIndexed(uiState.guardBookings) { _, item ->
                     ShortBookingCard(
-                        bookingDetails = item,
+                        bookingDetails = item.let { uiState.bookingDetails },
                         playgroundName = "playgroundName",
                         onClickViewBooking = {
-                            item.bookingNumber
+                            item.let { uiState.bookingDetails.bookingNumber }
                             openDialog = true
                         },
                         onClickCall = {}
@@ -154,7 +159,7 @@ fun HomeScreen(
                 onDismissRequest = { isRate =false },
                 onClickButtonRate = {
                     isRate = false
-                    review()
+                    // review()
                 }
             )
 

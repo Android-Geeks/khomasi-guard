@@ -3,6 +3,10 @@ package com.company.khomasiguard.presentation.home
 import com.company.khomasiguard.domain.model.booking.Booking
 import com.company.khomasiguard.domain.model.booking.GuardBooking
 data class HomeUiState(
+    var guardBookings: List<GuardBooking> = listOf(),
+    val date: String="",
+    val bookingListNum: Int = 1,
+    val ratingValue: Int= 1,
     val bookingDetails :Booking = Booking(
         bookingTime = "2024-05-05T04:15:00",
         userName = "userName",
@@ -17,12 +21,10 @@ data class HomeUiState(
         duration = 47
     ),
     val bookingList:List<Booking> = listOf(),
-    val date: String="",
-    val bookingListNum: Int = 1,
-    val ratingValue: Int= 1,
     val guardBooking: GuardBooking = GuardBooking(
         playgroundId = 1,
         bookingsCount = 0,
         bookings = bookingList
+    ),
+
     )
-)

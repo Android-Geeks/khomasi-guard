@@ -8,12 +8,11 @@ import com.company.khomasiguard.domain.model.RatingRequest
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
-import com.company.khomasiguard.util.extractDateFromTimestamp
-import com.company.khomasiguard.util.parseTimestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,47 +23,57 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     private val _responseState: MutableStateFlow<DataState<BookingsResponse>> =
         MutableStateFlow(DataState.Empty)
-    val responseState:StateFlow<DataState<BookingsResponse>> = _responseState
+    val responseState: StateFlow<DataState<BookingsResponse>> = _responseState
+
     private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
 
-    fun getHomeScreenBooking() {
-        viewModelScope.launch {
-            val localGuard = localGuardUseCases.getLocalGuard().first()
-            val token = localGuard.token ?: ""
-            val guardID = localGuard.guardID ?: ""
-            val date = extractDateFromTimestamp(parseTimestamp(_uiState.value.date), format = "dd MMMM yyyy")
-            remoteUseCases.getGuardBookingsUseCase(
-                token = "Bearer $token",
-                guardID = guardID,
-                date = date
-            ).collect { dataState ->
-                _responseState.value=dataState
-                Log.d("HomeBookingResponse", "HomeBookingResponse: $dataState")
-                _responseState.value = dataState
-                if (dataState is DataState.Success) {
-                    dataState.data.guardBookings.forEach { guardBooking ->
-                        _uiState.value = _uiState.value.copy(
-                            guardBooking = guardBooking,
-                            bookingListNum = guardBooking.bookingsCount,
-                            bookingList = guardBooking.bookings,
-                        )
-                        guardBooking.bookings.forEach { booking ->
-                            _uiState.value = _uiState.value.copy(
-                                bookingDetails = booking,
+    private val _reviewState: MutableStateFlow<DataState<RatingRequest>> =
+        MutableStateFlow(DataState.Empty)
+    val reviewState: StateFlow<DataState<RatingRequest>> = _reviewState
+    fun getHomeScreenBooking(date: String) {
+        viewModelScope.launch() {
+            localGuardUseCases.getLocalGuard().collect { guardData ->
+                remoteUseCases.getGuardBookingsUseCase(
+                    token = "Bearer ${guardData.token}",
+                    guardID = guardData.guardID ?: "",
+                    date = date
+                ).collect { dataState ->
+                    _responseState.value = dataState
+                    Log.d("HomeBookingResponse", "HomeBookingResponse: $dataState")
+                    if (dataState is DataState.Success) {
+                        _uiState.update {
+                            it.copy(
+                                guardBookings = dataState.data.guardBookings
                             )
                         }
+                        dataState.data.guardBookings.forEach { guardBooking ->
+                            _uiState.update {
+                                it.copy(
+                                    guardBooking = guardBooking,
+                                    bookingListNum = guardBooking.bookingsCount,
+                                    bookingList = guardBooking.bookings,
+                                )
+                            }
+                            guardBooking.bookings.forEach { booking ->
+                                _uiState.update {
+                                    it.copy(
+                                        bookingDetails = booking,
+                                    )
+                                }
+                            }
+                        }
+                    } else if (dataState is DataState.Error) {
+                        Log.e(
+                            "HomeBookingError",
+                            "Error code: ${dataState.code}, message: ${dataState.message}"
+                        )
                     }
-                } else if (dataState is DataState.Error) {
-                    Log.e(
-                        "HomeBookingError",
-                        "Error code: ${dataState.code}, message: ${dataState.message}"
-                    )
                 }
             }
         }
-    }
 
+    }
 
     fun review() {
         viewModelScope.launch {
@@ -78,9 +87,10 @@ class HomeViewModel @Inject constructor(
                     guardId = guardID,
                     ratingValue = _uiState.value.ratingValue
                 )
-            ).collect {}
+            ).collect {
+            }
         }
     }
-}
 
+}
 
