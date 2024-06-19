@@ -213,17 +213,30 @@ fun BookingScreen(
                     }
                 )
             })
+            HorizontalDivider(
+                thickness = 0.5.dp,
+                modifier = Modifier.padding(top = 9.dp)
+            )
+            Text(
+                text = stringResource(R.string.bookings_today),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(top=22.dp, start = 16.dp, bottom = 12.dp)
+                )
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
             ) {
-                itemsIndexed(uiState.bookingList) { _, item ->
-                    ShortBookingCard(
-                        bookingDetails = item,
-                        playgroundName = "playgroundName",
-                        onClickViewBooking = {},
-                        onClickCall = {}
-                    )
+                if (uiState.guardBookings.isNotEmpty()) {
+                    itemsIndexed(uiState.guardBookings) { _, item ->
+                        ShortBookingCard(
+                            bookingDetails = item.let { uiState.bookingDetails },
+                            playgroundName = "playgroundName",
+                            onClickViewBooking = {
+                                item.let { uiState.bookingDetails.bookingNumber }
+                            },
+                            onClickCall = {}
+                        )
+                    }
                 }
             }
         }

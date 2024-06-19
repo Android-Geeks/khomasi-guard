@@ -16,7 +16,7 @@ data class BookingUiState(
         bookingNumber = 1,
         confirmationCode = "2345",
         isCanceled = false,
-        duration = 47
+        duration = 47.0
     ),
     val bookingList:List<Booking> = listOf(),
     val date: String="",
@@ -25,6 +25,9 @@ data class BookingUiState(
     val guardBooking: GuardBooking = GuardBooking(
         playgroundId = 1,
         bookingsCount = 0,
-        bookings = bookingList
-    )
+        bookings = bookingList,
+        playgroundName = " "
+    ),
+    var guardBookings: List<GuardBooking> = listOf(),
+
     )

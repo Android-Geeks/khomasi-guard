@@ -56,7 +56,9 @@ fun ShortBookingCard(
     val bookingStartTime =
         remember { bookingDetails.bookingTime.toDateTime()?.toFormattedTimeString() }
     val bookingEndTime = remember {
-        bookingDetails.bookingTime.toDateTime()?.toAddTime(bookingDetails.duration)
+        bookingDetails.bookingTime.toDateTime()?.toAddTime(
+            (bookingDetails.duration*60).toInt()
+        )
             ?.toFormattedTimeString()
     }
     val bookingDate =
@@ -204,7 +206,7 @@ private fun BookingCardPreview() {
                 bookingNumber = 1,
                 confirmationCode = "2345",
                 isCanceled = false,
-                duration = 47
+                duration = 47.0
             ),
             playgroundName = "Playground Name",
             onClickViewBooking = {},

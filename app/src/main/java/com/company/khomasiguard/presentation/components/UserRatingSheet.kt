@@ -58,7 +58,7 @@ fun UserRatingSheet(
         bookingDetails.bookingTime.toDateTime()?.toFormattedTimeString()
     }
     val bookingEndTime = remember {
-        bookingDetails.bookingTime.toDateTime()?.toAddTime(bookingDetails.duration)
+        bookingDetails.bookingTime.toDateTime()?.toAddTime((bookingDetails.duration*60).toInt())
             ?.toFormattedTimeString()
     }
     var userRate by remember { mutableFloatStateOf(0f) }
@@ -159,7 +159,7 @@ fun UserRatingSheetPreview() {
                 bookingNumber = 1,
                 confirmationCode = "2345",
                 isCanceled = false,
-                duration = 55
+                duration = 55.0
             ),
             playgroundName = "Playground Name",
             sheetState = sheetState,

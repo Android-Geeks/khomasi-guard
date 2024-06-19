@@ -13,6 +13,8 @@ data class BookingsResponse(
 data class GuardBooking(
     @SerialName("playgroundId")
     val playgroundId: Int,
+    @SerialName("playgroundName")
+    val playgroundName: String,
     @SerialName("bookingsCount")
     val bookingsCount: Int,
     @SerialName("bookings")
@@ -27,7 +29,7 @@ data class Booking(
     @SerialName("email")
     val email: String,
     @SerialName("profilePicture")
-    val profilePicture: String,
+    val profilePicture: String?,
     @SerialName("phoneNumber")
     val phoneNumber: String,
     @SerialName("bookingNumber")
@@ -41,5 +43,5 @@ data class Booking(
     @SerialName("bookingTime")
     val bookingTime: String,
     @SerialName("duration")
-    val duration: Int
+    val duration: Double
 )
