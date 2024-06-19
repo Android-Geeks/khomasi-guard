@@ -163,7 +163,7 @@ fun TopCard(
                                     )
                                 )
                                 {
-                                    append(state.guardBookings.size.toString())
+                                    append(state.bookingListNum.toString())
                                 }
                                 withStyle(
                                     style = SpanStyle(

@@ -15,6 +15,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -100,22 +101,27 @@ fun HomeScreen(
                     .align(Alignment.CenterHorizontally)
             )
         }
-            LazyColumn(
+
+        LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.padding(top = 8.dp, start = 16.dp,end = 16.dp)
             ) {
                 if (uiState.guardBookings.isNotEmpty()) {
-                    itemsIndexed(uiState.guardBookings) { _, item ->
-                    ShortBookingCard(
-                        bookingDetails = item.let { uiState.bookingDetails },
-                        playgroundName = "playgroundName",
-                        onClickViewBooking = {
-                            item.let { uiState.bookingDetails.bookingNumber }
-                            openDialog = true
-                        },
-                        onClickCall = {}
-                    )
-                }
+                    itemsIndexed(uiState.bookings) { _,item ->
+                        item.currentBookings.forEach {booking ->
+                            ShortBookingCard(
+                                bookingDetails = booking ,
+                                playgroundName = item.playgroundName,
+                                onClickViewBooking = {
+                                    booking.bookingNumber
+                                    openDialog = true
+                                },
+                                onClickCall = {}
+                            )
+                        }
+
+                    }
+
                 }
                 else{
                    item { EmptyScreen() }
@@ -178,7 +184,8 @@ fun HomePreview() {
             uiStateFlow =mockViewModel.uiState,
             getHomeScreenBooking = mockViewModel::getHomeScreenBooking,
             review = mockViewModel::review,
-            responseState = mockViewModel.responseState
+            responseState = mockViewModel.responseState,
+
         )
     }
 }

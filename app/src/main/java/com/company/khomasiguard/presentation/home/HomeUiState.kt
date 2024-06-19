@@ -5,7 +5,7 @@ import com.company.khomasiguard.domain.model.booking.GuardBooking
 data class HomeUiState(
     var guardBookings: List<GuardBooking> = listOf(),
     val date: String="",
-    val bookingListNum: Int = 1,
+    val bookingListNum: Int = 0,
     val ratingValue: Int= 1,
     val bookingDetails :Booking = Booking(
         bookingTime = "2024-05-05T04:15:00",
@@ -18,13 +18,19 @@ data class HomeUiState(
         bookingNumber = 1,
         confirmationCode = "2345",
         isCanceled = false,
-        duration = 47
+        duration = 47.0
     ),
     val bookingList:List<Booking> = listOf(),
     val guardBooking: GuardBooking = GuardBooking(
         playgroundId = 1,
         bookingsCount = 0,
-        bookings = bookingList
+        bookings = bookingList,
+        playgroundName = ""
     ),
-
+    val bookings: List<Bookings> = listOf()
     )
+
+data class Bookings(
+    val playgroundName: String,
+    val currentBookings: List<Booking>
+)

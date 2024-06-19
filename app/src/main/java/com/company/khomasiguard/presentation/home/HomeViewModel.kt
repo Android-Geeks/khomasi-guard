@@ -1,11 +1,17 @@
 package com.company.khomasiguard.presentation.home
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.model.RatingRequest
+import com.company.khomasiguard.domain.model.booking.Booking
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
+import com.company.khomasiguard.domain.model.booking.GuardBooking
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,27 +48,34 @@ class HomeViewModel @Inject constructor(
                     _responseState.value = dataState
                     Log.d("HomeBookingResponse", "HomeBookingResponse: $dataState")
                     if (dataState is DataState.Success) {
-                        _uiState.update {
-                            it.copy(
-                                guardBookings = dataState.data.guardBookings
-                            )
-                        }
-                        dataState.data.guardBookings.forEach { guardBooking ->
-                            _uiState.update {
-                                it.copy(
-                                    guardBooking = guardBooking,
-                                    bookingListNum = guardBooking.bookingsCount,
-                                    bookingList = guardBooking.bookings,
-                                )
-                            }
-                            guardBooking.bookings.forEach { booking ->
-                                _uiState.update {
-                                    it.copy(
-                                        bookingDetails = booking,
-                                    )
-                                }
-                            }
-                        }
+                        updateBookingsCount(dataState.data.guardBookings)
+
+//                        _uiState.update {
+//                            it.copy(
+//                                guardBookings = dataState.data.guardBookings.forEach() {
+//                                    guardBooking -> guardBooking.bookings.filter {
+//                                        booking -> booking.isCanceled
+//                                    }
+//                                }
+//                            )
+//                        }
+//                        dataState.data.guardBookings.forEach { guardBooking ->
+//                            _uiState.update {
+//                                it.copy(
+//                                    guardBooking = guardBooking,
+//                                    bookingListNum = guardBooking.bookingsCount,
+//                                    bookingList = guardBooking.bookings,
+//                                )
+//                            }
+//                            guardBooking.bookings.forEach { booking ->
+//                                _uiState.update {
+//                                    it.copy(
+//                                        bookingDetails = booking,
+//                                    )
+//                                }
+//                            }
+//                        }
+
                     } else if (dataState is DataState.Error) {
                         Log.e(
                             "HomeBookingError",
@@ -75,6 +88,37 @@ class HomeViewModel @Inject constructor(
 
     }
 
+//    fun updateBookingsCount(count:Int){
+//        _uiState.update {
+//            it.copy(
+//                bookingListNum = count
+//            )
+//        }
+//    }
+
+    fun updateBookingsCount(guardBookings: List<GuardBooking>){
+        val currentBookings:MutableList<Bookings> = mutableListOf()
+        var bookingsCount=0
+        guardBookings.forEach {
+
+            val bookings = it.bookings.filter { condition ->
+                !condition.isCanceled
+            }
+
+            bookingsCount += bookings.size
+            currentBookings.add(Bookings(
+                playgroundName = it.playgroundName,
+                currentBookings = bookings
+            ))
+        }
+        _uiState.update {
+            it.copy(
+                guardBookings= guardBookings,
+                bookingListNum = bookingsCount,
+                bookings = currentBookings
+            )
+        }
+    }
     fun review() {
         viewModelScope.launch {
             val localGuard = localGuardUseCases.getLocalGuard().first()
