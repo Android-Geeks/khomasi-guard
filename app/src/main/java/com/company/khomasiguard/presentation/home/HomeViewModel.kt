@@ -1,23 +1,20 @@
 package com.company.khomasiguard.presentation.home
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
+import com.company.khomasiguard.domain.model.LocalGuard
 import com.company.khomasiguard.domain.model.RatingRequest
-import com.company.khomasiguard.domain.model.booking.Booking
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.domain.model.booking.GuardBooking
+import com.company.khomasiguard.domain.use_case.app_entry.AppEntryUseCases
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,7 +22,9 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val localGuardUseCases: LocalGuardUseCases,
-    private val remoteUseCases: RemoteUseCases
+    private val remoteUseCases: RemoteUseCases,
+    private val appEntryUseCases: AppEntryUseCases
+
 ) : ViewModel() {
     private val _responseState: MutableStateFlow<DataState<BookingsResponse>> =
         MutableStateFlow(DataState.Empty)
@@ -34,9 +33,6 @@ class HomeViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
 
-    private val _reviewState: MutableStateFlow<DataState<RatingRequest>> =
-        MutableStateFlow(DataState.Empty)
-    val reviewState: StateFlow<DataState<RatingRequest>> = _reviewState
     fun getHomeScreenBooking(date: String) {
         viewModelScope.launch() {
             localGuardUseCases.getLocalGuard().collect { guardData ->
@@ -50,32 +46,6 @@ class HomeViewModel @Inject constructor(
                     if (dataState is DataState.Success) {
                         updateBookingsCount(dataState.data.guardBookings)
 
-//                        _uiState.update {
-//                            it.copy(
-//                                guardBookings = dataState.data.guardBookings.forEach() {
-//                                    guardBooking -> guardBooking.bookings.filter {
-//                                        booking -> booking.isCanceled
-//                                    }
-//                                }
-//                            )
-//                        }
-//                        dataState.data.guardBookings.forEach { guardBooking ->
-//                            _uiState.update {
-//                                it.copy(
-//                                    guardBooking = guardBooking,
-//                                    bookingListNum = guardBooking.bookingsCount,
-//                                    bookingList = guardBooking.bookings,
-//                                )
-//                            }
-//                            guardBooking.bookings.forEach { booking ->
-//                                _uiState.update {
-//                                    it.copy(
-//                                        bookingDetails = booking,
-//                                    )
-//                                }
-//                            }
-//                        }
-
                     } else if (dataState is DataState.Error) {
                         Log.e(
                             "HomeBookingError",
@@ -88,51 +58,66 @@ class HomeViewModel @Inject constructor(
 
     }
 
-//    fun updateBookingsCount(count:Int){
-//        _uiState.update {
-//            it.copy(
-//                bookingListNum = count
-//            )
-//        }
-//    }
-
-    fun updateBookingsCount(guardBookings: List<GuardBooking>){
-        val currentBookings:MutableList<Bookings> = mutableListOf()
-        var bookingsCount=0
+    private fun updateBookingsCount(guardBookings: List<GuardBooking>) {
+        val currentBookings: MutableList<Bookings> = mutableListOf()
+        var bookingsCount = 0
         guardBookings.forEach {
-
             val bookings = it.bookings.filter { condition ->
                 !condition.isCanceled
             }
-
+            val bookingCode = it.bookings.forEach { num ->
+                num.bookingNumber
+            }
             bookingsCount += bookings.size
-            currentBookings.add(Bookings(
-                playgroundName = it.playgroundName,
-                currentBookings = bookings
-            ))
+            currentBookings.add(
+                Bookings(
+                    playgroundName = it.playgroundName,
+                    currentBookings = bookings,
+                )
+            )
         }
         _uiState.update {
             it.copy(
-                guardBookings= guardBookings,
+                guardBookings = guardBookings,
                 bookingListNum = bookingsCount,
-                bookings = currentBookings
+                bookings = currentBookings,
             )
         }
     }
+
     fun review() {
         viewModelScope.launch {
-            val localGuard = localGuardUseCases.getLocalGuard().first()
-            val token = localGuard.token ?: ""
-            val guardID = localGuard.guardID ?: ""
-            remoteUseCases.ratePlayerUseCase(
-                token = "Bearer $token",
-                guardRating = RatingRequest(
-                    userEmail = "user26@example.com",
-                    guardId = guardID,
-                    ratingValue = _uiState.value.ratingValue
-                )
-            ).collect {
+            localGuardUseCases.getLocalGuard().collect { guardData ->
+                remoteUseCases.ratePlayerUseCase(
+                    token = "Bearer ${guardData.token}",
+                    guardRating = RatingRequest(
+                        userEmail = "user26@example.com",
+                        guardId = guardData.guardID ?: "",
+                        ratingValue = _uiState.value.ratingValue
+                    )
+                ).collect {
+                }
             }
+        }
+
+    }
+
+    fun cancelBooking(bookingId: Int) {
+        viewModelScope.launch {
+            localGuardUseCases.getLocalGuard().collect { guardData ->
+                remoteUseCases.cancelBookingUseCase(
+                    token = "Bearer ${guardData.token}",
+                    bookingId = bookingId,
+                    isUser = false
+                ).collect {}
+
+            }
+        }
+    }
+    fun onLogout() {
+        viewModelScope.launch(Dispatchers.IO) {
+            appEntryUseCases.saveIsLogin(false)
+            localGuardUseCases.saveLocalGuard(LocalGuard())
         }
     }
 

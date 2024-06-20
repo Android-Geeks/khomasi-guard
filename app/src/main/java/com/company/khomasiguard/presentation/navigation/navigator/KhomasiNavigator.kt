@@ -27,7 +27,9 @@ fun NavGraphBuilder.khomasiNavigator(
                 uiStateFlow = homeViewModel.uiState,
                 getHomeScreenBooking = homeViewModel::getHomeScreenBooking,
                 review = homeViewModel::review,
-                responseState = homeViewModel.responseState
+                responseState = homeViewModel.responseState,
+                cancelBooking = homeViewModel::cancelBooking,
+                onLogout = homeViewModel::onLogout
             )
 
         }

@@ -9,6 +9,7 @@ import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.GetGuardBookingsUseCase
 import com.company.khomasiguard.domain.use_case.remote_guard.GetGuardPlaygroundsUseCase
 import com.company.khomasiguard.domain.use_case.auth.LoginUseCase
+import com.company.khomasiguard.domain.use_case.remote_guard.CancelBookingUseCase
 import com.company.khomasiguard.domain.use_case.remote_guard.RatePlayerUseCase
 import com.company.khomasiguard.util.BASE_URL
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -71,7 +72,8 @@ object NetworkModule {
     ): RemoteUseCases = RemoteUseCases(
         getGuardBookingsUseCase = GetGuardBookingsUseCase(remoteGuardRepository),
         getGuardPlaygroundsUseCase = GetGuardPlaygroundsUseCase(remoteGuardRepository),
-        ratePlayerUseCase = RatePlayerUseCase(remoteGuardRepository)
+        ratePlayerUseCase = RatePlayerUseCase(remoteGuardRepository),
+        cancelBookingUseCase = CancelBookingUseCase(remoteGuardRepository)
 
     )
 

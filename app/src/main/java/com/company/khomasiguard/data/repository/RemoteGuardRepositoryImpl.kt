@@ -37,6 +37,12 @@ class RemoteGuardRepositoryImpl(
         date: String
     ) = handleApi { retrofitService.getGuardBookings(token,guardID,date) }
 
+    override suspend fun cancelBooking(
+        token: String,
+        bookingId: Int,
+        isUser: Boolean
+    )= handleApi { retrofitService.cancelBooking(token,bookingId,isUser) }
+
 
 }
 suspend fun <T : Any> handleApi(

@@ -27,10 +27,12 @@ data class HomeUiState(
         bookings = bookingList,
         playgroundName = ""
     ),
-    val bookings: List<Bookings> = listOf()
+    val bookings: List<Bookings> = listOf(),
+    val bookingCode:Int = 1
     )
 
 data class Bookings(
     val playgroundName: String,
+    val code :Int = 1,
     val currentBookings: List<Booking>
 )

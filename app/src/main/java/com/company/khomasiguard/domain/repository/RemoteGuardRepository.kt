@@ -13,5 +13,10 @@ interface RemoteGuardRepository {
     suspend fun ratePlayer(token: String, guardRating: RatingRequest): Flow<DataState<MessageResponse>>
     suspend fun getGuardPlaygrounds(token: String,guardID: String): Flow<DataState<PlaygroundsResponse>>
     suspend fun getGuardBookings(token: String,guardID: String,date: String): Flow<DataState<BookingsResponse>>
+    suspend fun cancelBooking(
+        token: String,
+        bookingId: Int,
+        isUser: Boolean
+    ): Flow<DataState<MessageResponse>>
 
 }

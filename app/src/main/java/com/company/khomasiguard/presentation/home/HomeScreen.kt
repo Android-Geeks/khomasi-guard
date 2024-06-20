@@ -15,7 +15,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,6 +49,8 @@ fun HomeScreen(
     uiStateFlow: StateFlow<HomeUiState>,
     getHomeScreenBooking: (date: String) -> Unit,
     review: () -> Unit,
+    cancelBooking : (bookingId :Int)-> Unit,
+    onLogout :() ->Unit
 ){
     val bookingPlaygrounds by responseState.collectAsStateWithLifecycle()
     var showLoading by remember { mutableStateOf(false) }
@@ -91,7 +92,7 @@ fun HomeScreen(
         var isRate by remember { mutableStateOf(false) }
         val sheetState = rememberModalBottomSheetState()
         val rateSheetState = rememberModalBottomSheetState()
-        TopCard(uiStateFlow)
+        TopCard(uiStateFlow,onLogout)
         if (showLoading) {
             ThreeBounce(
                 color = MaterialTheme.colorScheme.primary,
@@ -150,7 +151,7 @@ fun HomeScreen(
                sheetState = sheetState,
                onDismissRequest = { isOpen=false },
                userName = uiState.bookingDetails.userName,
-               onClickCancel = { },
+               onClickCancel = {cancelBooking},
                mainTextId = R.string.confirm_cancel_booking,
                subTextId = R.string.action_will_cancel_booking,
                mainButtonTextId = R.string.cancel_booking,
@@ -165,7 +166,7 @@ fun HomeScreen(
                 onDismissRequest = { isRate =false },
                 onClickButtonRate = {
                     isRate = false
-                    // review()
+                     review()
                 }
             )
 
@@ -185,6 +186,8 @@ fun HomePreview() {
             getHomeScreenBooking = mockViewModel::getHomeScreenBooking,
             review = mockViewModel::review,
             responseState = mockViewModel.responseState,
+            cancelBooking = {},
+            onLogout = {}
 
         )
     }
