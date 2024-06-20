@@ -37,6 +37,12 @@ class RemoteGuardRepositoryImpl(
         date: String
     ) = handleApi { retrofitService.getGuardBookings(token,guardID,date) }
 
+    override suspend fun playgroundState(
+        token: String,
+        playgroundId: Int,
+        isActive: Boolean
+    )= handleApi { retrofitService.playgroundState(token,playgroundId,isActive) }
+
 
 }
 suspend fun <T : Any> handleApi(

@@ -10,6 +10,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Query
 
 
@@ -38,4 +39,11 @@ interface RetrofitService {
         @Query("guardId") guardID: String,
         @Query("date") date: String
     ): Response<BookingsResponse>
+
+    @PUT("Playground/state")
+    suspend fun playgroundState(
+        @Header("Authorization") token: String,
+        @Query("playgroundId") playgroundId: Int,
+        @Query("isActive") isActive: Boolean
+    ):Response<MessageResponse>
 }
