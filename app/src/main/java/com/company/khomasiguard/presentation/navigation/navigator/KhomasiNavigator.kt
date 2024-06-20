@@ -44,7 +44,8 @@ fun NavGraphBuilder.khomasiNavigator(
             val venuesViewModel: VenuesViewModel = hiltViewModel()
             VenuesScreen(
                 getGuardPlaygrounds = venuesViewModel::getGuardPlaygrounds,
-                uiState = venuesViewModel.uiState
+                uiState = venuesViewModel.uiState,
+                cancel = venuesViewModel::cancel
             )
         }
     }

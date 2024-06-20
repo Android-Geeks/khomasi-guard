@@ -35,6 +35,7 @@ import kotlinx.coroutines.launch
 fun VenuesScreen(
     getGuardPlaygrounds: () -> Unit,
     uiState: StateFlow<VenuesUiState>,
+    cancel:(Int)->Unit
     ) {
     LaunchedEffect(Unit) {
         getGuardPlaygrounds()
@@ -52,7 +53,8 @@ fun VenuesScreen(
         TabContent(
             tabs = list,
             pagerState = pagerState,
-            uiState = uiState
+            uiState = uiState,
+            cancel=cancel
         )
     }
 }
@@ -96,12 +98,12 @@ fun TabContent(
     tabs: List<TabItem>,
     pagerState: PagerState,
     uiState: StateFlow<VenuesUiState>,
-
-
+    cancel:(Int)->Unit
     ) {
     HorizontalPager(count = tabs.size, state = pagerState) { page ->
         tabs[page].screens(
-           uiState
+           uiState,
+            cancel
         )
     }
 }
@@ -114,7 +116,8 @@ fun LoginPreview() {
 
         VenuesScreen(
             uiState = mockViewModel.uiState,
-            getGuardPlaygrounds = mockViewModel::getGuardPlaygrounds
+            getGuardPlaygrounds = mockViewModel::getGuardPlaygrounds,
+            cancel = {}
         )
     }
 }
