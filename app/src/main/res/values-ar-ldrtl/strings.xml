@@ -36,8 +36,9 @@
     <string name="top_rating">الاعلى تقييم</string>
     <string name="booking_first">الحاجز اولا</string>
     <string name="save">حفظ</string>
+    <string name="date">التاريخ:</string>
     <string name="hello_captain">مرحبا يا كابتن طاب يومك</string>
-    <string name="bookings_today">حجوزات اليوم</string>
+    <string name="bookings_today">حجوزات اليوم:</string>
     <string name="no_new_bookings">لاتوجد حجوزات جديدة حتى هذه اللحظة.</string>
     <string name="password">كلمة المرور</string>
     <string name="email">البريد الإلكتروني</string>

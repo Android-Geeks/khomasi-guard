@@ -71,6 +71,7 @@ fun Header(data: CalendarUiModel) {
 //                    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
 //                )
 //            },
+            color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .fillMaxWidth()
@@ -102,13 +103,13 @@ fun Content(
     val scope = rememberCoroutineScope()
     SnappingLazyRow(
         scaleCalculator = { offset, halfRowWidth ->
-            (1f - minOf(1f, StrictMath.abs(offset).toFloat() / halfRowWidth) * 0.4f)
+            (1f - minOf(1f, StrictMath.abs(offset).toFloat() / halfRowWidth) * 0.6f)
         },
         key = { index, item ->
             item//or any id
         },
         items = MutableList(20) { it },
-        itemWidth = 68.dp,
+        itemWidth = 100.dp,
         onSelect = {
             selected = it
         },

@@ -76,7 +76,7 @@ fun <T> SnappingLazyRow(
                 state = listState,
                 modifier = Modifier
                     .fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = pad),
+                contentPadding = PaddingValues(horizontal = pad-30.dp),
                 flingBehavior = rememberSnapperFlingBehavior(listState)
             ) {
                 itemsIndexed(
@@ -95,7 +95,7 @@ fun <T> SnappingLazyRow(
                         }
                     }
                     LaunchedEffect(key1 = opacity) {
-                        if (1f - opacity <= 0.1f) {
+                        if (1f - opacity < 0.9f) {
                             apparentCurrentItem = i
                         }
                     }

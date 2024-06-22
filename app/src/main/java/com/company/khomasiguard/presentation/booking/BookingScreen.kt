@@ -218,6 +218,16 @@ fun BookingScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
         ) {
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outline,
+                thickness = 1.5.dp
+            )
+            Text(
+                text = stringResource(R.string.date),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(top = 6.dp, bottom = 6.dp, start = 16.dp)
+            )
             Header(data = calendarUiModel)
             Content(uiStateFlow = uiStateFlow, date = calendarUiModel ,
             onDateClickListener = { date ->
@@ -231,12 +241,14 @@ fun BookingScreen(
                 )
             })
             HorizontalDivider(
-                thickness = 0.5.dp,
+                thickness = 1.5.dp,
+                color = MaterialTheme.colorScheme.surfaceContainer,
                 modifier = Modifier.padding(top = 9.dp)
             )
             Text(
                 text = stringResource(R.string.bookings_today),
                 style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top=22.dp, start = 16.dp, bottom = 12.dp)
                 )
             LazyColumn(
@@ -272,7 +284,7 @@ fun TopBar() {
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.CenterStart)
-                    .padding(start = 16.dp)
+
             )
         },
         actions = {
@@ -286,7 +298,7 @@ fun TopBar() {
         },
         colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.background)
     )
-    HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp)
+
 }
 
 @Preview(name = "light", uiMode = Configuration.UI_MODE_NIGHT_NO)
