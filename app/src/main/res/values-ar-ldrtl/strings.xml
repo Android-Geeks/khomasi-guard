@@ -45,12 +45,15 @@
     <string name="do_not_have_an_account">لا تملك حساب؟</string>
     <string name="contact_us">تواصل معنا</string>
     <string name="partnership_text">كن شريكا</string>
-    <string name="fivefold_partner">شريك خماسي</string>
+    <string name="rentaField_partner">شريك رينتا فيلد</string>
     <string name="activated">مفعله</string>
     <string name="not_activated">غير مفعله</string>
     <string name="partners_app_message"> فقط لشركائنا. تبحث عن</string>
     <string name="our_app">تطبيقنا؟</string>
     <string name="confirm_deactivate_playground">هل أنت متأكد أنك تريد إلغاء تفعيل الملعب؟</string>
     <string name="deactivate_confirmation_message">باتخاذك لهذا الإجراء، سيتم إلغاء تفعيل %1$s ولن يكون قابلًا للحجز.</string>
-
+    <string name="guard_not_found">الحارس غير موجود</string>
+    <string name="invalid_email_or_password">البريد الإلكتروني أو كلمة المرور غير صحيحة</string>
+    <string name="login_only_message">هذا التطبيق للحراس فقط. المستخدمين: ثبتوا تطبيق Renta Field. الملاك: زوروا موقعنا.</string>
+    <string name="something_went_wrong">حدث خطأ ما</string>
 </resources>
