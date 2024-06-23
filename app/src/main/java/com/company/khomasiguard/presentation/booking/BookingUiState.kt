@@ -5,6 +5,7 @@ import com.company.khomasiguard.domain.model.booking.GuardBooking
 
 
 data class BookingUiState(
+    val selectedDay: Int = 0,
     val bookingDetails :Booking = Booking(
         bookingTime = "2024-05-05T04:15:00",
         userName = "userName",

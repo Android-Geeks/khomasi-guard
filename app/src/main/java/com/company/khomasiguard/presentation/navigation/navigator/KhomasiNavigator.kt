@@ -35,7 +35,9 @@ fun NavGraphBuilder.khomasiNavigator(
             val bookingViewModel: BookingViewModel = hiltViewModel()
             BookingScreen(
                 uiStateFlow = bookingViewModel.uiState,
-                getBooking = bookingViewModel::getBooking
+                getBooking = bookingViewModel::getBooking,
+                updateSelectedDay = bookingViewModel::updateSelectedDay,
+                responseStateFlow =bookingViewModel.responseState
             )
 
         }
