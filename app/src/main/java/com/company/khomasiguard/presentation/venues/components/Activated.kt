@@ -65,7 +65,7 @@ fun Activated(
                     onClickActive = {},
                     onClickDeActive = {
                         isOpen = true
-                        state.playgroundId = playground.playgroundInfo.playground.id
+                        playground.playgroundInfo.playground.id
                     }
                 )
             }

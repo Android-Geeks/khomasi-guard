@@ -34,7 +34,9 @@ class VenuesViewModel @Inject constructor(
                         is DataState.Success -> {
                             val playgrounds = dataState.data.playgrounds
                             _uiState.value = VenuesUiState(
-                                playgroundName = playgrounds.firstOrNull()?.playgroundInfo?.playground?.name ?: "",
+                                playgroundName = playgrounds.forEach { playground ->
+                                    playground.playgroundInfo.playground.name
+                                }.toString(),
                                 activated = playgrounds.filter { it.playgroundInfo.playground.isBookable },
                                 notActivated = playgrounds.filter { !it.playgroundInfo.playground.isBookable },
                                 isLoading = false
