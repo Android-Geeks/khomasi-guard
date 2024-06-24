@@ -184,6 +184,7 @@ import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.presentation.booking.component.CalendarPager
 import com.company.khomasiguard.presentation.components.BookingCardDetails
 import com.company.khomasiguard.presentation.components.BottomSheetWarning
+import com.company.khomasiguard.presentation.components.SelectedFilter
 import com.company.khomasiguard.presentation.components.ShortBookingCard
 import com.company.khomasiguard.presentation.components.SortBookingsBottomSheet
 import com.company.khomasiguard.presentation.components.UserRatingSheet
@@ -198,6 +199,8 @@ fun BookingScreen(
     responseStateFlow: StateFlow<DataState<BookingsResponse>>,
     getBooking: () -> Unit,
     updateSelectedDay: (Int) -> Unit,
+    onSelectedFilterChanged: (SelectedFilter) -> Unit,
+
 ) {
     val uiState by uiStateFlow.collectAsStateWithLifecycle()
     val responseState by responseStateFlow.collectAsStateWithLifecycle()
@@ -218,7 +221,7 @@ fun BookingScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        topBar = { TopBar() },
+        topBar = { TopBar(onSelectedFilterChanged) },
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -321,7 +324,9 @@ fun BookingScreen(
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar() {
+fun TopBar(
+    onSelectedFilterChanged: (SelectedFilter) -> Unit,
+) {
     var isOpen by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     var choice by remember { mutableIntStateOf(0) }
@@ -356,7 +361,10 @@ fun TopBar() {
         onDismissRequest = { isOpen = false },
         choice = choice,
         onChoiceChange = {choice = it},
-        onSaveClicked = {isOpen = false}
+        onSaveClicked = {
+            onSelectedFilterChanged
+            isOpen = false
+        }
     )
     }
 
@@ -372,7 +380,8 @@ fun BookingScreenPreview() {
             uiStateFlow = mockViewModel.uiState,
             getBooking = mockViewModel::getBooking,
             updateSelectedDay = {},
-            responseStateFlow = mockViewModel.responseState
+            responseStateFlow = mockViewModel.responseState,
+            onSelectedFilterChanged = {}
         )
     }
 }

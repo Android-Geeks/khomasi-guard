@@ -2,10 +2,13 @@ package com.company.khomasiguard.presentation.booking
 
 import com.company.khomasiguard.domain.model.booking.Booking
 import com.company.khomasiguard.domain.model.booking.GuardBooking
+import com.company.khomasiguard.presentation.components.SelectedFilter
+import org.threeten.bp.LocalDateTime
 
 
 data class BookingUiState(
     val selectedDay: Int = 0,
+    val selectedSlots: MutableList<Pair<LocalDateTime, LocalDateTime>> = mutableListOf(),
     val bookingDetails :Booking = Booking(
         bookingTime = "2024-05-05T04:15:00",
         userName = "userName",
@@ -30,5 +33,6 @@ data class BookingUiState(
         playgroundName = " "
     ),
     var guardBookings: List<GuardBooking> = listOf(),
-
+    val searchFilter: SelectedFilter = SelectedFilter.BOOKING_FIRST,
+    val playgroundResults: List<Booking> = listOf()
     )

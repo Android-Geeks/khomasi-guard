@@ -37,9 +37,9 @@ fun NavGraphBuilder.khomasiNavigator(
                 uiStateFlow = bookingViewModel.uiState,
                 getBooking = bookingViewModel::getBooking,
                 updateSelectedDay = bookingViewModel::updateSelectedDay,
-                responseStateFlow =bookingViewModel.responseState
+                responseStateFlow =bookingViewModel.responseState,
+                onSelectedFilterChanged = bookingViewModel::onSelectedFilterChanged
             )
-
         }
 
         composable(route = Screens.KhomasiNavigation.Playgrounds.route) {
