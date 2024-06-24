@@ -40,5 +40,5 @@ data class PlaygroundX(
     @SerialName("address")
     val address: String,
     @SerialName("isBookable")
-    val isBookable: Boolean
+    var isBookable: Boolean
 )

@@ -67,7 +67,23 @@ class VenuesViewModel @Inject constructor(
                     token = "Bearer ${guardData.token}",
                     playgroundId = playgroundId,
                     isActive = false
-                ).collect {}
+                ).collect {
+                    when (it) {
+                        is DataState.Success -> {
+                            _uiState.value = _uiState.value.copy(
+                                activated = _uiState.value.activated.filter { playground ->
+                                    playground.playgroundInfo.playground.id != playgroundId
+                                }
+                            )
+                        }
+                        is DataState.Error -> {
+                            _uiState.value = _uiState.value.copy(
+                                errorMessage = "Error deactivating playground: ${it.message}"
+                            )
+                        }
+                        else -> {}
+                    }
+                }
             }
         }
     }
