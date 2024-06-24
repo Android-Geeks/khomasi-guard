@@ -11,5 +11,5 @@ class MockBookingViewModel: ViewModel() {
     val responseState: StateFlow<DataState<BookingsResponse>> = _responseState
     private val _uiState: MutableStateFlow<BookingUiState> = MutableStateFlow(BookingUiState())
     val uiState: StateFlow<BookingUiState> = _uiState
-    fun getBooking(date:String) {}
+    fun getBooking() {}
 }

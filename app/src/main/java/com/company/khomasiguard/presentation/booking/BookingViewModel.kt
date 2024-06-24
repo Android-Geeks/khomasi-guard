@@ -23,16 +23,17 @@ class BookingViewModel @Inject constructor(
 
     private val _responseState: MutableStateFlow<DataState<BookingsResponse>> =
         MutableStateFlow(DataState.Empty)
+    val responseState: StateFlow<DataState<BookingsResponse>> = _responseState
     private val _uiState: MutableStateFlow<BookingUiState> = MutableStateFlow(BookingUiState())
     val uiState: StateFlow<BookingUiState> = _uiState
 
-    fun getBooking(date: String) {
+    fun getBooking() {
         viewModelScope.launch() {
             localGuardUseCases.getLocalGuard().collect { guardData ->
                 remoteUseCases.getGuardBookingsUseCase(
                     token = "Bearer ${guardData.token}",
                     guardID = guardData.guardID ?: "",
-                    date = date
+                    date = _uiState.value.selectedDay.toString()
                 ).collect { dataState ->
                     _responseState.value = dataState
                     Log.d("BookingResponse", "BookingResponse: $dataState")
@@ -68,5 +69,13 @@ class BookingViewModel @Inject constructor(
             }
         }
 
+    }
+    fun updateSelectedDay(day: Int) {
+        _uiState.update {
+            it.copy(
+                selectedDay = day,
+               guardBookings = mutableListOf()
+            )
+        }
     }
 }

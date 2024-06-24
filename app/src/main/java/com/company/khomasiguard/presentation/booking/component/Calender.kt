@@ -1,145 +1,158 @@
 package com.company.khomasiguard.presentation.booking.component
 
+
+import android.util.DisplayMetrics
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.company.khomasiguard.presentation.booking.BookingUiState
-import kotlinx.coroutines.flow.StateFlow
+import com.company.khomasiguard.theme.KhomasiGuardTheme
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.format.FormatStyle
 import org.threeten.bp.format.TextStyle
 import java.util.Locale
+import kotlin.math.absoluteValue
+import androidx.compose.foundation.pager.HorizontalPager
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Header(data: CalendarUiModel) {
-    Row {
-        val currentDate = LocalDate.now()
+fun CalendarPager(updateSelectedDay: (Int) -> Unit) {
+    val coroutineScope = rememberCoroutineScope()
 
-        val currentDaysList = remember {
-            (0..20).map { day -> (currentDate).plusDays(day.toLong()) }
-        }
+    val screenWidth = getScreenWidth()
 
-        val selectedMonth = remember { mutableStateOf(currentDaysList[0].month) }
-        val selectedYear = remember { mutableIntStateOf(currentDate.year) }
-            // show "Today" if user selects today's date
-            // else, show the full format of the date
-            Text(
-                text = "${
-                    selectedMonth.value.getDisplayName(
-                        TextStyle.FULL, Locale.getDefault()
-                    )
-                } ${selectedYear.intValue}",
-//            text = if (data.selectedDate.isToday) {
-//                "Today"
-//            } else {
-//                data.selectedDate.date.format(
-//                    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-//                )
-//            },
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp),
-            textAlign = TextAlign.Start,
-        )
-    }
-}
-
-@Composable
-fun Content(
-    uiStateFlow: StateFlow<BookingUiState>,
-    date: CalendarUiModel,
-    // callback should be registered from outside
-    onDateClickListener: (CalendarUiModel.Date) -> Unit,
-) {
     val currentDate = LocalDate.now()
 //    val currentDay = currentDate.dayOfMonth
     val currentDaysList = remember {
         (0..20).map { day -> (currentDate).plusDays(day.toLong()) }
     }
+    val selectedMonth = remember { mutableStateOf(currentDaysList[0].month) }
+    val selectedYear = remember { mutableIntStateOf(currentDate.year) }
 
+    val pagerState = rememberPagerState(pageCount = { currentDaysList.size - 1 }, initialPage = 0)
 
-    val uiState by uiStateFlow.collectAsStateWithLifecycle()
-    var selected by remember {
-        mutableStateOf(0)
+    LaunchedEffect(pagerState.currentPage) {
+        if (pagerState.currentPage in currentDaysList.indices) {
+            selectedMonth.value = currentDaysList[pagerState.currentPage].month
+            selectedYear.intValue = currentDaysList[pagerState.currentPage].year
+            updateSelectedDay(pagerState.currentPage)
+        }
     }
-    val listState = rememberLazyListState()
-    val scope = rememberCoroutineScope()
-    SnappingLazyRow(
-        scaleCalculator = { offset, halfRowWidth ->
-            (1f - minOf(1f, StrictMath.abs(offset).toFloat() / halfRowWidth) * 0.4f)
-        },
-        key = { index, item ->
-            item//or any id
-        },
-        items = MutableList(20) { it },
-        itemWidth = 68.dp,
-        onSelect = {
-            selected = it
-        },
-        listState = listState
-    ) { index, item, scale ->
-        val dayNum = currentDaysList[index].dayOfMonth.toString()
-        val dayName = currentDaysList[index].dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
-        Card(
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = "${
+                selectedMonth.value.getDisplayName(
+                    TextStyle.FULL, Locale.getDefault()
+                )
+            } ${selectedYear.intValue}",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
-                .width(60.dp)
-                .height(74.dp)
-                .background(shape = MaterialTheme.shapes.small, color = Color.Transparent)
-                .clickable {
-                    scope.launch {
-                        listState.animateScrollToItem(index)
-                        // selectedDate.value = date
-                    }
-                }
-                .scale(scale.coerceAtLeast(0.8f))
-                .alpha(scale.coerceAtLeast(0.1f)),
-            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
+                .fillMaxWidth()
+                .padding(start = 16.dp),
+            textAlign = TextAlign.Start,
         )
-        {
-            CalendarItem(
-                dayNum = dayNum,
-                dayName = dayName
-            )
+        Spacer(modifier = Modifier.height(4.dp))
+
+        HorizontalPager(
+            state = pagerState,
+            pageSize = PageSize.Fixed(60.dp),
+            pageSpacing = if (pagerState.currentPage == 0) (-2).dp else (0).dp,
+            contentPadding = PaddingValues(
+                start = (screenWidth / 2).dp - 30.dp,
+                end = (screenWidth / 2).dp - 30.dp
+            ),
+
+            //snapPosition = SnapPosition.Start,
+        ) { page ->
+            val dayNum = currentDaysList[page].dayOfMonth.toString()
+            val dayName =
+                currentDaysList[page].dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+
+            // Calculate the absolute offset for the current page from the \scroll position. We use the absolute value which allows us to mirror\ any effects for both directions
+            val pageOffset = calculatePageOffset(pagerState, page)
+
+            Card(
+                modifier = Modifier
+                    .width(60.dp)
+                    .height(74.dp)
+                    .graphicsLayer {
+                        // We animate the alpha, between 50% and 100%
+                        alpha = lerp(
+                            start = 0.3f, stop = 1f, fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                        )
+                        // Scale the size of the page based on its distance from the current page \ The current page will have a scale of 1 (original size), and other pages will have a smaller scale
+                        scaleY = lerp(
+                            start = 0.85f,
+                            stop = 1f,
+                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                        )
+                        scaleX = lerp(
+                            start = 0.9f, stop = 1f, fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                        )
+                    }
+                    .background(shape = MaterialTheme.shapes.small, color = Color.Transparent)
+                    .clickable { // Add clickable modifier to the Visa
+                        coroutineScope.launch { // Launch a coroutine
+                            pagerState.animateScrollToPage(page) // Scroll to the clicked page
+                        }
+                    },
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
+                elevation = CardDefaults.cardElevation(if (page == pagerState.currentPage) 1.dp else (0).dp),
+            ) {
+                CalendarItem(
+                    dayNum = dayNum,
+                    dayName = dayName
+                )
+            }
         }
     }
 }
-
+@Composable
+fun getScreenWidth(): Float {
+    val displayMetrics: DisplayMetrics =
+        LocalContext.current.resources.displayMetrics
+    return displayMetrics.widthPixels / displayMetrics.density
+}
+@OptIn(ExperimentalFoundationApi::class)
+fun calculatePageOffset(pagerState: PagerState, page: Int): Float {
+    return ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
+}
 
 @Composable
 fun CalendarItem(
@@ -164,27 +177,11 @@ fun CalendarItem(
             textAlign = TextAlign.Center,
         )
     }
+
 }
 
-//@Composable
-//fun ContentItem(
-//    date: CalendarUiModel.Date,
-//   onClickListener: (CalendarUiModel.Date) -> Unit, // still, callback should be registered from outside
-//     )
-//    {
-//        val coroutineScope = rememberCoroutineScope()
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize(),
-//            verticalArrangement = Arrangement.Center,
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//            Text(
-//                text = date.date.toString(),
-//                color = MaterialTheme.colorScheme.background,
-//                style = MaterialTheme.typography.bodyLarge,
-//                )
-//
-//        }
-//    }
-
+@Preview(showSystemUi = true)
+@Composable
+fun CalendarPreview() {
+    KhomasiGuardTheme { CalendarPager(updateSelectedDay = {}) }
+}

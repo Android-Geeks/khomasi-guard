@@ -18,6 +18,7 @@
     <string name="cancel">Cancel</string>
     <string name="to">to</string>
     <string name="rate">Rate</string>
+    <string name="date">the date:</string>
     <string name="no_new_bookings">No new bookings until this moment.</string>
     <string name="confirm_cancel_booking">Are you sure you want to cancel the booking?</string>
     <string name="action_will_cancel_booking">By taking this action, the booking for %1$s Field will be cancelled.</string>
@@ -37,7 +38,7 @@
     <string name = "booking_first">Booking first</string>
     <string name="save">Save</string>
     <string name="hello_captain">Hello Captain, have a good day!</string>
-    <string name="bookings_today">Booking Today</string>
+   <string name="bookings_today">Booking Today:</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="login">Log in</string>
