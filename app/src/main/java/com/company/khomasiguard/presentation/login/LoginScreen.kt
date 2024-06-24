@@ -2,6 +2,7 @@ package com.company.khomasiguard.presentation.login
 
 import android.content.res.Configuration
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -77,6 +79,7 @@ fun LoginScreen(
     )
 
     val uiState =uiState.collectAsStateWithLifecycle().value
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = loginResponse) {
         when (loginResponse) {
@@ -87,14 +90,38 @@ fun LoginScreen(
 
             is DataState.Success -> {
                 showLoading = false
+                login()
                 Log.d("LoginScreen", "LoginScreen: ${loginResponse.data}")
             }
-
             is DataState.Error -> {
                 showLoading = false
+                if (loginResponse.code == 404) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.guard_not_found),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else if (loginResponse.code == 400 && loginResponse.message == "Invalid Password.") {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.invalid_email_or_password),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else if (loginResponse.code == 0) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.login_only_message),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.something_went_wrong),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 Log.d("LoginScreen", "LoginScreen: ${loginResponse.message}")
             }
-
             is DataState.Empty -> {
                 Log.d("LoginScreen", "LoginScreen: Empty")
             }
@@ -121,7 +148,7 @@ fun LoginScreen(
                 alignment = Alignment.Center,
             )
             Text(
-                text = stringResource(id = R.string.fivefold_partner),
+                text = stringResource(id = R.string.rentaField_partner),
                 style = MaterialTheme.typography.titleMedium,
                 color = if (isDark) darkText else lightText,
                 modifier = Modifier

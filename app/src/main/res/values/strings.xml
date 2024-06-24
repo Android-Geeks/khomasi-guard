@@ -44,13 +44,17 @@
     <string name="do_not_have_an_account">Do not have an account?</string>
     <string name="contact_us">Contact us</string>
     <string name="partnership_text">Become Partner.</string>
-    <string name="fivefold_partner">Fivefold Partner</string>
+    <string name="rentaField_partner">Renta field Partner</string>
     <string name="partners_app_message">Only for our partners. Are you looking for</string>
     <string name="our_app">Our app?</string>
     <string name="activated">Activated</string>
     <string name="not_activated">Not Activated</string>
     <string name="confirm_deactivate_playground">Are you sure you want to deactivate the playground?</string>
     <string name="deactivate_confirmation_message">By proceeding with this action, the %1$s will be deactivated and will not be available for booking.</string>
+    <string name="guard_not_found">Guard not found</string>
+    <string name="invalid_email_or_password">Invalid Email OR Password</string>
+    <string name="login_only_message">Guards login only. Users: install Renta Field app. Owners: visit website.</string>
+    <string name="something_went_wrong">Something Went Wrong</string>
 
 
 </resources>

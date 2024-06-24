@@ -11,5 +11,7 @@ data class GuardLoginResponse(
     @SerialName("token")
     val token: String,
     @SerialName("expiration")
-    val expiration: String
+    val expiration: String,
+    @SerialName("role")
+    val role: String,
 )
