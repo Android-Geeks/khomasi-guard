@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun Activated(
     uiState: StateFlow<VenuesUiState>,
-    cancel: (Int) -> Unit
+    cancel: (Int,Boolean) -> Unit
 ) {
     val state = uiState.collectAsStateWithLifecycle().value
     val sheetState = rememberModalBottomSheetState()
@@ -88,9 +88,10 @@ fun Activated(
             userName = state.activated.firstOrNull { it.playgroundInfo.playground.id == selectedPlaygroundId }?.playgroundInfo?.playground?.name.orEmpty(),
             onClickCancel = {
                 cancel(
-                    selectedPlaygroundId!!
+                    selectedPlaygroundId!!,false
                 )
                 isOpen = false
+
             },
             mainTextId = R.string.confirm_deactivate_playground,
             subTextId = R.string.deactivate_confirmation_message,
@@ -108,7 +109,7 @@ fun ActivatedPreview() {
         val mockViewModel: MockVenuesViewModel = viewModel()
         Activated(
             uiState = mockViewModel.uiState,
-            cancel = {}
+            cancel = mockViewModel::cancel
         )
     }
 }

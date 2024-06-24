@@ -9,7 +9,7 @@ sealed class TabItem(
     @StringRes val title: Int,
     val screens: @Composable (
         uiState: StateFlow<VenuesUiState>,
-        cancel:(Int)->Unit
+        cancel: (Int,Boolean) -> Unit
         ) -> Unit,
 ) {
     data object Activated : TabItem(
@@ -20,8 +20,8 @@ sealed class TabItem(
     )
     data object NotActivated : TabItem(
         title = R.string.not_activated,
-        screens = {uiState,_ ->
-          NotActivated(uiState)
+        screens = {uiState,cancel ->
+          NotActivated(uiState,cancel)
         }
     )
 }
