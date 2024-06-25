@@ -37,13 +37,13 @@ class HomeViewModel @Inject constructor(
     private val _reviewState: MutableStateFlow<DataState<RatingRequest>> =
         MutableStateFlow(DataState.Empty)
     val reviewState: StateFlow<DataState<RatingRequest>> = _reviewState
-    fun getHomeScreenBooking(date: String) {
+    fun getHomeScreenBooking(date: Int) {
         viewModelScope.launch() {
             localGuardUseCases.getLocalGuard().collect { guardData ->
                 remoteUseCases.getGuardBookingsUseCase(
                     token = "Bearer ${guardData.token}",
                     guardID = guardData.guardID ?: "",
-                    date = date
+                    dayDiff = date
                 ).collect { dataState ->
                     _responseState.value = dataState
                     Log.d("HomeBookingResponse", "HomeBookingResponse: $dataState")

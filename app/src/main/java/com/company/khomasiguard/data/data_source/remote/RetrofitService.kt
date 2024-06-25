@@ -36,6 +36,6 @@ interface RetrofitService {
     suspend fun getGuardBookings(
         @Header("Authorization") token: String,
         @Query("guardId") guardID: String,
-        @Query("date") date: String
+        @Query("dayDiff") dayDiff: Int
     ): Response<BookingsResponse>
 }

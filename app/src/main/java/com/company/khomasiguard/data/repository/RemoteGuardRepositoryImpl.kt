@@ -34,8 +34,8 @@ class RemoteGuardRepositoryImpl(
     override suspend fun getGuardBookings(
         token: String,
         guardID: String,
-        date: String
-    ) = handleApi { retrofitService.getGuardBookings(token,guardID,date) }
+        dayDiff: Int
+    ) = handleApi { retrofitService.getGuardBookings(token,guardID,dayDiff) }
 
 
 }

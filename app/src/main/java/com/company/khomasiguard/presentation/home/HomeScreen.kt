@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.StateFlow
 fun HomeScreen(
     responseState: StateFlow<DataState<BookingsResponse>>,
     uiStateFlow: StateFlow<HomeUiState>,
-    getHomeScreenBooking: (date: String) -> Unit,
+    getHomeScreenBooking: (date: Int) -> Unit,
     review: () -> Unit,
 ){
     val bookingPlaygrounds by responseState.collectAsStateWithLifecycle()
@@ -75,11 +75,11 @@ fun HomeScreen(
         Log.d("HomeScreenState", "HomeScreenState: $bookingPlaygrounds")
     }
     val date = extractDateFromTimestamp(
-        parseTimestamp(uiState.date),
+        parseTimestamp(uiState.date.toString()),
         format = "dd MMMM yyyy"
     )
     LaunchedEffect(date) {
-        getHomeScreenBooking(date)
+        getHomeScreenBooking(date.toInt())
     }
     Column(
         horizontalAlignment = Alignment.Start,

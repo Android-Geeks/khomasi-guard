@@ -23,7 +23,7 @@ data class BookingUiState(
         duration = 47.0
     ),
     val bookingList:List<Booking> = listOf(),
-    val date: String="",
+    val date: Int=0,
     val bookingListNum: Int = 1,
     val ratingValue: Int= 1,
     val guardBooking: GuardBooking = GuardBooking(

@@ -4,7 +4,7 @@ import com.company.khomasiguard.domain.model.booking.Booking
 import com.company.khomasiguard.domain.model.booking.GuardBooking
 data class HomeUiState(
     var guardBookings: List<GuardBooking> = listOf(),
-    val date: String="",
+    val date: Int=0,
     val bookingListNum: Int = 0,
     val ratingValue: Int= 1,
     val bookingDetails :Booking = Booking(

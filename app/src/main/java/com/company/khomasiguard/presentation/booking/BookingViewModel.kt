@@ -34,7 +34,7 @@ class BookingViewModel @Inject constructor(
                 remoteUseCases.getGuardBookingsUseCase(
                     token = "Bearer ${guardData.token}",
                     guardID = guardData.guardID ?: "",
-                    date = _uiState.value.selectedDay.toString()
+                    dayDiff = _uiState.value.selectedDay
                 ).collect { dataState ->
                     _responseState.value = dataState
                     Log.d("BookingResponse", "BookingResponse: $dataState")
