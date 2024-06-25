@@ -6,7 +6,7 @@ class GetGuardBookingsUseCase(
     private val remoteGuardRepository: RemoteGuardRepository
 
 ) {
-    suspend operator fun invoke(token: String, guardID: String, date: String) =
-        remoteGuardRepository.getGuardBookings(token,guardID,date)
+    suspend operator fun invoke(token: String, guardID: String, dayDiff: Int) =
+        remoteGuardRepository.getGuardBookings(token,guardID,dayDiff)
 
 }

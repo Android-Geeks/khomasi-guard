@@ -33,6 +33,10 @@ import com.company.khomasiguard.util.toDateTime
 import com.company.khomasiguard.util.toFormattedDateString
 import com.company.khomasiguard.util.toFormattedTimeString
 
+enum class BookingCardStatus {
+    CANCEL,
+    RATING,
+}
 @Composable
 fun BookingCardDetails(
     modifier: Modifier = Modifier,
@@ -41,7 +45,8 @@ fun BookingCardDetails(
     playgroundName: String,
     context: Context = LocalContext.current,
     onClickCancelBooking: () -> Unit,
-    toRate: () -> Unit
+    toRate: () -> Unit,
+    status: BookingCardStatus
 
 ) {
     val bookingStartTime = remember {
@@ -111,20 +116,29 @@ fun BookingCardDetails(
         }
         Column {
             DashedDivider()
-            MyOutlinedButton(
-                text = R.string.cancel_booking,
-                icon = R.drawable.xcircle,
-                onClick = onClickCancelBooking,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-            MyButton(text =R.string.rate, onClick = { toRate() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 6.dp, start = 16.dp, end = 16.dp, bottom = 20.dp))
-        }
+            when(status) {
+                BookingCardStatus.CANCEL -> {
+                    MyOutlinedButton(
+                        text = R.string.cancel_booking,
+                        icon = R.drawable.xcircle,
+                        onClick = onClickCancelBooking,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                }
 
+                BookingCardStatus.RATING -> {
+                    MyButton(
+                        text = R.string.rate, onClick = { toRate() },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 6.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
+                    )
+                }
+            }
+
+        }
     }
 
 }
@@ -194,7 +208,8 @@ fun BookingCard2Preview() {
             onClickCall = {},
             playgroundName = "playgroundName",
             onClickCancelBooking = {},
-            toRate = {}
+            toRate = {},
+            status = BookingCardStatus.CANCEL
         )
     }
 

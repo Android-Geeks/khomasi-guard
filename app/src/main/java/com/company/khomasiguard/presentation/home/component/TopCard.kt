@@ -38,7 +38,7 @@ fun TopCard(
     uiState: StateFlow<HomeUiState>,
 ) {
     val state = uiState.collectAsStateWithLifecycle().value
-    val date = extractDateFromTimestamp(parseTimestamp(state.date), format = "dd MMMM yyyy")
+    val date = extractDateFromTimestamp(parseTimestamp(state.date.toString()), format = "dd MMMM yyyy")
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,

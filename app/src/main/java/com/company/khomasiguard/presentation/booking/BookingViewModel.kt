@@ -8,6 +8,7 @@ import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
+import com.company.khomasiguard.presentation.components.SelectedFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +34,7 @@ class BookingViewModel @Inject constructor(
                 remoteUseCases.getGuardBookingsUseCase(
                     token = "Bearer ${guardData.token}",
                     guardID = guardData.guardID ?: "",
-                    date = _uiState.value.selectedDay.toString()
+                    dayDiff = _uiState.value.selectedDay
                 ).collect { dataState ->
                     _responseState.value = dataState
                     Log.d("BookingResponse", "BookingResponse: $dataState")
@@ -74,8 +75,19 @@ class BookingViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 selectedDay = day,
-               guardBookings = mutableListOf()
+                selectedSlots = mutableListOf()
             )
         }
+    }
+    fun onSelectedFilterChanged(filter: SelectedFilter) {
+        _uiState.value = _uiState.value.copy(
+            searchFilter = filter,
+            playgroundResults =  when (filter) {
+                SelectedFilter.TOP_RATING -> _uiState.value.playgroundResults.sortedByDescending{ booking->booking.rating }
+                SelectedFilter.BOOKING_FIRST -> _uiState.value.playgroundResults.sortedBy {
+                    booking -> booking.bookingNumber
+                 }
+            }
+        )
     }
 }
