@@ -1,4 +1,4 @@
-package com.company.khomasiguard.presentation.venues.components
+package com.company.khomasiguard.presentation.venues
 
 import com.company.khomasiguard.domain.model.playground.Playground
 

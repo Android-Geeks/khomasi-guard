@@ -3,7 +3,6 @@ package com.company.khomasiguard.presentation.venues
 import androidx.lifecycle.ViewModel
 import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.model.playground.PlaygroundsResponse
-import com.company.khomasiguard.presentation.venues.components.VenuesUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

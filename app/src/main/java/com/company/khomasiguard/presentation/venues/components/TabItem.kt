@@ -3,6 +3,7 @@ package com.company.khomasiguard.presentation.venues.components
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import com.company.khomasiguard.R
+import com.company.khomasiguard.presentation.venues.VenuesUiState
 import kotlinx.coroutines.flow.StateFlow
 
 sealed class TabItem(

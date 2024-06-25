@@ -17,7 +17,7 @@ class MainViewModel @Inject constructor(
     appEntryUseCases: AppEntryUseCases
 ) : ViewModel() {
 
-    private val _startDestination = MutableStateFlow(Screens.KhomasiNavigation.route)
+    private val _startDestination = MutableStateFlow(Screens.AuthNavigation.route)
     val startDestination: StateFlow<String> = _startDestination
 
     init {
@@ -29,7 +29,6 @@ class MainViewModel @Inject constructor(
                 else -> {
                     _startDestination.value = Screens.KhomasiNavigation.route}
             }
-            delay(200)
         }.launchIn(viewModelScope)
     }
 }

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
-import com.company.khomasiguard.presentation.venues.components.VenuesUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -72,7 +71,7 @@ class VenuesViewModel @Inject constructor(
                         is DataState.Success -> {
                             if (isActive){
                                 _uiState.value = _uiState.value.copy(
-                                    notActivated = _uiState.value.activated.filter { playground ->
+                                    notActivated = _uiState.value.notActivated.filter { playground ->
                                         playground.playgroundInfo.playground.id != playgroundId
                                     }
                                 )

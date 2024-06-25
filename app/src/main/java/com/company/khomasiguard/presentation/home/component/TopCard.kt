@@ -30,7 +30,6 @@ import com.company.khomasiguard.R
 import com.company.khomasiguard.presentation.home.HomeUiState
 import com.company.khomasiguard.theme.Cairo
 import com.company.khomasiguard.util.extractDateFromTimestamp
-import com.company.khomasiguard.util.parseTimestamp
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
@@ -38,7 +37,7 @@ fun TopCard(
     uiState: StateFlow<HomeUiState>,
 ) {
     val state = uiState.collectAsStateWithLifecycle().value
-    val date = extractDateFromTimestamp(parseTimestamp(state.date.toString()), format = "dd MMMM yyyy")
+    val date = extractDateFromTimestamp(state.date, format = "dd MMMM yyyy")
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -172,7 +171,7 @@ fun TopCard(
                                         fontSize = 16.sp
                                     )
                                 ) {
-                                    append("\n"+ stringResource(id = R.string.bookings_today))
+                                    append("\n" + stringResource(id = R.string.bookings_today))
                                 }
                             },
                             color = MaterialTheme.colorScheme.onSurface,

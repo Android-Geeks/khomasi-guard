@@ -1,28 +1,20 @@
 package com.company.khomasiguard.presentation.home
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.model.RatingRequest
-import com.company.khomasiguard.domain.model.booking.Booking
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.domain.model.booking.GuardBooking
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
-import com.company.khomasiguard.util.parseNullableTimestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.temporal.ChronoUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,39 +34,34 @@ class HomeViewModel @Inject constructor(
     val reviewState: StateFlow<DataState<RatingRequest>> = _reviewState
     fun getHomeScreenBooking() {
         viewModelScope.launch() {
-            val dayDiff = parseNullableTimestamp(_uiState.value.date.toString())?.let { timestamp ->
-                val currentDate = LocalDateTime.now()
-                ChronoUnit.DAYS.between(currentDate, timestamp).toInt()
-            } ?: 0
             localGuardUseCases.getLocalGuard().collect { guardData ->
                 remoteUseCases.getGuardBookingsUseCase(
                     token = "Bearer ${guardData.token}",
                     guardID = guardData.guardID ?: "",
-                   // dayDiff =  LocalDateTime.now().dayOfMonth
-                    dayDiff = dayDiff
+                    // dayDiff =  LocalDateTime.now().dayOfMonth
+                    dayDiff = 0
                 ).collect { dataState ->
                     _responseState.value = dataState
                     Log.d("HomeBookingResponse", "HomeBookingResponse: $dataState")
                     if (dataState is DataState.Success) {
-                       // updateBookingsCount(dataState.data.guardBookings)
-                        dataState.data.guardBookings.forEach { guardBooking ->
-                            _uiState.update {
-                                it.copy(
-                                    guardBooking = guardBooking,
-                                    bookingListNum = guardBooking.bookingsCount,
-                                    bookingList = guardBooking.bookings,
-
-                                )
-                            }
-                            guardBooking.bookings.forEach { booking ->
-                                _uiState.update {
-                                    it.copy(
-                                        bookingDetails = booking,
-                                        date = booking.bookingTime.toInt()
-                                    )
-                                }
-                            }
-                        }
+                        updateBookingsCount(dataState.data.guardBookings)
+//                        dataState.data.guardBookings.forEach { guardBooking ->
+//                            _uiState.update {
+//                                it.copy(
+//                                    guardBooking = guardBooking,
+//                                    bookingListNum = guardBooking.bookingsCount,
+//                                    bookingList = guardBooking.bookings,
+//
+//                                )
+//                            }
+//                            guardBooking.bookings.forEach { booking ->
+//                                _uiState.update {
+//                                    it.copy(
+//                                        bookingDetails = booking,
+//                                    )
+//                                }
+//                            }
+//                        }
 //                        _uiState.update {
 //                            it.copy(
 //                                guardBookings = dataState.data.guardBookings.forEach() {
@@ -106,9 +93,6 @@ class HomeViewModel @Inject constructor(
                             "HomeBookingError",
                             "Error code: ${dataState.code}, message: ${dataState.message}"
                         )
-
-
-
                     }
                 }
             }
@@ -124,9 +108,17 @@ class HomeViewModel @Inject constructor(
 //        }
 //    }
 
-    fun updateBookingsCount(guardBookings: List<GuardBooking>){
-        val currentBookings:MutableList<Bookings> = mutableListOf()
-        var bookingsCount=0
+    fun onClickDialog(dialogBooking: DialogBooking) {
+        _uiState.update {
+            it.copy(
+                bookingDetails = dialogBooking
+            )
+        }
+    }
+
+    fun updateBookingsCount(guardBookings: List<GuardBooking>) {
+        val currentBookings: MutableList<Bookings> = mutableListOf()
+        var bookingsCount = 0
         guardBookings.forEach {
 
             val bookings = it.bookings.filter { condition ->
@@ -134,20 +126,22 @@ class HomeViewModel @Inject constructor(
             }
 
             bookingsCount += bookings.size
-            currentBookings.add(Bookings(
-                playgroundName = it.playgroundName,
-                currentBookings = bookings
-            ))
+            currentBookings.add(
+                Bookings(
+                    playgroundName = it.playgroundName,
+                    currentBookings = bookings
+                )
+            )
         }
         _uiState.update {
             it.copy(
-                guardBookings= guardBookings,
+                guardBookings = guardBookings,
                 bookingListNum = bookingsCount,
                 bookings = currentBookings
-
             )
         }
     }
+
     fun review() {
         viewModelScope.launch {
             val localGuard = localGuardUseCases.getLocalGuard().first()

@@ -20,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.company.khomasiguard.R
 import com.company.khomasiguard.presentation.venues.components.TabItem
-import com.company.khomasiguard.presentation.venues.components.VenuesUiState
 import com.company.khomasiguard.theme.KhomasiGuardTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager

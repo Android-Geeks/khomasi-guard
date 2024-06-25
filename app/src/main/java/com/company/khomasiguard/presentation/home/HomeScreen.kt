@@ -15,7 +15,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,10 +39,8 @@ import com.company.khomasiguard.presentation.components.connectionStates.ThreeBo
 import com.company.khomasiguard.presentation.home.component.EmptyScreen
 import com.company.khomasiguard.presentation.home.component.TopCard
 import com.company.khomasiguard.theme.KhomasiGuardTheme
-import com.company.khomasiguard.util.extractDateFromTimestamp
 import com.company.khomasiguard.util.parseTimestamp
 import kotlinx.coroutines.flow.StateFlow
-import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +50,8 @@ fun HomeScreen(
     uiStateFlow: StateFlow<HomeUiState>,
     getHomeScreenBooking: () -> Unit,
     review: () -> Unit,
-){
+    onClickDialog: (DialogBooking) -> Unit
+) {
     val bookingPlaygrounds by responseState.collectAsStateWithLifecycle()
     var showLoading by remember { mutableStateOf(false) }
     var responseData by remember { mutableStateOf(listOf<Booking>()) }
@@ -67,8 +65,7 @@ fun HomeScreen(
             val guardBookings = successData.data.guardBookings
             if (guardBookings.size > 2) {
                 guardBookings[2].bookings
-            }
-            else {
+            } else {
                 emptyList()
             }
         } else {
@@ -87,8 +84,10 @@ fun HomeScreen(
     Column(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.background(MaterialTheme.colorScheme.background
-        )) {
+        modifier = Modifier.background(
+            MaterialTheme.colorScheme.background
+        )
+    ) {
         var openDialog by remember { mutableStateOf(false) }
         var isOpen by remember { mutableStateOf(false) }
         var isRate by remember { mutableStateOf(false) }
@@ -106,41 +105,39 @@ fun HomeScreen(
         }
 
         LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(top = 8.dp, start = 16.dp,end = 16.dp)
-            ) {
-                if (uiState.guardBookings.isNotEmpty()) {
-                    itemsIndexed(uiState.bookings) { _,item ->
-                        item.currentBookings.forEach {booking ->
-                            ShortBookingCard(
-                                bookingDetails = booking ,
-                                playgroundName = item.playgroundName,
-                                onClickViewBooking = {
-                                    booking.bookingNumber
-                                    openDialog = true
-                                },
-                                onClickCall = {}
-                            )
-                        }
-
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
+        ) {
+            if (uiState.guardBookings.isNotEmpty()) {
+                itemsIndexed(uiState.bookings) { _, item ->
+                    item.currentBookings.forEach { booking ->
+                        ShortBookingCard(
+                            bookingDetails = booking,
+                            playgroundName = item.playgroundName,
+                            onClickViewBooking = {
+                                onClickDialog(DialogBooking(item.playgroundName, booking))
+                                openDialog = true
+                            },
+                            onClickCall = {}
+                        )
                     }
-
                 }
-                else{
-                   item { EmptyScreen() }
-                }
-
+            } else {
+                item { EmptyScreen() }
             }
+
+        }
         if (openDialog) {
             Dialog(onDismissRequest = { openDialog = false }) {
                 BookingCardDetails(
-                    bookingDetails = uiState.bookingDetails,
+                    bookingDetails = uiState.bookingDetails.booking,
                     onClickCall = { },
-                    playgroundName = "",
-                    onClickCancelBooking ={
+                    playgroundName = uiState.bookingDetails.playgroundName,
+                    onClickCancelBooking = {
                         openDialog = false
-                        isOpen=true},
-                    status = if(uiState.date < LocalDateTime.now().dayOfMonth) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
+                        isOpen = true
+                    },
+                    status = if (parseTimestamp(uiState.bookingDetails.booking.bookingTime) < LocalDateTime.now()) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
                     toRate = {
                         openDialog = false
                         isRate = true
@@ -149,27 +146,27 @@ fun HomeScreen(
 
             }
         }
-        if (isOpen){
-           BottomSheetWarning(
-               sheetState = sheetState,
-               onDismissRequest = { isOpen=false },
-               userName = uiState.bookingDetails.userName,
-               onClickCancel = { },
-               mainTextId = R.string.confirm_cancel_booking,
-               subTextId = R.string.action_will_cancel_booking,
-               mainButtonTextId = R.string.cancel_booking,
-               subButtonTextId = R.string.back
-           )
+        if (isOpen) {
+            BottomSheetWarning(
+                sheetState = sheetState,
+                onDismissRequest = { isOpen = false },
+                userName = uiState.bookingDetails.booking.userName,
+                onClickCancel = { },
+                mainTextId = R.string.confirm_cancel_booking,
+                subTextId = R.string.action_will_cancel_booking,
+                mainButtonTextId = R.string.cancel_booking,
+                subButtonTextId = R.string.back
+            )
         }
-        if (isRate){
+        if (isRate) {
             UserRatingSheet(
-                bookingDetails = uiState.bookingDetails,
+                bookingDetails = uiState.bookingDetails.booking,
                 playgroundName = "",
                 sheetState = rateSheetState,
-                onDismissRequest = { isRate =false },
+                onDismissRequest = { isRate = false },
                 onClickButtonRate = {
                     isRate = false
-                     review()
+                    review()
                 }
             )
 
@@ -178,18 +175,19 @@ fun HomeScreen(
     }
 }
 
+
 @Preview(name = "light", uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(name = "dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun HomePreview() {
     KhomasiGuardTheme {
-        val mockViewModel : HomeMockViewModel = viewModel()
+        val mockViewModel: HomeMockViewModel = viewModel()
         HomeScreen(
-            uiStateFlow =mockViewModel.uiState,
+            uiStateFlow = mockViewModel.uiState,
             getHomeScreenBooking = {},
             review = mockViewModel::review,
             responseState = mockViewModel.responseState,
-
+            onClickDialog = {}
         )
     }
 }
