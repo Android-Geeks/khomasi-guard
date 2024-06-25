@@ -183,6 +183,7 @@ import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.presentation.booking.component.CalendarPager
 import com.company.khomasiguard.presentation.components.BookingCardDetails
+import com.company.khomasiguard.presentation.components.BookingCardStatus
 import com.company.khomasiguard.presentation.components.BottomSheetWarning
 import com.company.khomasiguard.presentation.components.SelectedFilter
 import com.company.khomasiguard.presentation.components.ShortBookingCard
@@ -191,6 +192,7 @@ import com.company.khomasiguard.presentation.components.UserRatingSheet
 import com.company.khomasiguard.presentation.home.component.EmptyScreen
 import com.company.khomasiguard.theme.KhomasiGuardTheme
 import kotlinx.coroutines.flow.StateFlow
+import org.threeten.bp.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -282,6 +284,7 @@ fun BookingScreen(
                     bookingDetails = uiState.bookingDetails,
                     onClickCall = { },
                     playgroundName = "",
+                    status = if(uiState.date < LocalDateTime.now().dayOfMonth) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
                     onClickCancelBooking ={
                         openDialog = false
                         isOpen=true

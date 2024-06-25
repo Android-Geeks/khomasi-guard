@@ -2,6 +2,8 @@ package com.company.khomasiguard.presentation.home
 
 import com.company.khomasiguard.domain.model.booking.Booking
 import com.company.khomasiguard.domain.model.booking.GuardBooking
+import org.threeten.bp.LocalDateTime
+
 data class HomeUiState(
     var guardBookings: List<GuardBooking> = listOf(),
     val date: Int=0,

@@ -11,6 +11,5 @@ class HomeMockViewModel: ViewModel() {
     val responseState: StateFlow<DataState<BookingsResponse>> = _responseState
     private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
-    fun getHomeScreenBooking(date:Int) {}
     fun review(){}
 }

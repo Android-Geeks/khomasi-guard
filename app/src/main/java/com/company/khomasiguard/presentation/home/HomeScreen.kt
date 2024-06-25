@@ -32,6 +32,7 @@ import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.model.booking.Booking
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.presentation.components.BookingCardDetails
+import com.company.khomasiguard.presentation.components.BookingCardStatus
 import com.company.khomasiguard.presentation.components.BottomSheetWarning
 import com.company.khomasiguard.presentation.components.ShortBookingCard
 import com.company.khomasiguard.presentation.components.UserRatingSheet
@@ -42,13 +43,15 @@ import com.company.khomasiguard.theme.KhomasiGuardTheme
 import com.company.khomasiguard.util.extractDateFromTimestamp
 import com.company.khomasiguard.util.parseTimestamp
 import kotlinx.coroutines.flow.StateFlow
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     responseState: StateFlow<DataState<BookingsResponse>>,
     uiStateFlow: StateFlow<HomeUiState>,
-    getHomeScreenBooking: (date: Int) -> Unit,
+    getHomeScreenBooking: () -> Unit,
     review: () -> Unit,
 ){
     val bookingPlaygrounds by responseState.collectAsStateWithLifecycle()
@@ -74,12 +77,12 @@ fun HomeScreen(
 
         Log.d("HomeScreenState", "HomeScreenState: $bookingPlaygrounds")
     }
-    val date = extractDateFromTimestamp(
-        parseTimestamp(uiState.date.toString()),
-        format = "dd MMMM yyyy"
-    )
-    LaunchedEffect(date) {
-        getHomeScreenBooking(date.toInt())
+//    val date = extractDateFromTimestamp(
+//        parseTimestamp(uiState.date.toString()),
+//        format = "dd MMMM yyyy"
+//    )
+    LaunchedEffect(Unit) {
+        getHomeScreenBooking()
     }
     Column(
         horizontalAlignment = Alignment.Start,
@@ -137,6 +140,7 @@ fun HomeScreen(
                     onClickCancelBooking ={
                         openDialog = false
                         isOpen=true},
+                    status = if(uiState.date < LocalDateTime.now().dayOfMonth) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
                     toRate = {
                         openDialog = false
                         isRate = true
@@ -165,7 +169,7 @@ fun HomeScreen(
                 onDismissRequest = { isRate =false },
                 onClickButtonRate = {
                     isRate = false
-                    // review()
+                     review()
                 }
             )
 
@@ -182,7 +186,7 @@ fun HomePreview() {
         val mockViewModel : HomeMockViewModel = viewModel()
         HomeScreen(
             uiStateFlow =mockViewModel.uiState,
-            getHomeScreenBooking = mockViewModel::getHomeScreenBooking,
+            getHomeScreenBooking = {},
             review = mockViewModel::review,
             responseState = mockViewModel.responseState,
 
