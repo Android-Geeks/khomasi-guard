@@ -60,21 +60,30 @@ class VenuesViewModel @Inject constructor(
         }
     }
 
-    fun cancel(playgroundId: Int) {
+    fun cancel(playgroundId: Int,isActive:Boolean) {
         viewModelScope.launch {
             localGuardUseCases.getLocalGuard().collect { guardData ->
                 remoteUseCases.playgroundStateUseCase(
                     token = "Bearer ${guardData.token}",
                     playgroundId = playgroundId,
-                    isActive = false
+                    isActive = isActive
                 ).collect {
                     when (it) {
                         is DataState.Success -> {
-                            _uiState.value = _uiState.value.copy(
-                                activated = _uiState.value.activated.filter { playground ->
-                                    playground.playgroundInfo.playground.id != playgroundId
-                                }
-                            )
+                            if (isActive){
+                                _uiState.value = _uiState.value.copy(
+                                    notActivated = _uiState.value.activated.filter { playground ->
+                                        playground.playgroundInfo.playground.id != playgroundId
+                                    }
+                                )
+                            }
+                            else{
+                                _uiState.value = _uiState.value.copy(
+                                    activated = _uiState.value.activated.filter { playground ->
+                                        playground.playgroundInfo.playground.id != playgroundId
+                                    }
+                                )
+                            }
                         }
                         is DataState.Error -> {
                             _uiState.value = _uiState.value.copy(

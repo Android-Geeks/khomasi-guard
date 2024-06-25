@@ -15,4 +15,6 @@ class MockVenuesViewModel :ViewModel(){
     private val _uiState: MutableStateFlow<VenuesUiState> = MutableStateFlow(VenuesUiState())
     val uiState: StateFlow<VenuesUiState> = _uiState
     fun getGuardPlaygrounds(){}
+    fun cancel(playgroundId: Int,isActive:Boolean){}
+
 }
