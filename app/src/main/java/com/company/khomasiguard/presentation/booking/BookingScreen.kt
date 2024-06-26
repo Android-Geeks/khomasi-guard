@@ -115,6 +115,8 @@ fun BookingScreen(
 
             if (uiState.isLoading) {
                 ThreeBounce(modifier = Modifier.fillMaxSize())
+            } else if (uiState.isEmpty) {
+                EmptyScreen()
             } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -135,10 +137,6 @@ fun BookingScreen(
                         }
                     }
                 }
-                else{
-                    item { EmptyScreen() }
-                }
-
             }
         }
         if (openDialog) {

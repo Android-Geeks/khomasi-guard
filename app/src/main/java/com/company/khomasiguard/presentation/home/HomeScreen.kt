@@ -74,7 +74,10 @@ fun HomeScreen(
 
         if (uiState.isLoading) {
             ThreeBounce(modifier = Modifier.fillMaxSize())
-        } else {
+        } else if(uiState.isEmpty){
+             EmptyScreen()
+        }
+        else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
@@ -93,8 +96,6 @@ fun HomeScreen(
                             )
                         }
                     }
-                } else {
-                    item { EmptyScreen() }
                 }
 
             }
@@ -145,6 +146,7 @@ fun HomeScreen(
 
         }
     }
+
 }
 @Preview(name = "light", uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Preview(name = "dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

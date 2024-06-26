@@ -50,7 +50,7 @@ class HomeViewModel @Inject constructor(
                         }
 
                         is DataState.Empty -> {
-                            _uiState.value = _uiState.value.copy(isLoading = false)
+                            _uiState.value = _uiState.value.copy(isEmpty = false)
                         }
 
                         is DataState.Loading -> {

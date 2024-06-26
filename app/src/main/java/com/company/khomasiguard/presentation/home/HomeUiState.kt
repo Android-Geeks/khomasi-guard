@@ -10,6 +10,7 @@ data class HomeUiState(
     val bookingListNum: Int = 0,
     val ratingValue: Int = 1,
     val isLoading: Boolean = false,
+    val isEmpty: Boolean = false,
     val errorMessage: String? = null,
     val bookingDetails: DialogBooking = DialogBooking("", Booking(
         bookingTime = "2024-05-05T04:15:00",

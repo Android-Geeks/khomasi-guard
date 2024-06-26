@@ -36,5 +36,6 @@ data class BookingUiState(
     val searchFilter: SelectedFilter = SelectedFilter.BOOKING_FIRST,
     val playgroundResults: List<Booking> = listOf(),
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isEmpty: Boolean = false,
     )
