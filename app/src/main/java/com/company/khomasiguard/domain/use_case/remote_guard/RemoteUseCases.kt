@@ -5,5 +5,6 @@ data class RemoteUseCases(
     val getGuardBookingsUseCase: GetGuardBookingsUseCase,
     val getGuardPlaygroundsUseCase: GetGuardPlaygroundsUseCase,
     val ratePlayerUseCase: RatePlayerUseCase,
-    val playgroundStateUseCase: PlaygroundStateUseCase
+    val playgroundStateUseCase: PlaygroundStateUseCase,
+    val cancelBookingUseCase: CancelBookingUseCase
 )

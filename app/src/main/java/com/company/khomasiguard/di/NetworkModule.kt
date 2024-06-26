@@ -73,8 +73,8 @@ object NetworkModule {
         getGuardBookingsUseCase = GetGuardBookingsUseCase(remoteGuardRepository),
         getGuardPlaygroundsUseCase = GetGuardPlaygroundsUseCase(remoteGuardRepository),
         ratePlayerUseCase = RatePlayerUseCase(remoteGuardRepository),
+        cancelBookingUseCase = CancelBookingUseCase(remoteGuardRepository),
         playgroundStateUseCase = PlaygroundStateUseCase(remoteGuardRepository)
-
     )
 
 }

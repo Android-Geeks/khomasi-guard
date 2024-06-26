@@ -43,10 +43,12 @@ import org.threeten.bp.LocalDateTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    review: () -> Unit,
     uiStateFlow: StateFlow<HomeUiState>,
     getHomeScreenBooking: () -> Unit,
-    review: () -> Unit,
-    onClickDialog: (DialogBooking) -> Unit
+    onClickDialog: (DialogBooking) -> Unit,
+    cancelBooking: (bookingId: Int) -> Unit,
+    onLogout: () -> Unit
 ) {
     val uiState = uiStateFlow.collectAsStateWithLifecycle().value
     LaunchedEffect(Unit) {
@@ -65,7 +67,7 @@ fun HomeScreen(
         val sheetState = rememberModalBottomSheetState()
         val rateSheetState = rememberModalBottomSheetState()
         val context = LocalContext.current
-        TopCard(uiStateFlow)
+        TopCard(uiStateFlow, onLogout)
         LaunchedEffect(uiState) {
             uiState.errorMessage?.let { message ->
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -121,7 +123,7 @@ fun HomeScreen(
                     sheetState = sheetState,
                     onDismissRequest = { isOpen = false },
                     userName = uiState.bookingDetails.booking.userName,
-                    onClickCancel = { },
+                    onClickCancel = { cancelBooking(uiState.bookingDetails.booking.bookingNumber) },
                     mainTextId = R.string.confirm_cancel_booking,
                     subTextId = R.string.action_will_cancel_booking,
                     mainButtonTextId = R.string.cancel_booking,
@@ -131,7 +133,7 @@ fun HomeScreen(
             if (isRate) {
                 UserRatingSheet(
                     bookingDetails = uiState.bookingDetails.booking,
-                    playgroundName = "",
+                    playgroundName = uiState.bookingDetails.playgroundName,
                     sheetState = rateSheetState,
                     onDismissRequest = { isRate = false },
                     onClickButtonRate = {
@@ -144,7 +146,6 @@ fun HomeScreen(
 
         }
     }
-
 }
 
 @Preview(name = "light", uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
@@ -157,7 +158,9 @@ fun HomePreview() {
             uiStateFlow = mockViewModel.uiState,
             getHomeScreenBooking = {},
             review = mockViewModel::review,
-            onClickDialog = {}
+            onClickDialog = {},
+            cancelBooking = {},
+            onLogout = {}
         )
     }
 }

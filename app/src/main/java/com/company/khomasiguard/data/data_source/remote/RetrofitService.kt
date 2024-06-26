@@ -46,4 +46,11 @@ interface RetrofitService {
         @Query("playgroundId") playgroundId: Int,
         @Query("isActive") isActive: Boolean
     ):Response<MessageResponse>
+
+    @PUT("Playground/cancel-booking")
+    suspend fun cancelBooking(
+        @Header("Authorization") token: String,
+        @Query("bookingID") bookingId: Int,
+        @Query("isUser") isUser :Boolean
+        ): Response<MessageResponse>
 }
