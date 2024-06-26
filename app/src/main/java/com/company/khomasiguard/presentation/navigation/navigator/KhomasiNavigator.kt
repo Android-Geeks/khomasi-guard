@@ -2,7 +2,6 @@ package com.company.khomasiguard.presentation.navigation.navigator
 
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.company.khomasiguard.navigation.Screens
@@ -15,7 +14,6 @@ import com.company.khomasiguard.presentation.venues.VenuesViewModel
 
 
 fun NavGraphBuilder.khomasiNavigator(
-    navController: NavHostController
 ) {
     navigation(
         route = Screens.KhomasiNavigation.route,
@@ -38,7 +36,6 @@ fun NavGraphBuilder.khomasiNavigator(
                 uiStateFlow = bookingViewModel.uiState,
                 getBooking = bookingViewModel::getBooking,
                 updateSelectedDay = bookingViewModel::updateSelectedDay,
-                responseStateFlow =bookingViewModel.responseState,
                 onSelectedFilterChanged = bookingViewModel::onSelectedFilterChanged
             )
         }

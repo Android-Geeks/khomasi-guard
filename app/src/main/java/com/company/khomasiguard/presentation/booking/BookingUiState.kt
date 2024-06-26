@@ -34,5 +34,7 @@ data class BookingUiState(
     ),
     var guardBookings: List<GuardBooking> = listOf(),
     val searchFilter: SelectedFilter = SelectedFilter.BOOKING_FIRST,
-    val playgroundResults: List<Booking> = listOf()
+    val playgroundResults: List<Booking> = listOf(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
     )

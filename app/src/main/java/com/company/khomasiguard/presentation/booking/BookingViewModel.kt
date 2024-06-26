@@ -21,10 +21,8 @@ class BookingViewModel @Inject constructor(
     private val localGuardUseCases: LocalGuardUseCases,
     private val remoteUseCases: RemoteUseCases
 ) : ViewModel() {
-
     private val _responseState: MutableStateFlow<DataState<BookingsResponse>> =
         MutableStateFlow(DataState.Empty)
-    val responseState: StateFlow<DataState<BookingsResponse>> = _responseState
     private val _uiState: MutableStateFlow<BookingUiState> = MutableStateFlow(BookingUiState())
     val uiState: StateFlow<BookingUiState> = _uiState
 
@@ -38,38 +36,48 @@ class BookingViewModel @Inject constructor(
                 ).collect { dataState ->
                     _responseState.value = dataState
                     Log.d("BookingResponse", "BookingResponse: $dataState")
-                    if (dataState is DataState.Success) {
-                        _uiState.update {
-                            it.copy(
-                                guardBookings = dataState.data.guardBookings
-                            )
-                        }
-                        dataState.data.guardBookings.forEach { guardBooking ->
+                    when (dataState) {
+                        is DataState.Success -> {
                             _uiState.update {
                                 it.copy(
-                                    guardBooking = guardBooking,
-                                    bookingListNum = guardBooking.bookingsCount,
-                                    bookingList = guardBooking.bookings,
+                                    guardBookings = dataState.data.guardBookings
                                 )
                             }
-                            guardBooking.bookings.forEach { booking ->
+                            dataState.data.guardBookings.forEach { guardBooking ->
                                 _uiState.update {
                                     it.copy(
-                                        bookingDetails = booking,
+                                        guardBooking = guardBooking,
+                                        bookingListNum = guardBooking.bookingsCount,
+                                        bookingList = guardBooking.bookings,
                                     )
+                                }
+                                guardBooking.bookings.forEach { booking ->
+                                    _uiState.update {
+                                        it.copy(
+                                            bookingDetails = booking,
+                                        )
+                                    }
                                 }
                             }
                         }
-                    } else if (dataState is DataState.Error) {
-                        Log.e(
-                            "BookingError",
-                            "Error code: ${dataState.code}, message: ${dataState.message}"
-                        )
+                        is DataState.Error -> {
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                errorMessage = "Error fetching playgrounds: ${dataState.message}"
+                            )
+                        }
+
+                        is DataState.Empty -> {
+                            _uiState.value = _uiState.value.copy(isLoading = false)
+                        }
+
+                        is DataState.Loading -> {
+                            _uiState.value = _uiState.value.copy(isLoading = true)
+                        }
                     }
                 }
             }
         }
-
     }
     fun updateSelectedDay(day: Int) {
         _uiState.update {

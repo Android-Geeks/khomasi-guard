@@ -55,7 +55,7 @@ fun CalendarPager(updateSelectedDay: (Int) -> Unit) {
 
     val currentDate = LocalDate.now()
     val currentDaysList = remember {
-        (-20..20).map { day -> (currentDate).plusDays(day.toLong()) }
+        (0..20).map { day -> (currentDate).plusDays(day.toLong()) }
     }
     val selectedMonth = remember { mutableStateOf(currentDaysList[0].month) }
     val selectedYear = remember { mutableIntStateOf(currentDate.year) }
