@@ -28,7 +28,6 @@ class HomeViewModel @Inject constructor(
 
     private val _reviewState: MutableStateFlow<DataState<RatingRequest>> =
         MutableStateFlow(DataState.Empty)
-    val reviewState: StateFlow<DataState<RatingRequest>> = _reviewState
     fun getHomeScreenBooking() {
         viewModelScope.launch() {
             localGuardUseCases.getLocalGuard().collect { guardData ->
@@ -63,6 +62,7 @@ class HomeViewModel @Inject constructor(
 
         }
     }
+
     fun onClickDialog(dialogBooking: DialogBooking) {
         _uiState.update {
             it.copy(
@@ -109,10 +109,23 @@ class HomeViewModel @Inject constructor(
                     guardId = guardID,
                     ratingValue = _uiState.value.ratingValue
                 )
-            ).collect {
+            ).collect { dataState ->
+                when (dataState) {
+                    is DataState.Success -> {
+                        _reviewState.update { it }
+                    }
+
+                    is DataState.Error -> {
+                        _uiState.value = _uiState.value.copy(
+                            errorMessage = "Error updating playground state: ${dataState.message}"
+                        )
+                    }
+
+                    else -> {}
+                }
             }
         }
-    }
 
+    }
 }
 
