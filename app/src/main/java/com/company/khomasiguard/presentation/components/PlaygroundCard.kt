@@ -250,7 +250,7 @@ fun PlaygroundCardPreview() {
                         name = "ZSC Playground",
                         feesForHour = 50,
                         address = "Nile Street, Zsc District, Cairo.",
-                        isBookable = true
+                        isBookable = false
                     ),
                     picture = ""
                 ),

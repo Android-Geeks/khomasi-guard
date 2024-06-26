@@ -9,6 +9,7 @@ import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,8 +37,10 @@ class VenuesViewModel @Inject constructor(
                                 playgroundName = playgrounds.forEach { playground ->
                                     playground.playgroundInfo.playground.name
                                 }.toString(),
-                                activated = playgrounds.filter { it.playgroundInfo.playground.isBookable },
-                                notActivated = playgrounds.filter { !it.playgroundInfo.playground.isBookable },
+                                activated = playgrounds.filter { it.playgroundInfo.playground.isBookable }
+                                    .toMutableList(),
+                                notActivated = playgrounds.filter { !it.playgroundInfo.playground.isBookable }
+                                    .toMutableList(),
                                 isLoading = false
                             )
                         }
@@ -59,7 +62,7 @@ class VenuesViewModel @Inject constructor(
         }
     }
 
-    fun cancel(playgroundId: Int,isActive:Boolean) {
+    fun cancel(playgroundId: Int, isActive: Boolean) {
         viewModelScope.launch {
             localGuardUseCases.getLocalGuard().collect { guardData ->
                 remoteUseCases.playgroundStateUseCase(
@@ -69,24 +72,43 @@ class VenuesViewModel @Inject constructor(
                 ).collect {
                     when (it) {
                         is DataState.Success -> {
-                            if (isActive){
-                                _uiState.value = _uiState.value.copy(
-                                    notActivated = _uiState.value.notActivated.filter { playground ->
-                                        playground.playgroundInfo.playground.id != playgroundId
+                            _uiState.update { currentState ->
+                                val updatedActivated = currentState.activated.toMutableList()
+                                val updatedNotActivated = currentState.notActivated.toMutableList()
+
+                                if (isActive) {
+                                    val deactivatedPlayground =
+                                        updatedNotActivated.find { playground ->
+                                            playground.playgroundInfo.playground.id == playgroundId
+                                        }
+                                    if (deactivatedPlayground != null) {
+                                        updatedNotActivated.remove(deactivatedPlayground)
+                                        updatedActivated.add(deactivatedPlayground.apply {
+                                            playgroundInfo.playground.isBookable = true
+                                        })
                                     }
-                                )
-                            }
-                            else{
-                                _uiState.value = _uiState.value.copy(
-                                    activated = _uiState.value.activated.filter { playground ->
-                                        playground.playgroundInfo.playground.id != playgroundId
+                                } else {
+                                    val activatedPlayground = updatedActivated.find { playground ->
+                                        playground.playgroundInfo.playground.id == playgroundId
                                     }
+                                    if (activatedPlayground != null) {
+                                        updatedActivated.remove(activatedPlayground)
+                                        updatedNotActivated.add(activatedPlayground.apply {
+                                            playgroundInfo.playground.isBookable = false
+                                        })
+                                    }
+                                }
+
+                                currentState.copy(
+                                    activated = updatedActivated,
+                                    notActivated = updatedNotActivated
                                 )
                             }
                         }
+
                         is DataState.Error -> {
                             _uiState.value = _uiState.value.copy(
-                                errorMessage = "Error deactivating playground: ${it.message}"
+                                errorMessage = "Error updating playground state: ${it.message}"
                             )
                         }
                         else -> {}
