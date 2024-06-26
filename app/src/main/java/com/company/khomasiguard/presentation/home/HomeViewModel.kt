@@ -1,6 +1,5 @@
 package com.company.khomasiguard.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
@@ -24,8 +23,6 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     private val _responseState: MutableStateFlow<DataState<BookingsResponse>> =
         MutableStateFlow(DataState.Empty)
-    val responseState: StateFlow<DataState<BookingsResponse>> = _responseState
-
     private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
 
@@ -38,76 +35,34 @@ class HomeViewModel @Inject constructor(
                 remoteUseCases.getGuardBookingsUseCase(
                     token = "Bearer ${guardData.token}",
                     guardID = guardData.guardID ?: "",
-                    // dayDiff =  LocalDateTime.now().dayOfMonth
                     dayDiff = 0
                 ).collect { dataState ->
                     _responseState.value = dataState
-                    Log.d("HomeBookingResponse", "HomeBookingResponse: $dataState")
-                    if (dataState is DataState.Success) {
-                        updateBookingsCount(dataState.data.guardBookings)
-//                        dataState.data.guardBookings.forEach { guardBooking ->
-//                            _uiState.update {
-//                                it.copy(
-//                                    guardBooking = guardBooking,
-//                                    bookingListNum = guardBooking.bookingsCount,
-//                                    bookingList = guardBooking.bookings,
-//
-//                                )
-//                            }
-//                            guardBooking.bookings.forEach { booking ->
-//                                _uiState.update {
-//                                    it.copy(
-//                                        bookingDetails = booking,
-//                                    )
-//                                }
-//                            }
-//                        }
-//                        _uiState.update {
-//                            it.copy(
-//                                guardBookings = dataState.data.guardBookings.forEach() {
-//                                    guardBooking -> guardBooking.bookings.filter {
-//                                        booking -> booking.isCanceled
-//                                    }
-//                                }
-//                            )
-//                        }
-//                        dataState.data.guardBookings.forEach { guardBooking ->
-//                            _uiState.update {
-//                                it.copy(
-//                                    guardBooking = guardBooking,
-//                                    bookingListNum = guardBooking.bookingsCount,
-//                                    bookingList = guardBooking.bookings,
-//                                )
-//                            }
-//                            guardBooking.bookings.forEach { booking ->
-//                                _uiState.update {
-//                                    it.copy(
-//                                        bookingDetails = booking,
-//                                    )
-//                                }
-//                            }
-//                        }
+                    when (dataState) {
+                        is DataState.Success -> {
+                            updateBookingsCount(dataState.data.guardBookings)
+                        }
 
-                    } else if (dataState is DataState.Error) {
-                        Log.e(
-                            "HomeBookingError",
-                            "Error code: ${dataState.code}, message: ${dataState.message}"
-                        )
+                        is DataState.Error -> {
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                errorMessage = "Error fetching playgrounds: ${dataState.message}"
+                            )
+                        }
+
+                        is DataState.Empty -> {
+                            _uiState.value = _uiState.value.copy(isLoading = false)
+                        }
+
+                        is DataState.Loading -> {
+                            _uiState.value = _uiState.value.copy(isLoading = true)
+                        }
                     }
                 }
             }
+
         }
-
     }
-
-//    fun updateBookingsCount(count:Int){
-//        _uiState.update {
-//            it.copy(
-//                bookingListNum = count
-//            )
-//        }
-//    }
-
     fun onClickDialog(dialogBooking: DialogBooking) {
         _uiState.update {
             it.copy(

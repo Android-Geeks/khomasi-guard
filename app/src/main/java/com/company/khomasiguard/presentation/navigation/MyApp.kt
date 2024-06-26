@@ -54,7 +54,7 @@ fun MyApp(
         ) {
 
             authNavigator(navController)
-            khomasiNavigator(navController)
+            khomasiNavigator()
         }
     }
 }
