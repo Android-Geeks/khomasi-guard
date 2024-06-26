@@ -39,17 +39,16 @@ import com.company.khomasiguard.presentation.components.LogoutBottomSheet
 import com.company.khomasiguard.presentation.home.HomeUiState
 import com.company.khomasiguard.theme.Cairo
 import com.company.khomasiguard.util.extractDateFromTimestamp
-import com.company.khomasiguard.util.parseTimestamp
 import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopCard(
     uiState: StateFlow<HomeUiState>,
-    onLogout :()->Unit
+    onLogout: () -> Unit
 ) {
     val state = uiState.collectAsStateWithLifecycle().value
-    val date = extractDateFromTimestamp(parseTimestamp(state.date), format = "dd MMMM yyyy")
+    val date = extractDateFromTimestamp(state.date, format = "dd MMMM yyyy")
     var isOpen by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -239,10 +238,10 @@ fun TopCard(
         color = MaterialTheme.colorScheme.onSurface
 
     )
-    if (isOpen){
+    if (isOpen) {
         LogoutBottomSheet(
             bottomSheetState = sheetState,
-            onDismissRequest = { isOpen= false},
+            onDismissRequest = { isOpen = false },
             scope = scope,
             logout = onLogout
         )

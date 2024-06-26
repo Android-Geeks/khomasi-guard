@@ -9,6 +9,7 @@ import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.GetGuardBookingsUseCase
 import com.company.khomasiguard.domain.use_case.remote_guard.GetGuardPlaygroundsUseCase
 import com.company.khomasiguard.domain.use_case.auth.LoginUseCase
+import com.company.khomasiguard.domain.use_case.remote_guard.CancelBookingUseCase
 import com.company.khomasiguard.domain.use_case.remote_guard.PlaygroundStateUseCase
 import com.company.khomasiguard.domain.use_case.remote_guard.RatePlayerUseCase
 import com.company.khomasiguard.util.BASE_URL
