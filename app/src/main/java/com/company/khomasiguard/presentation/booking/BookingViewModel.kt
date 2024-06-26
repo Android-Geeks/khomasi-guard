@@ -1,4 +1,3 @@
-
 package com.company.khomasiguard.presentation.booking
 
 import android.util.Log
@@ -27,7 +26,7 @@ class BookingViewModel @Inject constructor(
     val uiState: StateFlow<BookingUiState> = _uiState
 
     fun getBooking() {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             localGuardUseCases.getLocalGuard().collect { guardData ->
                 remoteUseCases.getGuardBookingsUseCase(
                     token = "Bearer ${guardData.token}",
@@ -38,6 +37,7 @@ class BookingViewModel @Inject constructor(
                     Log.d("BookingResponse", "BookingResponse: $dataState")
                     when (dataState) {
                         is DataState.Success -> {
+                            _uiState.value = _uiState.value.copy(isLoading = false)
                             _uiState.update {
                                 it.copy(
                                     guardBookings = dataState.data.guardBookings
@@ -60,25 +60,26 @@ class BookingViewModel @Inject constructor(
                                 }
                             }
                         }
+
                         is DataState.Error -> {
+                            _uiState.value = _uiState.value.copy(isLoading = false)
                             _uiState.value = _uiState.value.copy(
                                 isLoading = false,
                                 errorMessage = "Error fetching playgrounds: ${dataState.message}"
                             )
                         }
 
-                        is DataState.Empty -> {
-                            _uiState.value = _uiState.value.copy(isLoading = false)
-                        }
-
                         is DataState.Loading -> {
                             _uiState.value = _uiState.value.copy(isLoading = true)
                         }
+
+                        is DataState.Empty -> {}
                     }
                 }
             }
         }
     }
+
     fun updateSelectedDay(day: Int) {
         _uiState.update {
             it.copy(
@@ -87,14 +88,15 @@ class BookingViewModel @Inject constructor(
             )
         }
     }
+
     fun onSelectedFilterChanged(filter: SelectedFilter) {
         _uiState.value = _uiState.value.copy(
             searchFilter = filter,
-            playgroundResults =  when (filter) {
-                SelectedFilter.TOP_RATING -> _uiState.value.playgroundResults.sortedByDescending{ booking->booking.rating }
-                SelectedFilter.BOOKING_FIRST -> _uiState.value.playgroundResults.sortedBy {
-                    booking -> booking.bookingNumber
-                 }
+            playgroundResults = when (filter) {
+                SelectedFilter.TOP_RATING -> _uiState.value.playgroundResults.sortedByDescending { booking -> booking.rating }
+                SelectedFilter.BOOKING_FIRST -> _uiState.value.playgroundResults.sortedBy { booking ->
+                    booking.bookingNumber
+                }
             }
         )
     }

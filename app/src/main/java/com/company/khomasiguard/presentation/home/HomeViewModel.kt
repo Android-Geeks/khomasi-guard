@@ -28,8 +28,9 @@ class HomeViewModel @Inject constructor(
 
     private val _reviewState: MutableStateFlow<DataState<RatingRequest>> =
         MutableStateFlow(DataState.Empty)
+
     fun getHomeScreenBooking() {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             localGuardUseCases.getLocalGuard().collect { guardData ->
                 remoteUseCases.getGuardBookingsUseCase(
                     token = "Bearer ${guardData.token}",
@@ -39,23 +40,23 @@ class HomeViewModel @Inject constructor(
                     _responseState.value = dataState
                     when (dataState) {
                         is DataState.Success -> {
+                            _uiState.value = _uiState.value.copy(isLoading = false)
                             updateBookingsCount(dataState.data.guardBookings)
                         }
 
                         is DataState.Error -> {
+                            _uiState.value = _uiState.value.copy(isLoading = false)
                             _uiState.value = _uiState.value.copy(
                                 isLoading = false,
                                 errorMessage = "Error fetching playgrounds: ${dataState.message}"
                             )
                         }
 
-                        is DataState.Empty -> {
-                            _uiState.value = _uiState.value.copy(isEmpty = false)
-                        }
-
                         is DataState.Loading -> {
                             _uiState.value = _uiState.value.copy(isLoading = true)
                         }
+
+                        is DataState.Empty -> {}
                     }
                 }
             }
@@ -71,7 +72,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun updateBookingsCount(guardBookings: List<GuardBooking>) {
+    private fun updateBookingsCount(guardBookings: List<GuardBooking>) {
         val currentBookings: MutableList<Bookings> = mutableListOf()
         var bookingsCount = 0
         guardBookings.forEach {

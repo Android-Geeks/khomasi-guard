@@ -1,4 +1,3 @@
-
 package com.company.khomasiguard.presentation.booking
 
 import android.content.res.Configuration
@@ -61,7 +60,7 @@ fun BookingScreen(
     updateSelectedDay: (Int) -> Unit,
     onSelectedFilterChanged: (SelectedFilter) -> Unit,
 
-) {
+    ) {
     val uiState by uiStateFlow.collectAsStateWithLifecycle()
     var openDialog by remember { mutableStateOf(false) }
     var isOpen by remember { mutableStateOf(false) }
@@ -105,8 +104,8 @@ fun BookingScreen(
                 text = stringResource(R.string.bookings_today),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(top=22.dp, start = 16.dp, bottom = 12.dp)
-                )
+                modifier = Modifier.padding(top = 22.dp, start = 16.dp, bottom = 12.dp)
+            )
             LaunchedEffect(uiState) {
                 uiState.errorMessage?.let { message ->
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -115,78 +114,79 @@ fun BookingScreen(
 
             if (uiState.isLoading) {
                 ThreeBounce(modifier = Modifier.fillMaxSize())
-            } else if (uiState.isEmpty) {
-                EmptyScreen()
             } else {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
-            ) {
-                if (uiState.guardBookings.isNotEmpty()) {
-                    itemsIndexed(uiState.guardBookings) { _, item ->
-                        item.bookings.forEach { booking ->
-                            ShortBookingCard(
-                                bookingDetails = booking,
-                                playgroundName = item.playgroundName,
-                                onClickViewBooking = {
-                                    booking.bookingNumber
-                                    openDialog = true
-                                },
-                                onClickCall = {}
-                            )
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
+                ) {
+                    if (uiState.guardBookings.isNotEmpty()) {
+                        itemsIndexed(uiState.guardBookings) { _, item ->
+                            item.bookings.forEach { booking ->
+                                ShortBookingCard(
+                                    bookingDetails = booking,
+                                    playgroundName = item.playgroundName,
+                                    onClickViewBooking = {
+                                        booking.bookingNumber
+                                        openDialog = true
+                                    },
+                                    onClickCall = {}
+                                )
+                            }
                         }
+                    } else {
+                        item { EmptyScreen() }
                     }
                 }
             }
-        }
-        if (openDialog) {
-            Dialog(onDismissRequest = { openDialog = false }) {
-                BookingCardDetails(
+            if (openDialog) {
+                Dialog(onDismissRequest = { openDialog = false }) {
+                    BookingCardDetails(
+                        bookingDetails = uiState.bookingDetails,
+                        onClickCall = { },
+                        playgroundName = "",
+                        status = if (uiState.date < LocalDateTime.now().dayOfMonth) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
+                        onClickCancelBooking = {
+                            openDialog = false
+                            isOpen = true
+                        },
+                        toRate = {
+                            openDialog = false
+                            isRate = true
+                        }
+                    )
+
+                }
+            }
+            if (isOpen) {
+                BottomSheetWarning(
+                    sheetState = sheetState,
+                    onDismissRequest = { isOpen = false },
+                    userName = uiState.bookingDetails.userName,
+                    onClickCancel = { },
+                    mainTextId = R.string.confirm_cancel_booking,
+                    subTextId = R.string.action_will_cancel_booking,
+                    mainButtonTextId = R.string.cancel_booking,
+                    subButtonTextId = R.string.back
+                )
+            }
+            if (isRate) {
+                UserRatingSheet(
                     bookingDetails = uiState.bookingDetails,
-                    onClickCall = { },
                     playgroundName = "",
-                    status = if(uiState.date < LocalDateTime.now().dayOfMonth) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
-                    onClickCancelBooking ={
-                        openDialog = false
-                        isOpen=true
-                                          },
-                    toRate = {
-                        openDialog = false
-                        isRate = true
+                    sheetState = rateSheetState,
+                    onDismissRequest = { isRate = false },
+                    onClickButtonRate = {
+                        isRate = false
+                        // review()
                     }
                 )
 
             }
         }
-        if (isOpen){
-            BottomSheetWarning(
-                sheetState = sheetState,
-                onDismissRequest = { isOpen=false },
-                userName = uiState.bookingDetails.userName,
-                onClickCancel = { },
-                mainTextId = R.string.confirm_cancel_booking,
-                subTextId = R.string.action_will_cancel_booking,
-                mainButtonTextId = R.string.cancel_booking,
-                subButtonTextId = R.string.back
-            )
-        }
-        if (isRate){
-            UserRatingSheet(
-                bookingDetails = uiState.bookingDetails,
-                playgroundName = "",
-                sheetState = rateSheetState,
-                onDismissRequest = { isRate =false },
-                onClickButtonRate = {
-                    isRate = false
-                    // review()
-                }
-            )
-
-        }
-    }
     }
 
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
@@ -221,16 +221,16 @@ fun TopBar(
         colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.background)
     )
     if (isOpen) {
-    SortBookingsBottomSheet(
-        sheetState = sheetState,
-        onDismissRequest = { isOpen = false },
-        choice = choice,
-        onChoiceChange = {choice = it},
-        onSaveClicked = {
-            onSelectedFilterChanged
-            isOpen = false
-        }
-    )
+        SortBookingsBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = { isOpen = false },
+            choice = choice,
+            onChoiceChange = { choice = it },
+            onSaveClicked = {
+                onSelectedFilterChanged(it)
+                isOpen = false
+            }
+        )
     }
 
 }

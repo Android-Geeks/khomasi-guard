@@ -1,5 +1,7 @@
 package com.company.khomasiguard.presentation
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.use_case.app_entry.AppEntryUseCases
@@ -20,6 +22,9 @@ class MainViewModel @Inject constructor(
     private val _startDestination = MutableStateFlow(Screens.AuthNavigation.route)
     val startDestination: StateFlow<String> = _startDestination
 
+    private val _splashCondition = mutableStateOf(true)
+    val splashCondition: State<Boolean> = _splashCondition
+
     init {
         appEntryUseCases.readAppEntry().onEach { startingRoute ->
             when (startingRoute) {
@@ -29,6 +34,8 @@ class MainViewModel @Inject constructor(
                 else -> {
                     _startDestination.value = Screens.KhomasiNavigation.route}
             }
+            delay(300)
+            _splashCondition.value = false
         }.launchIn(viewModelScope)
     }
 }

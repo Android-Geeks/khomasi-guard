@@ -15,7 +15,6 @@ import com.company.khomasiguard.presentation.navigation.MyApp
 import com.company.khomasiguard.theme.KhomasiGuardTheme
 import com.company.khomasiguard.util.ConnectivityObserver
 import com.company.khomasiguard.util.NetworkConnectivityObserver
-import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,17 +24,15 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen()
+        installSplashScreen().setKeepOnScreenCondition(condition = { mainViewModel.splashCondition.value })
         enableEdgeToEdge()
         connectivityObserver = NetworkConnectivityObserver(applicationContext)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            AndroidThreeTen.init(this)
             val startDestination by mainViewModel.startDestination.collectAsStateWithLifecycle()
             val isNetworkAvailable by connectivityObserver.observe().collectAsStateWithLifecycle(
-                initialValue = ConnectivityObserver.Status.Unavailable
-
+                initialValue = ConnectivityObserver.Status.Available
             )
             KhomasiGuardTheme {
                 Surface {
@@ -44,7 +41,6 @@ class MainActivity : ComponentActivity() {
                         startDestination = startDestination,
                         isNetworkAvailable = isNetworkAvailable
                     )
-
                 }
             }
         }

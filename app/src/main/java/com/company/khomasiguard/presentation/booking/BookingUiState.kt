@@ -9,7 +9,7 @@ import org.threeten.bp.LocalDateTime
 data class BookingUiState(
     val selectedDay: Int = 0,
     val selectedSlots: MutableList<Pair<LocalDateTime, LocalDateTime>> = mutableListOf(),
-    val bookingDetails :Booking = Booking(
+    val bookingDetails: Booking = Booking(
         bookingTime = "2024-05-05T04:15:00",
         userName = "userName",
         profilePicture = "profilePicture",
@@ -22,10 +22,10 @@ data class BookingUiState(
         isCanceled = false,
         duration = 47.0
     ),
-    val bookingList:List<Booking> = listOf(),
-    val date: Int=0,
+    val bookingList: List<Booking> = listOf(),
+    val date: Int = 0,
     val bookingListNum: Int = 1,
-    val ratingValue: Int= 1,
+    val ratingValue: Int = 1,
     val guardBooking: GuardBooking = GuardBooking(
         playgroundId = 1,
         bookingsCount = 0,
@@ -35,7 +35,6 @@ data class BookingUiState(
     var guardBookings: List<GuardBooking> = listOf(),
     val searchFilter: SelectedFilter = SelectedFilter.BOOKING_FIRST,
     val playgroundResults: List<Booking> = listOf(),
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val errorMessage: String? = null,
-    val isEmpty: Boolean = false,
-    )
+)
