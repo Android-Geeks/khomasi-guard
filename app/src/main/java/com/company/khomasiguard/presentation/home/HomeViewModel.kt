@@ -117,13 +117,18 @@ class HomeViewModel @Inject constructor(
             ).collect { dataState ->
                 when (dataState) {
                     is DataState.Success -> {
-                        _reviewState.update { it }
+                        _uiState.update {
+                            it.copy(
+                                rateMessage = dataState.data.message
+                            )
+                        }
                     }
-
                     is DataState.Error -> {
-                        _uiState.value = _uiState.value.copy(
-                            errorMessage = "Error updating playground state: ${dataState.message}"
-                        )
+                        _uiState.update {
+                            it.copy(
+                                errorMessage = "Error updating playground state: ${dataState.message}"
+                            )
+                        }
                     }
 
                     else -> {}
@@ -132,6 +137,17 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onCancel(id: Int) {
+        _uiState.update {
+            it.copy(
+                guardBookings = it.guardBookings.filterNot { guardBooking ->
+                    guardBooking.bookings.any { booking ->
+                        booking.bookingNumber == id
+                    }
+                }
+            )
+        }
+    }
     fun cancelBooking(bookingId: Int) {
         viewModelScope.launch {
             localGuardUseCases.getLocalGuard().collect { guardData ->
@@ -139,7 +155,27 @@ class HomeViewModel @Inject constructor(
                     token = "Bearer ${guardData.token}",
                     bookingId = bookingId,
                     isUser = false
-                ).collect {}
+                ).collect { dataState ->
+                    when (dataState) {
+                        is DataState.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    cancelMessage = dataState.data.message
+                                )
+                            }
+                        }
+
+                        is DataState.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    errorMessage = "Error updating playground state: ${dataState.message}"
+                                )
+                            }
+                        }
+
+                        else -> {}
+                    }
+                }
 
             }
         }

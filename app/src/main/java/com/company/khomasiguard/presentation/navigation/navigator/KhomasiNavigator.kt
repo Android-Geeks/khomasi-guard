@@ -27,7 +27,8 @@ fun NavGraphBuilder.khomasiNavigator(
                 review = homeViewModel::review,
                 cancelBooking = homeViewModel::cancelBooking,
                 onLogout = homeViewModel::onLogout,
-                onClickDialog = homeViewModel::onClickDialog
+                onClickDialog = homeViewModel::onClickDialog,
+                onCancel = homeViewModel::onCancel
             )
 
         }
@@ -37,7 +38,10 @@ fun NavGraphBuilder.khomasiNavigator(
                 uiStateFlow = bookingViewModel.uiState,
                 getBooking = bookingViewModel::getBooking,
                 updateSelectedDay = bookingViewModel::updateSelectedDay,
-                onSelectedFilterChanged = bookingViewModel::onSelectedFilterChanged
+                onSelectedFilterChanged = bookingViewModel::onSelectedFilterChanged,
+                review = bookingViewModel::review,
+                cancelBooking = bookingViewModel::cancelBooking,
+                onCancel = bookingViewModel::onCancel
             )
         }
 

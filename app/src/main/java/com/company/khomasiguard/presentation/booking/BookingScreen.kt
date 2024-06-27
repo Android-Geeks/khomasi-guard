@@ -59,6 +59,9 @@ fun BookingScreen(
     getBooking: () -> Unit,
     updateSelectedDay: (Int) -> Unit,
     onSelectedFilterChanged: (SelectedFilter) -> Unit,
+    review: () -> Unit,
+    cancelBooking: (bookingId: Int) -> Unit,
+    onCancel:(id: Int) ->Unit
 
     ) {
     val uiState by uiStateFlow.collectAsStateWithLifecycle()
@@ -162,7 +165,13 @@ fun BookingScreen(
                     sheetState = sheetState,
                     onDismissRequest = { isOpen = false },
                     userName = uiState.bookingDetails.userName,
-                    onClickCancel = { },
+                    onClickCancel = {
+                        cancelBooking(uiState.bookingDetails.bookingNumber)
+                        onCancel(uiState.bookingDetails.bookingNumber)
+//                        uiState.cancelMessage?.let { message ->
+//                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+//                        }
+                                    },
                     mainTextId = R.string.confirm_cancel_booking,
                     subTextId = R.string.action_will_cancel_booking,
                     mainButtonTextId = R.string.cancel_booking,
@@ -177,7 +186,10 @@ fun BookingScreen(
                     onDismissRequest = { isRate = false },
                     onClickButtonRate = {
                         isRate = false
-                        // review()
+                         review()
+//                        uiState.rateMessage?.let { message ->
+//                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+//                        }
                     }
                 )
 
@@ -245,7 +257,10 @@ fun BookingScreenPreview() {
             uiStateFlow = mockViewModel.uiState,
             getBooking = mockViewModel::getBooking,
             updateSelectedDay = {},
-            onSelectedFilterChanged = {}
+            onSelectedFilterChanged = {},
+            review = {},
+            cancelBooking = {},
+            onCancel = {}
         )
     }
 }

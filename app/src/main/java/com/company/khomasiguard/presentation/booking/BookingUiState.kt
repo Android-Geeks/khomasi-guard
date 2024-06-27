@@ -37,4 +37,6 @@ data class BookingUiState(
     val playgroundResults: List<Booking> = listOf(),
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
+    val rateMessage: String? = null,
+    val cancelMessage: String? = null,
 )

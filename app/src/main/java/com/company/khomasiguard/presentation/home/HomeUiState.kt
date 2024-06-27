@@ -11,6 +11,8 @@ data class HomeUiState(
     val ratingValue: Int = 1,
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
+    val rateMessage: String? = null,
+    val cancelMessage: String? = null,
     val bookingDetails: DialogBooking = DialogBooking("", Booking(
         bookingTime = "2024-05-05T04:15:00",
         userName = "userName",

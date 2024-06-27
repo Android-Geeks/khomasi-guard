@@ -48,7 +48,8 @@ fun HomeScreen(
     getHomeScreenBooking: () -> Unit,
     onClickDialog: (DialogBooking) -> Unit,
     cancelBooking: (bookingId: Int) -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onCancel:(id: Int) ->Unit
 ) {
     val uiState = uiStateFlow.collectAsStateWithLifecycle().value
     LaunchedEffect(Unit) {
@@ -123,7 +124,13 @@ fun HomeScreen(
                     sheetState = sheetState,
                     onDismissRequest = { isOpen = false },
                     userName = uiState.bookingDetails.booking.userName,
-                    onClickCancel = { cancelBooking(uiState.bookingDetails.booking.bookingNumber) },
+                    onClickCancel = {
+                        cancelBooking(uiState.bookingDetails.booking.bookingNumber)
+                        onCancel(uiState.bookingDetails.booking.bookingNumber)
+                        uiState.cancelMessage?.let { message ->
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        }
+                                    },
                     mainTextId = R.string.confirm_cancel_booking,
                     subTextId = R.string.action_will_cancel_booking,
                     mainButtonTextId = R.string.cancel_booking,
@@ -139,6 +146,9 @@ fun HomeScreen(
                     onClickButtonRate = {
                         isRate = false
                         review()
+                        uiState.rateMessage?.let { message ->
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 )
 
@@ -160,7 +170,8 @@ fun HomePreview() {
             review = mockViewModel::review,
             onClickDialog = {},
             cancelBooking = {},
-            onLogout = {}
+            onLogout = {},
+            onCancel = {}
         )
     }
 }

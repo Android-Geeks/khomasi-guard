@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
+import com.company.khomasiguard.domain.model.RatingRequest
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
@@ -11,6 +12,7 @@ import com.company.khomasiguard.presentation.components.SelectedFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -99,5 +101,82 @@ class BookingViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    fun review() {
+        viewModelScope.launch {
+            val localGuard = localGuardUseCases.getLocalGuard().first()
+            val token = localGuard.token ?: ""
+            val guardID = localGuard.guardID ?: ""
+            remoteUseCases.ratePlayerUseCase(
+                token = "Bearer $token",
+                guardRating = RatingRequest(
+                    userEmail = "user26@example.com",
+                    guardId = guardID,
+                    ratingValue = _uiState.value.ratingValue
+                )
+            ).collect { dataState ->
+                when (dataState) {
+                    is DataState.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                rateMessage = dataState.data.message
+                            )
+                        }
+                    }
+                    is DataState.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                errorMessage = "Error updating playground state: ${dataState.message}"
+                            )
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+    fun onCancel(id: Int) {
+        _uiState.update {
+            it.copy(
+                guardBookings = it.guardBookings.filterNot { guardBooking ->
+                    guardBooking.bookings.any { booking ->
+                        booking.bookingNumber == id
+                    }
+                }
+            )
+        }
+    }
+    fun cancelBooking(bookingId: Int) {
+        viewModelScope.launch {
+            localGuardUseCases.getLocalGuard().collect { guardData ->
+                remoteUseCases.cancelBookingUseCase(
+                    token = "Bearer ${guardData.token}",
+                    bookingId = bookingId,
+                    isUser = false
+                ).collect {dataState ->
+                    when (dataState) {
+                        is DataState.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    cancelMessage = dataState.data.message
+                                )
+                            }
+                        }
+                        is DataState.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    errorMessage = "Error updating playground state: ${dataState.message}"
+                                )
+                            }
+                        }
+
+                        else -> {}
+                    }
+                }
+
+            }
+        }
     }
 }
