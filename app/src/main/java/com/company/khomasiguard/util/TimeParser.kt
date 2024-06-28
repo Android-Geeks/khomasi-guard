@@ -1,5 +1,6 @@
 package com.company.khomasiguard.util
 
+import android.util.Log
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
@@ -9,6 +10,11 @@ import java.time.ZoneId
 import java.util.Date
 
 fun parseTimestamp(timestamp: String): LocalDateTime {
+    Log.d(
+        "Timing", "Timestamp: ${
+            LocalDateTime.parse(timestamp, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        } Now: ${LocalDateTime.now()}"
+    )
     return if (timestamp.isNotEmpty()) {
         LocalDateTime.parse(timestamp, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
     } else {

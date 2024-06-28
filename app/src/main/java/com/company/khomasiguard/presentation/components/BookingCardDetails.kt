@@ -124,7 +124,7 @@ fun BookingCardDetails(
                         onClick = onClickCancelBooking,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(top = 6.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
                     )
                 }
 

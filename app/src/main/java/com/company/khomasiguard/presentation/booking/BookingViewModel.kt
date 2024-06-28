@@ -6,9 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.model.RatingRequest
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
+import com.company.khomasiguard.domain.model.booking.GuardBooking
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
-import com.company.khomasiguard.presentation.components.SelectedFilter
+import com.company.khomasiguard.presentation.home.Bookings
+import com.company.khomasiguard.presentation.home.DialogBooking
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,27 +42,7 @@ class BookingViewModel @Inject constructor(
                     when (dataState) {
                         is DataState.Success -> {
                             _uiState.value = _uiState.value.copy(isLoading = false)
-                            _uiState.update {
-                                it.copy(
-                                    guardBookings = dataState.data.guardBookings
-                                )
-                            }
-                            dataState.data.guardBookings.forEach { guardBooking ->
-                                _uiState.update {
-                                    it.copy(
-                                        guardBooking = guardBooking,
-                                        bookingListNum = guardBooking.bookingsCount,
-                                        bookingList = guardBooking.bookings,
-                                    )
-                                }
-                                guardBooking.bookings.forEach { booking ->
-                                    _uiState.update {
-                                        it.copy(
-                                            bookingDetails = booking,
-                                        )
-                                    }
-                                }
-                            }
+                            updateBookingsCount(dataState.data.guardBookings)
                         }
 
                         is DataState.Error -> {
@@ -82,6 +64,41 @@ class BookingViewModel @Inject constructor(
         }
     }
 
+    fun onClickDialog(dialogBooking: DialogBooking) {
+        _uiState.update {
+            it.copy(
+                dialogBooking = dialogBooking
+            )
+        }
+    }
+
+    private fun updateBookingsCount(guardBookings: List<GuardBooking>) {
+        val currentBookings: MutableList<Bookings> = mutableListOf()
+        var bookingsCount = 0
+        guardBookings.forEach {
+
+            val bookings = it.bookings.filter { condition ->
+                !condition.isCanceled
+            }
+
+            bookingsCount += bookings.size
+            bookings.forEach { booking ->
+                currentBookings.add(
+                    Bookings(
+                        playgroundName = it.playgroundName,
+                        bookingDetails = booking
+                    )
+                )
+            }
+        }
+        _uiState.update {
+            it.copy(
+                bookingListNum = bookingsCount,
+                bookings = currentBookings
+            )
+        }
+    }
+
     fun updateSelectedDay(day: Int) {
         _uiState.update {
             it.copy(
@@ -91,17 +108,6 @@ class BookingViewModel @Inject constructor(
         }
     }
 
-    fun onSelectedFilterChanged(filter: SelectedFilter) {
-        _uiState.value = _uiState.value.copy(
-            searchFilter = filter,
-            playgroundResults = when (filter) {
-                SelectedFilter.TOP_RATING -> _uiState.value.playgroundResults.sortedByDescending { booking -> booking.rating }
-                SelectedFilter.BOOKING_FIRST -> _uiState.value.playgroundResults.sortedBy { booking ->
-                    booking.bookingNumber
-                }
-            }
-        )
-    }
 
     fun review() {
         viewModelScope.launch {
@@ -124,6 +130,7 @@ class BookingViewModel @Inject constructor(
                             )
                         }
                     }
+
                     is DataState.Error -> {
                         _uiState.update {
                             it.copy(
@@ -137,25 +144,23 @@ class BookingViewModel @Inject constructor(
             }
         }
     }
-    fun onCancel(id: Int) {
+
+
+    fun cancelBooking(bookingId: Int) {
         _uiState.update {
             it.copy(
-                guardBookings = it.guardBookings.filterNot { guardBooking ->
-                    guardBooking.bookings.any { booking ->
-                        booking.bookingNumber == id
-                    }
+                bookings = _uiState.value.bookings.filterNot { booking ->
+                    booking.bookingDetails.bookingNumber == bookingId
                 }
             )
         }
-    }
-    fun cancelBooking(bookingId: Int) {
         viewModelScope.launch {
             localGuardUseCases.getLocalGuard().collect { guardData ->
                 remoteUseCases.cancelBookingUseCase(
                     token = "Bearer ${guardData.token}",
                     bookingId = bookingId,
                     isUser = false
-                ).collect {dataState ->
+                ).collect { dataState ->
                     when (dataState) {
                         is DataState.Success -> {
                             _uiState.update {
@@ -164,6 +169,7 @@ class BookingViewModel @Inject constructor(
                                 )
                             }
                         }
+
                         is DataState.Error -> {
                             _uiState.update {
                                 it.copy(
@@ -175,7 +181,6 @@ class BookingViewModel @Inject constructor(
                         else -> {}
                     }
                 }
-
             }
         }
     }

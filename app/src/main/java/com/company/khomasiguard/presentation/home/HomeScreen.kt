@@ -1,14 +1,13 @@
 package com.company.khomasiguard.presentation.home
 
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -20,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -49,7 +47,6 @@ fun HomeScreen(
     onClickDialog: (DialogBooking) -> Unit,
     cancelBooking: (bookingId: Int) -> Unit,
     onLogout: () -> Unit,
-    onCancel:(id: Int) ->Unit
 ) {
     val uiState = uiStateFlow.collectAsStateWithLifecycle().value
     LaunchedEffect(Unit) {
@@ -67,13 +64,8 @@ fun HomeScreen(
         var isRate by remember { mutableStateOf(false) }
         val sheetState = rememberModalBottomSheetState()
         val rateSheetState = rememberModalBottomSheetState()
-        val context = LocalContext.current
+
         TopCard(uiStateFlow, onLogout)
-        LaunchedEffect(uiState) {
-            uiState.errorMessage?.let { message ->
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-            }
-        }
 
         if (uiState.isLoading) {
             ThreeBounce(modifier = Modifier.fillMaxSize())
@@ -82,19 +74,23 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
             ) {
-                if (uiState.guardBookings.isNotEmpty()) {
-                    itemsIndexed(uiState.bookings) { _, item ->
-                        item.currentBookings.forEach { booking ->
-                            ShortBookingCard(
-                                bookingDetails = booking,
-                                playgroundName = item.playgroundName,
-                                onClickViewBooking = {
-                                    onClickDialog(DialogBooking(item.playgroundName, booking))
-                                    openDialog = true
-                                },
-                                onClickCall = {}
-                            )
-                        }
+                if (uiState.bookings.isNotEmpty()) {
+                    items(uiState.bookings, key = { it.bookingDetails.bookingNumber }) { item ->
+                        ShortBookingCard(
+                            bookingDetails = item.bookingDetails,
+                            playgroundName = item.playgroundName,
+                            onClickViewBooking = {
+                                onClickDialog(
+                                    DialogBooking(
+                                        item.playgroundName,
+                                        item.bookingDetails
+                                    )
+                                )
+                                openDialog = true
+                            },
+                            onClickCall = {}
+                        )
+
                     }
                 } else {
                     item { EmptyScreen() }
@@ -103,14 +99,14 @@ fun HomeScreen(
             if (openDialog) {
                 Dialog(onDismissRequest = { openDialog = false }) {
                     BookingCardDetails(
-                        bookingDetails = uiState.bookingDetails.booking,
+                        bookingDetails = uiState.dialogDetails.booking,
                         onClickCall = { },
-                        playgroundName = uiState.bookingDetails.playgroundName,
+                        playgroundName = uiState.dialogDetails.playgroundName,
                         onClickCancelBooking = {
                             openDialog = false
                             isOpen = true
                         },
-                        status = if (parseTimestamp(uiState.bookingDetails.booking.bookingTime) < LocalDateTime.now()) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
+                        status = if (parseTimestamp(uiState.dialogDetails.booking.bookingTime) > LocalDateTime.now()) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
                         toRate = {
                             openDialog = false
                             isRate = true
@@ -123,14 +119,11 @@ fun HomeScreen(
                 BottomSheetWarning(
                     sheetState = sheetState,
                     onDismissRequest = { isOpen = false },
-                    userName = uiState.bookingDetails.booking.userName,
+                    userName = uiState.dialogDetails.booking.userName,
                     onClickCancel = {
-                        cancelBooking(uiState.bookingDetails.booking.bookingNumber)
-                        onCancel(uiState.bookingDetails.booking.bookingNumber)
-                        uiState.cancelMessage?.let { message ->
-                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                        }
-                                    },
+                        isOpen = false
+                        cancelBooking(uiState.dialogDetails.booking.bookingNumber)
+                    },
                     mainTextId = R.string.confirm_cancel_booking,
                     subTextId = R.string.action_will_cancel_booking,
                     mainButtonTextId = R.string.cancel_booking,
@@ -139,16 +132,13 @@ fun HomeScreen(
             }
             if (isRate) {
                 UserRatingSheet(
-                    bookingDetails = uiState.bookingDetails.booking,
-                    playgroundName = uiState.bookingDetails.playgroundName,
+                    bookingDetails = uiState.dialogDetails.booking,
+                    playgroundName = uiState.dialogDetails.playgroundName,
                     sheetState = rateSheetState,
                     onDismissRequest = { isRate = false },
                     onClickButtonRate = {
                         isRate = false
                         review()
-                        uiState.rateMessage?.let { message ->
-                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                        }
                     }
                 )
 
@@ -171,7 +161,6 @@ fun HomePreview() {
             onClickDialog = {},
             cancelBooking = {},
             onLogout = {},
-            onCancel = {}
         )
     }
 }

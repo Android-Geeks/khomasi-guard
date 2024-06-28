@@ -71,7 +71,7 @@ class HomeViewModel @Inject constructor(
     fun onClickDialog(dialogBooking: DialogBooking) {
         _uiState.update {
             it.copy(
-                bookingDetails = dialogBooking
+                dialogDetails = dialogBooking
             )
         }
     }
@@ -86,16 +86,17 @@ class HomeViewModel @Inject constructor(
             }
 
             bookingsCount += bookings.size
-            currentBookings.add(
-                Bookings(
-                    playgroundName = it.playgroundName,
-                    currentBookings = bookings
+            bookings.forEach { booking ->
+                currentBookings.add(
+                    Bookings(
+                        playgroundName = it.playgroundName,
+                        bookingDetails = booking
+                    )
                 )
-            )
+            }
         }
         _uiState.update {
             it.copy(
-                guardBookings = guardBookings,
                 bookingListNum = bookingsCount,
                 bookings = currentBookings
             )
@@ -123,6 +124,7 @@ class HomeViewModel @Inject constructor(
                             )
                         }
                     }
+
                     is DataState.Error -> {
                         _uiState.update {
                             it.copy(
@@ -137,18 +139,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onCancel(id: Int) {
+    fun cancelBooking(bookingId: Int) {
         _uiState.update {
             it.copy(
-                guardBookings = it.guardBookings.filterNot { guardBooking ->
-                    guardBooking.bookings.any { booking ->
-                        booking.bookingNumber == id
-                    }
+                bookings = _uiState.value.bookings.filterNot { booking ->
+                    booking.bookingDetails.bookingNumber == bookingId
                 }
             )
         }
-    }
-    fun cancelBooking(bookingId: Int) {
         viewModelScope.launch {
             localGuardUseCases.getLocalGuard().collect { guardData ->
                 remoteUseCases.cancelBookingUseCase(
@@ -176,10 +174,10 @@ class HomeViewModel @Inject constructor(
                         else -> {}
                     }
                 }
-
             }
         }
     }
+
     fun onLogout() {
         viewModelScope.launch(Dispatchers.IO) {
             appEntryUseCases.saveIsLogin(false)

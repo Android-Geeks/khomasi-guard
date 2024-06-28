@@ -1,7 +1,6 @@
 package com.company.khomasiguard.presentation.booking
 
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,11 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,14 +20,11 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,13 +36,13 @@ import com.company.khomasiguard.presentation.booking.component.CalendarPager
 import com.company.khomasiguard.presentation.components.BookingCardDetails
 import com.company.khomasiguard.presentation.components.BookingCardStatus
 import com.company.khomasiguard.presentation.components.BottomSheetWarning
-import com.company.khomasiguard.presentation.components.SelectedFilter
 import com.company.khomasiguard.presentation.components.ShortBookingCard
-import com.company.khomasiguard.presentation.components.SortBookingsBottomSheet
 import com.company.khomasiguard.presentation.components.UserRatingSheet
 import com.company.khomasiguard.presentation.components.connectionStates.ThreeBounce
+import com.company.khomasiguard.presentation.home.DialogBooking
 import com.company.khomasiguard.presentation.home.component.EmptyScreen
 import com.company.khomasiguard.theme.KhomasiGuardTheme
+import com.company.khomasiguard.util.parseTimestamp
 import kotlinx.coroutines.flow.StateFlow
 import org.threeten.bp.LocalDateTime
 
@@ -58,19 +52,16 @@ fun BookingScreen(
     uiStateFlow: StateFlow<BookingUiState>,
     getBooking: () -> Unit,
     updateSelectedDay: (Int) -> Unit,
-    onSelectedFilterChanged: (SelectedFilter) -> Unit,
     review: () -> Unit,
-    cancelBooking: (bookingId: Int) -> Unit,
-    onCancel:(id: Int) ->Unit
-
-    ) {
+    cancelBooking: (Int) -> Unit,
+    onClickDialog: (DialogBooking) -> Unit,
+) {
     val uiState by uiStateFlow.collectAsStateWithLifecycle()
     var openDialog by remember { mutableStateOf(false) }
     var isOpen by remember { mutableStateOf(false) }
     var isRate by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     val rateSheetState = rememberModalBottomSheetState()
-    val context = LocalContext.current
 
     LaunchedEffect(uiState.selectedDay) {
         getBooking()
@@ -79,7 +70,7 @@ fun BookingScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        topBar = { TopBar(onSelectedFilterChanged) },
+        topBar = { TopBar() },
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -109,11 +100,7 @@ fun BookingScreen(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 22.dp, start = 16.dp, bottom = 12.dp)
             )
-            LaunchedEffect(uiState) {
-                uiState.errorMessage?.let { message ->
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                }
-            }
+
 
             if (uiState.isLoading) {
                 ThreeBounce(modifier = Modifier.fillMaxSize())
@@ -122,19 +109,23 @@ fun BookingScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
                 ) {
-                    if (uiState.guardBookings.isNotEmpty()) {
-                        itemsIndexed(uiState.guardBookings) { _, item ->
-                            item.bookings.forEach { booking ->
-                                ShortBookingCard(
-                                    bookingDetails = booking,
-                                    playgroundName = item.playgroundName,
-                                    onClickViewBooking = {
-                                        booking.bookingNumber
-                                        openDialog = true
-                                    },
-                                    onClickCall = {}
-                                )
-                            }
+                    if (uiState.bookings.isNotEmpty()) {
+                        items(uiState.bookings, key = { it.bookingDetails.bookingNumber }) { item ->
+                            ShortBookingCard(
+                                bookingDetails = item.bookingDetails,
+                                playgroundName = item.playgroundName,
+                                onClickViewBooking = {
+                                    onClickDialog(
+                                        DialogBooking(
+                                            item.playgroundName,
+                                            item.bookingDetails
+                                        )
+                                    )
+                                    openDialog = true
+                                },
+                                onClickCall = {}
+                            )
+
                         }
                     } else {
                         item { EmptyScreen() }
@@ -144,10 +135,10 @@ fun BookingScreen(
             if (openDialog) {
                 Dialog(onDismissRequest = { openDialog = false }) {
                     BookingCardDetails(
-                        bookingDetails = uiState.bookingDetails,
+                        bookingDetails = uiState.dialogBooking.booking,
                         onClickCall = { },
-                        playgroundName = "",
-                        status = if (uiState.date < LocalDateTime.now().dayOfMonth) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
+                        playgroundName = uiState.dialogBooking.playgroundName,
+                        status = if (parseTimestamp(uiState.dialogBooking.booking.bookingTime) > LocalDateTime.now()) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
                         onClickCancelBooking = {
                             openDialog = false
                             isOpen = true
@@ -164,14 +155,11 @@ fun BookingScreen(
                 BottomSheetWarning(
                     sheetState = sheetState,
                     onDismissRequest = { isOpen = false },
-                    userName = uiState.bookingDetails.userName,
+                    userName = uiState.dialogBooking.booking.userName,
                     onClickCancel = {
-                        cancelBooking(uiState.bookingDetails.bookingNumber)
-                        onCancel(uiState.bookingDetails.bookingNumber)
-//                        uiState.cancelMessage?.let { message ->
-//                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-//                        }
-                                    },
+                        isOpen = false
+                        cancelBooking(uiState.dialogBooking.booking.bookingNumber)
+                    },
                     mainTextId = R.string.confirm_cancel_booking,
                     subTextId = R.string.action_will_cancel_booking,
                     mainButtonTextId = R.string.cancel_booking,
@@ -180,16 +168,13 @@ fun BookingScreen(
             }
             if (isRate) {
                 UserRatingSheet(
-                    bookingDetails = uiState.bookingDetails,
-                    playgroundName = "",
+                    bookingDetails = uiState.dialogBooking.booking,
+                    playgroundName = uiState.dialogBooking.playgroundName,
                     sheetState = rateSheetState,
                     onDismissRequest = { isRate = false },
                     onClickButtonRate = {
                         isRate = false
-                         review()
-//                        uiState.rateMessage?.let { message ->
-//                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-//                        }
+                        review()
                     }
                 )
 
@@ -201,13 +186,7 @@ fun BookingScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(
-    onSelectedFilterChanged: (SelectedFilter) -> Unit,
-) {
-    var isOpen by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
-    var choice by remember { mutableIntStateOf(0) }
-
+fun TopBar() {
     TopAppBar(
         title = {
             Text(
@@ -219,32 +198,8 @@ fun TopBar(
 
             )
         },
-        actions = {
-            IconButton(onClick = {
-                isOpen = true
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.sortascending),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        },
         colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.background)
     )
-    if (isOpen) {
-        SortBookingsBottomSheet(
-            sheetState = sheetState,
-            onDismissRequest = { isOpen = false },
-            choice = choice,
-            onChoiceChange = { choice = it },
-            onSaveClicked = {
-                onSelectedFilterChanged(it)
-                isOpen = false
-            }
-        )
-    }
-
 }
 
 @Preview(name = "light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -257,10 +212,9 @@ fun BookingScreenPreview() {
             uiStateFlow = mockViewModel.uiState,
             getBooking = mockViewModel::getBooking,
             updateSelectedDay = {},
-            onSelectedFilterChanged = {},
             review = {},
             cancelBooking = {},
-            onCancel = {}
+            onClickDialog = {}
         )
     }
 }
