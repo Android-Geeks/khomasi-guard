@@ -26,7 +26,7 @@ data class BookingUiState(
     val bookings: List<Bookings> = listOf(),
     val date: LocalDateTime = LocalDateTime.now(),
     val bookingListNum: Int = 1,
-    val ratingValue: Int = 1,
+    val ratingValue: Int = 0,
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
     val rateMessage: String? = null,

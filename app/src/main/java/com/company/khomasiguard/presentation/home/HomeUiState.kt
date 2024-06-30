@@ -6,7 +6,7 @@ import org.threeten.bp.LocalDateTime
 data class HomeUiState(
     val date: LocalDateTime = LocalDateTime.now(),
     val bookingListNum: Int = 0,
-    val ratingValue: Int = 1,
+    val ratingValue: Int = 0,
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
     val rateMessage: String? = null,

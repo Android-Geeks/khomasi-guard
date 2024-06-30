@@ -1,6 +1,7 @@
 package com.company.khomasiguard.presentation.home
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -41,14 +43,16 @@ import org.threeten.bp.LocalDateTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    review: () -> Unit,
     uiStateFlow: StateFlow<HomeUiState>,
     getHomeScreenBooking: () -> Unit,
     onClickDialog: (Bookings) -> Unit,
+    review: (String) -> Unit,
+    onRateChange: (Int) -> Unit,
     cancelBooking: (bookingId: Int) -> Unit,
     onLogout: () -> Unit,
 ) {
-    val uiState = uiStateFlow.collectAsStateWithLifecycle().value
+    val uiState by uiStateFlow.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         getHomeScreenBooking()
     }
@@ -132,13 +136,16 @@ fun HomeScreen(
             }
             if (isRate) {
                 UserRatingSheet(
+                    rate = uiState.ratingValue,
+                    onRateChange = onRateChange,
                     bookingDetails = uiState.dialogDetails.bookingDetails,
                     playgroundName = uiState.dialogDetails.playgroundName,
                     sheetState = rateSheetState,
                     onDismissRequest = { isRate = false },
                     onClickButtonRate = {
                         isRate = false
-                        review()
+                        review(uiState.dialogDetails.bookingDetails.email)
+                        Toast.makeText(context, "${uiState.rateMessage ?: uiState.errorMessage}", Toast.LENGTH_SHORT).show()
                     }
                 )
 
@@ -157,10 +164,11 @@ fun HomePreview() {
         HomeScreen(
             uiStateFlow = mockViewModel.uiState,
             getHomeScreenBooking = {},
-            review = mockViewModel::review,
+            review = {},
             onClickDialog = {},
             cancelBooking = {},
             onLogout = {},
+            onRateChange = {}
         )
     }
 }

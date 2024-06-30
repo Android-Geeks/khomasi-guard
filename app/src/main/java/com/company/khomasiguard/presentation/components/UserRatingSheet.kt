@@ -18,10 +18,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +43,8 @@ import com.gowtham.ratingbar.RatingBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserRatingSheet(
+    rate: Int,
+    onRateChange: (Int) -> Unit,
     bookingDetails: Booking,
     playgroundName: String,
     sheetState: SheetState,
@@ -58,10 +57,9 @@ fun UserRatingSheet(
         bookingDetails.bookingTime.toDateTime()?.toFormattedTimeString()
     }
     val bookingEndTime = remember {
-        bookingDetails.bookingTime.toDateTime()?.toAddTime((bookingDetails.duration*60).toInt())
+        bookingDetails.bookingTime.toDateTime()?.toAddTime((bookingDetails.duration * 60).toInt())
             ?.toFormattedTimeString()
     }
-    var userRate by remember { mutableFloatStateOf(0f) }
     MyModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
@@ -114,8 +112,8 @@ fun UserRatingSheet(
 
             Row {
                 RatingBar(
-                    value = userRate,
-                    onValueChange = { userRate = it },
+                    value = rate.toFloat(),
+                    onValueChange = { onRateChange(it.toInt()) },
                     size = 44.dp,
                     spaceBetween = 1.dp,
                     painterEmpty = painterResource(id = R.drawable.unfilled_star),
@@ -161,6 +159,8 @@ fun UserRatingSheetPreview() {
                 isCanceled = false,
                 duration = 55.0
             ),
+            rate = 1,
+            onRateChange = {},
             playgroundName = "Playground Name",
             sheetState = sheetState,
             onDismissRequest = {},

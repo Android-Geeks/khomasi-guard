@@ -103,7 +103,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun review() {
+    fun onRateChange(rate: Int) {
+        _uiState.update {
+            it.copy(
+                ratingValue = rate
+            )
+        }
+    }
+
+    fun review(email: String) {
         viewModelScope.launch {
             val localGuard = localGuardUseCases.getLocalGuard().first()
             val token = localGuard.token ?: ""
@@ -111,7 +119,7 @@ class HomeViewModel @Inject constructor(
             remoteUseCases.ratePlayerUseCase(
                 token = "Bearer $token",
                 guardRating = RatingRequest(
-                    userEmail = "user26@example.com",
+                    userEmail = email,
                     guardId = guardID,
                     ratingValue = _uiState.value.ratingValue
                 )
@@ -128,7 +136,7 @@ class HomeViewModel @Inject constructor(
                     is DataState.Error -> {
                         _uiState.update {
                             it.copy(
-                                errorMessage = "Error updating playground state: ${dataState.message}"
+                                errorMessage = dataState.message
                             )
                         }
                     }
@@ -138,6 +146,7 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
 
     fun cancelBooking(bookingId: Int) {
         _uiState.update {

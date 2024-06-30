@@ -28,6 +28,7 @@ fun NavGraphBuilder.khomasiNavigator(
                 cancelBooking = homeViewModel::cancelBooking,
                 onLogout = homeViewModel::onLogout,
                 onClickDialog = homeViewModel::onClickDialog,
+                onRateChange = homeViewModel::onRateChange
             )
 
         }
@@ -39,7 +40,8 @@ fun NavGraphBuilder.khomasiNavigator(
                 updateSelectedDay = bookingViewModel::updateSelectedDay,
                 review = bookingViewModel::review,
                 cancelBooking = bookingViewModel::cancelBooking,
-                onClickDialog = bookingViewModel::onClickDialog
+                onClickDialog = bookingViewModel::onClickDialog,
+                onRateChange = bookingViewModel::onRateChange
             )
         }
 

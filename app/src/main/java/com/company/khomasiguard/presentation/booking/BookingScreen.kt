@@ -52,9 +52,10 @@ fun BookingScreen(
     uiStateFlow: StateFlow<BookingUiState>,
     getBooking: () -> Unit,
     updateSelectedDay: (Int) -> Unit,
-    review: () -> Unit,
+    review: (String) -> Unit,
     cancelBooking: (Int) -> Unit,
     onClickDialog: (Bookings) -> Unit,
+    onRateChange: (Int) -> Unit
 ) {
     val uiState by uiStateFlow.collectAsStateWithLifecycle()
     var openDialog by remember { mutableStateOf(false) }
@@ -168,13 +169,15 @@ fun BookingScreen(
             }
             if (isRate) {
                 UserRatingSheet(
+                    rate = uiState.ratingValue,
+                    onRateChange = onRateChange,
                     bookingDetails = uiState.dialogBooking.bookingDetails,
                     playgroundName = uiState.dialogBooking.playgroundName,
                     sheetState = rateSheetState,
                     onDismissRequest = { isRate = false },
                     onClickButtonRate = {
                         isRate = false
-                        review()
+                        review(uiState.dialogBooking.bookingDetails.email)
                     }
                 )
             }
@@ -213,7 +216,8 @@ fun BookingScreenPreview() {
             updateSelectedDay = {},
             review = {},
             cancelBooking = {},
-            onClickDialog = {}
+            onClickDialog = {},
+            onRateChange = {}
         )
     }
 }
