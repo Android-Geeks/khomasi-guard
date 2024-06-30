@@ -44,7 +44,7 @@ fun HomeScreen(
     review: () -> Unit,
     uiStateFlow: StateFlow<HomeUiState>,
     getHomeScreenBooking: () -> Unit,
-    onClickDialog: (DialogBooking) -> Unit,
+    onClickDialog: (Bookings) -> Unit,
     cancelBooking: (bookingId: Int) -> Unit,
     onLogout: () -> Unit,
 ) {
@@ -81,7 +81,7 @@ fun HomeScreen(
                             playgroundName = item.playgroundName,
                             onClickViewBooking = {
                                 onClickDialog(
-                                    DialogBooking(
+                                    Bookings(
                                         item.playgroundName,
                                         item.bookingDetails
                                     )
@@ -99,14 +99,14 @@ fun HomeScreen(
             if (openDialog) {
                 Dialog(onDismissRequest = { openDialog = false }) {
                     BookingCardDetails(
-                        bookingDetails = uiState.dialogDetails.booking,
+                        bookingDetails = uiState.dialogDetails.bookingDetails,
                         onClickCall = { },
                         playgroundName = uiState.dialogDetails.playgroundName,
                         onClickCancelBooking = {
                             openDialog = false
                             isOpen = true
                         },
-                        status = if (parseTimestamp(uiState.dialogDetails.booking.bookingTime) > LocalDateTime.now()) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
+                        status = if (parseTimestamp(uiState.dialogDetails.bookingDetails.bookingTime) > LocalDateTime.now()) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
                         toRate = {
                             openDialog = false
                             isRate = true
@@ -119,10 +119,10 @@ fun HomeScreen(
                 BottomSheetWarning(
                     sheetState = sheetState,
                     onDismissRequest = { isOpen = false },
-                    userName = uiState.dialogDetails.booking.userName,
+                    userName = uiState.dialogDetails.bookingDetails.userName,
                     onClickCancel = {
                         isOpen = false
-                        cancelBooking(uiState.dialogDetails.booking.bookingNumber)
+                        cancelBooking(uiState.dialogDetails.bookingDetails.bookingNumber)
                     },
                     mainTextId = R.string.confirm_cancel_booking,
                     subTextId = R.string.action_will_cancel_booking,
@@ -132,7 +132,7 @@ fun HomeScreen(
             }
             if (isRate) {
                 UserRatingSheet(
-                    bookingDetails = uiState.dialogDetails.booking,
+                    bookingDetails = uiState.dialogDetails.bookingDetails,
                     playgroundName = uiState.dialogDetails.playgroundName,
                     sheetState = rateSheetState,
                     onDismissRequest = { isRate = false },

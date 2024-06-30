@@ -39,7 +39,7 @@ import com.company.khomasiguard.presentation.components.BottomSheetWarning
 import com.company.khomasiguard.presentation.components.ShortBookingCard
 import com.company.khomasiguard.presentation.components.UserRatingSheet
 import com.company.khomasiguard.presentation.components.connectionStates.ThreeBounce
-import com.company.khomasiguard.presentation.home.DialogBooking
+import com.company.khomasiguard.presentation.home.Bookings
 import com.company.khomasiguard.presentation.home.component.EmptyScreen
 import com.company.khomasiguard.theme.KhomasiGuardTheme
 import com.company.khomasiguard.util.parseTimestamp
@@ -54,7 +54,7 @@ fun BookingScreen(
     updateSelectedDay: (Int) -> Unit,
     review: () -> Unit,
     cancelBooking: (Int) -> Unit,
-    onClickDialog: (DialogBooking) -> Unit,
+    onClickDialog: (Bookings) -> Unit,
 ) {
     val uiState by uiStateFlow.collectAsStateWithLifecycle()
     var openDialog by remember { mutableStateOf(false) }
@@ -116,7 +116,7 @@ fun BookingScreen(
                                 playgroundName = item.playgroundName,
                                 onClickViewBooking = {
                                     onClickDialog(
-                                        DialogBooking(
+                                        Bookings(
                                             item.playgroundName,
                                             item.bookingDetails
                                         )
@@ -135,10 +135,10 @@ fun BookingScreen(
             if (openDialog) {
                 Dialog(onDismissRequest = { openDialog = false }) {
                     BookingCardDetails(
-                        bookingDetails = uiState.dialogBooking.booking,
+                        bookingDetails = uiState.dialogBooking.bookingDetails,
                         onClickCall = { },
                         playgroundName = uiState.dialogBooking.playgroundName,
-                        status = if (parseTimestamp(uiState.dialogBooking.booking.bookingTime) > LocalDateTime.now()) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
+                        status = if (parseTimestamp(uiState.dialogBooking.bookingDetails.bookingTime) > LocalDateTime.now()) BookingCardStatus.CANCEL else BookingCardStatus.RATING,
                         onClickCancelBooking = {
                             openDialog = false
                             isOpen = true
@@ -155,10 +155,10 @@ fun BookingScreen(
                 BottomSheetWarning(
                     sheetState = sheetState,
                     onDismissRequest = { isOpen = false },
-                    userName = uiState.dialogBooking.booking.userName,
+                    userName = uiState.dialogBooking.bookingDetails.userName,
                     onClickCancel = {
                         isOpen = false
-                        cancelBooking(uiState.dialogBooking.booking.bookingNumber)
+                        cancelBooking(uiState.dialogBooking.bookingDetails.bookingNumber)
                     },
                     mainTextId = R.string.confirm_cancel_booking,
                     subTextId = R.string.action_will_cancel_booking,
@@ -168,7 +168,7 @@ fun BookingScreen(
             }
             if (isRate) {
                 UserRatingSheet(
-                    bookingDetails = uiState.dialogBooking.booking,
+                    bookingDetails = uiState.dialogBooking.bookingDetails,
                     playgroundName = uiState.dialogBooking.playgroundName,
                     sheetState = rateSheetState,
                     onDismissRequest = { isRate = false },
@@ -177,7 +177,6 @@ fun BookingScreen(
                         review()
                     }
                 )
-
             }
         }
     }

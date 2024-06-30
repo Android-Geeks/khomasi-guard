@@ -11,7 +11,7 @@ data class HomeUiState(
     val errorMessage: String? = null,
     val rateMessage: String? = null,
     val cancelMessage: String? = null,
-    val dialogDetails: DialogBooking = DialogBooking("", Booking(
+    val dialogDetails: Bookings = Bookings("", Booking(
         bookingTime = "2024-05-05T04:15:00",
         userName = "userName",
         profilePicture = "profilePicture",
@@ -30,9 +30,4 @@ data class HomeUiState(
 data class Bookings(
     val playgroundName: String,
     val bookingDetails: Booking
-)
-
-data class DialogBooking(
-    val playgroundName: String,
-    val booking: Booking
 )

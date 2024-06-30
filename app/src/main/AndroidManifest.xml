@@ -6,9 +6,9 @@
     <application
         android:name="com.company.khomasiguard.MyApp"
         android:allowBackup="true"
-        android:icon="@mipmap/dark_splash"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/dark_splash_round"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:screenOrientation="portrait"

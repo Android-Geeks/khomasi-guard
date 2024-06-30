@@ -2,14 +2,13 @@ package com.company.khomasiguard.presentation.booking
 
 import com.company.khomasiguard.domain.model.booking.Booking
 import com.company.khomasiguard.presentation.home.Bookings
-import com.company.khomasiguard.presentation.home.DialogBooking
 import org.threeten.bp.LocalDateTime
 
 
 data class BookingUiState(
     val selectedDay: Int = 0,
     val selectedSlots: MutableList<Pair<LocalDateTime, LocalDateTime>> = mutableListOf(),
-    val dialogBooking: DialogBooking = DialogBooking(
+    val dialogBooking: Bookings = Bookings(
         "", Booking(
             bookingTime = "2024-05-05T04:15:00",
             userName = "userName",

@@ -2,7 +2,6 @@
     <!-- Base application theme. -->
     <style name="Theme.MySplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/darkBackground</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/dark_splash_foreground</item>
         <item name="postSplashScreenTheme">@style/Theme.CleanArchitectureEntityApp</item>
     </style>
     <style name="Theme.CleanArchitectureEntityApp" parent="Theme.AppCompat.DayNight.DarkActionBar">

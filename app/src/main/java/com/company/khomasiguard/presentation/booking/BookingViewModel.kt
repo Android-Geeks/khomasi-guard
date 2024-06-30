@@ -10,7 +10,6 @@ import com.company.khomasiguard.domain.model.booking.GuardBooking
 import com.company.khomasiguard.domain.use_case.local_guard.LocalGuardUseCases
 import com.company.khomasiguard.domain.use_case.remote_guard.RemoteUseCases
 import com.company.khomasiguard.presentation.home.Bookings
-import com.company.khomasiguard.presentation.home.DialogBooking
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -64,7 +63,7 @@ class BookingViewModel @Inject constructor(
         }
     }
 
-    fun onClickDialog(dialogBooking: DialogBooking) {
+    fun onClickDialog(dialogBooking: Bookings) {
         _uiState.update {
             it.copy(
                 dialogBooking = dialogBooking

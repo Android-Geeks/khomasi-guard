@@ -68,7 +68,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onClickDialog(dialogBooking: DialogBooking) {
+    fun onClickDialog(dialogBooking: Bookings) {
         _uiState.update {
             it.copy(
                 dialogDetails = dialogBooking
