@@ -112,7 +112,6 @@ fun TabContent(
 fun LoginPreview() {
     KhomasiGuardTheme {
         val mockViewModel: MockVenuesViewModel = viewModel()
-
         VenuesScreen(
             uiState = mockViewModel.uiState,
             getGuardPlaygrounds = mockViewModel::getGuardPlaygrounds,

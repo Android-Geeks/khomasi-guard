@@ -32,8 +32,8 @@
     <string name="num_current_booking">Number of current bookings</string>
     <string name="num_expired_booking">Number of expired bookings</string>
     <string name="booking">booking</string>
-    <string name="activation">Activation</string>
-    <string name="deactivate">De-Activate</string>
+    <string name="activation">Activate</string>
+    <string name="deactivate">Deactivate</string>
     <string name="top_rating">Top rate</string>
     <string name = "booking_first">Booking first</string>
     <string name="save">Save</string>

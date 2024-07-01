@@ -34,7 +34,7 @@ class MainViewModel @Inject constructor(
                 else -> {
                     _startDestination.value = Screens.KhomasiNavigation.route}
             }
-            delay(300)
+            delay(200)
             _splashCondition.value = false
         }.launchIn(viewModelScope)
     }

@@ -53,7 +53,7 @@ fun MyApp(
             modifier = Modifier.padding(paddingValues)
         ) {
 
-            authNavigator(navController)
+            authNavigator()
             khomasiNavigator()
         }
     }
