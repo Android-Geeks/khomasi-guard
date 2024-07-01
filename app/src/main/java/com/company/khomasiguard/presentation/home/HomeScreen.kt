@@ -27,6 +27,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.company.khomasiguard.R
+import com.company.khomasiguard.domain.DataState
+import com.company.khomasiguard.domain.model.MessageResponse
 import com.company.khomasiguard.presentation.components.BookingCardDetails
 import com.company.khomasiguard.presentation.components.BookingCardStatus
 import com.company.khomasiguard.presentation.components.BottomSheetWarning
@@ -36,7 +38,9 @@ import com.company.khomasiguard.presentation.components.connectionStates.ThreeBo
 import com.company.khomasiguard.presentation.home.component.EmptyScreen
 import com.company.khomasiguard.presentation.home.component.TopCard
 import com.company.khomasiguard.theme.KhomasiGuardTheme
+import com.company.khomasiguard.util.navigateToCall
 import com.company.khomasiguard.util.parseTimestamp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import org.threeten.bp.LocalDateTime
 
@@ -44,17 +48,50 @@ import org.threeten.bp.LocalDateTime
 @Composable
 fun HomeScreen(
     uiStateFlow: StateFlow<HomeUiState>,
+    ratingStatus: StateFlow<DataState<MessageResponse>>,
+    cancelStatus: StateFlow<DataState<MessageResponse>>,
     getHomeScreenBooking: () -> Unit,
     onClickDialog: (Bookings) -> Unit,
     review: (String) -> Unit,
     onRateChange: (Int) -> Unit,
-    cancelBooking: (bookingId: Int) -> Unit,
+    cancelBooking: (Int) -> Unit,
     onLogout: () -> Unit,
+    clearStates: () -> Unit
 ) {
     val uiState by uiStateFlow.collectAsStateWithLifecycle()
+    val ratingState by ratingStatus.collectAsStateWithLifecycle()
+    val cancelState by cancelStatus.collectAsStateWithLifecycle()
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         getHomeScreenBooking()
+    }
+    LaunchedEffect(cancelState) {
+        when (val cancel = cancelState) {
+            is DataState.Success -> {
+                Toast.makeText(context, cancel.data.message, Toast.LENGTH_SHORT).show()
+            }
+            is DataState.Error -> {
+                Toast.makeText(context, cancel.message, Toast.LENGTH_SHORT).show()
+            }
+            DataState.Empty -> {}
+            DataState.Loading -> {}
+        }
+        delay(1000)
+        clearStates()
+    }
+    LaunchedEffect(ratingState) {
+        when (val rating = ratingState) {
+            is DataState.Success -> {
+                Toast.makeText(context, rating.data.message, Toast.LENGTH_SHORT).show()
+            }
+            is DataState.Error -> {
+                Toast.makeText(context, rating.message, Toast.LENGTH_SHORT).show()
+            }
+            DataState.Empty -> {}
+            DataState.Loading -> {}
+        }
+        delay(1000)
+        clearStates()
     }
     Column(
         horizontalAlignment = Alignment.Start,
@@ -69,7 +106,7 @@ fun HomeScreen(
         val sheetState = rememberModalBottomSheetState()
         val rateSheetState = rememberModalBottomSheetState()
 
-        TopCard(uiStateFlow, onLogout)
+        TopCard(uiState, onLogout)
 
         if (uiState.isLoading) {
             ThreeBounce(modifier = Modifier.fillMaxSize())
@@ -92,7 +129,9 @@ fun HomeScreen(
                                 )
                                 openDialog = true
                             },
-                            onClickCall = {}
+                            onClickCall = {
+                                context.navigateToCall(uiState.dialogDetails.bookingDetails.phoneNumber)
+                            }
                         )
 
                     }
@@ -104,7 +143,7 @@ fun HomeScreen(
                 Dialog(onDismissRequest = { openDialog = false }) {
                     BookingCardDetails(
                         bookingDetails = uiState.dialogDetails.bookingDetails,
-                        onClickCall = { },
+                        onClickCall = { context.navigateToCall(uiState.dialogDetails.bookingDetails.phoneNumber) },
                         playgroundName = uiState.dialogDetails.playgroundName,
                         onClickCancelBooking = {
                             openDialog = false
@@ -145,12 +184,9 @@ fun HomeScreen(
                     onClickButtonRate = {
                         isRate = false
                         review(uiState.dialogDetails.bookingDetails.email)
-                        Toast.makeText(context, "${uiState.rateMessage ?: uiState.errorMessage}", Toast.LENGTH_SHORT).show()
                     }
                 )
-
             }
-
         }
     }
 }
@@ -163,12 +199,15 @@ fun HomePreview() {
         val mockViewModel: HomeMockViewModel = viewModel()
         HomeScreen(
             uiStateFlow = mockViewModel.uiState,
+            ratingStatus = mockViewModel.cancelState,
+            cancelStatus = mockViewModel.cancelState,
             getHomeScreenBooking = {},
-            review = {},
             onClickDialog = {},
+            review = {},
+            onRateChange = {},
             cancelBooking = {},
             onLogout = {},
-            onRateChange = {}
+            clearStates = {}
         )
     }
 }

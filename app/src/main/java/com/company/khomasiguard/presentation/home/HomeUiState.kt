@@ -8,9 +8,6 @@ data class HomeUiState(
     val bookingListNum: Int = 0,
     val ratingValue: Int = 0,
     val isLoading: Boolean = true,
-    val errorMessage: String? = null,
-    val rateMessage: String? = null,
-    val cancelMessage: String? = null,
     val dialogDetails: Bookings = Bookings("", Booking(
         bookingTime = "2024-05-05T04:15:00",
         userName = "userName",

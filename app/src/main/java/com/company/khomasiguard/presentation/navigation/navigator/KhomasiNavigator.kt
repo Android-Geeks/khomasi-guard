@@ -23,8 +23,11 @@ fun NavGraphBuilder.khomasiNavigator(
             val homeViewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
                 uiStateFlow = homeViewModel.uiState,
+                ratingStatus = homeViewModel.reviewState,
+                cancelStatus = homeViewModel.cancelState,
                 getHomeScreenBooking = homeViewModel::getHomeScreenBooking,
                 review = homeViewModel::review,
+                clearStates = homeViewModel::clearStates,
                 cancelBooking = homeViewModel::cancelBooking,
                 onLogout = homeViewModel::onLogout,
                 onClickDialog = homeViewModel::onClickDialog,
@@ -36,7 +39,10 @@ fun NavGraphBuilder.khomasiNavigator(
             val bookingViewModel: BookingViewModel = hiltViewModel()
             BookingScreen(
                 uiStateFlow = bookingViewModel.uiState,
+                ratingStatus = bookingViewModel.reviewState,
+                cancelStatus = bookingViewModel.cancelState,
                 getBooking = bookingViewModel::getBooking,
+                clearStates = bookingViewModel::clearStates,
                 updateSelectedDay = bookingViewModel::updateSelectedDay,
                 review = bookingViewModel::review,
                 cancelBooking = bookingViewModel::cancelBooking,

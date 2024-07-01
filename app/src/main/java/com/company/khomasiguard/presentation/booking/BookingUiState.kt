@@ -28,7 +28,4 @@ data class BookingUiState(
     val bookingListNum: Int = 1,
     val ratingValue: Int = 0,
     val isLoading: Boolean = true,
-    val errorMessage: String? = null,
-    val rateMessage: String? = null,
-    val cancelMessage: String? = null,
 )

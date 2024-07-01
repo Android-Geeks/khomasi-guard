@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.company.khomasiguard.domain.DataState
 import com.company.khomasiguard.domain.model.LocalGuard
+import com.company.khomasiguard.domain.model.MessageResponse
 import com.company.khomasiguard.domain.model.RatingRequest
 import com.company.khomasiguard.domain.model.booking.BookingsResponse
 import com.company.khomasiguard.domain.model.booking.GuardBooking
@@ -30,8 +31,13 @@ class HomeViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
 
-    private val _reviewState: MutableStateFlow<DataState<RatingRequest>> =
+    private val _reviewState: MutableStateFlow<DataState<MessageResponse>> =
         MutableStateFlow(DataState.Empty)
+    val reviewState: StateFlow<DataState<MessageResponse>> = _reviewState
+
+    private val _cancelState: MutableStateFlow<DataState<MessageResponse>> =
+        MutableStateFlow(DataState.Empty)
+    val cancelState: StateFlow<DataState<MessageResponse>> = _cancelState
 
     fun getHomeScreenBooking() {
         viewModelScope.launch {
@@ -50,10 +56,6 @@ class HomeViewModel @Inject constructor(
 
                         is DataState.Error -> {
                             _uiState.value = _uiState.value.copy(isLoading = false)
-                            _uiState.value = _uiState.value.copy(
-                                isLoading = false,
-                                errorMessage = "Error fetching playgrounds: ${dataState.message}"
-                            )
                         }
 
                         is DataState.Loading -> {
@@ -123,26 +125,8 @@ class HomeViewModel @Inject constructor(
                     guardId = guardID,
                     ratingValue = _uiState.value.ratingValue
                 )
-            ).collect { dataState ->
-                when (dataState) {
-                    is DataState.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                rateMessage = dataState.data.message
-                            )
-                        }
-                    }
-
-                    is DataState.Error -> {
-                        _uiState.update {
-                            it.copy(
-                                errorMessage = dataState.message
-                            )
-                        }
-                    }
-
-                    else -> {}
-                }
+            ).collect {
+                _reviewState.value = it
             }
         }
     }
@@ -153,7 +137,8 @@ class HomeViewModel @Inject constructor(
             it.copy(
                 bookings = _uiState.value.bookings.filterNot { booking ->
                     booking.bookingDetails.bookingNumber == bookingId
-                }
+                },
+                bookingListNum = _uiState.value.bookingListNum - 1
             )
         }
         viewModelScope.launch {
@@ -162,26 +147,8 @@ class HomeViewModel @Inject constructor(
                     token = "Bearer ${guardData.token}",
                     bookingId = bookingId,
                     isUser = false
-                ).collect { dataState ->
-                    when (dataState) {
-                        is DataState.Success -> {
-                            _uiState.update {
-                                it.copy(
-                                    cancelMessage = dataState.data.message
-                                )
-                            }
-                        }
-
-                        is DataState.Error -> {
-                            _uiState.update {
-                                it.copy(
-                                    errorMessage = "Error updating playground state: ${dataState.message}"
-                                )
-                            }
-                        }
-
-                        else -> {}
-                    }
+                ).collect {
+                    _cancelState.value = it
                 }
             }
         }
@@ -194,5 +161,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun clearStates() {
+        _cancelState.value = DataState.Empty
+        _reviewState.value = DataState.Empty
+    }
 }
 

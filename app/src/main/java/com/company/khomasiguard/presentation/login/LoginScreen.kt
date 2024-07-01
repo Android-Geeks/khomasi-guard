@@ -59,7 +59,7 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun LoginScreen(
     isDark: Boolean = isSystemInDarkTheme(),
-    uiState: StateFlow<LoginUiState>,
+    loginUiState: StateFlow<LoginUiState>,
     loginState: StateFlow<DataState<GuardLoginResponse>>,
     updatePassword: (String) -> Unit,
     updateEmail: (String) -> Unit,
@@ -78,7 +78,7 @@ fun LoginScreen(
         }
     )
 
-    val uiState =uiState.collectAsStateWithLifecycle().value
+    val uiState by loginUiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     LaunchedEffect(key1 = loginResponse) {
@@ -93,6 +93,7 @@ fun LoginScreen(
                 login()
                 Log.d("LoginScreen", "LoginScreen: ${loginResponse.data}")
             }
+
             is DataState.Error -> {
                 showLoading = false
                 if (loginResponse.code == 404) {
@@ -122,6 +123,7 @@ fun LoginScreen(
                 }
                 Log.d("LoginScreen", "LoginScreen: ${loginResponse.message}")
             }
+
             is DataState.Empty -> {
                 Log.d("LoginScreen", "LoginScreen: Empty")
             }
@@ -189,8 +191,8 @@ fun LoginScreen(
         )
         MyButton(
             onClick = {
-                    Log.d("TestLogin", "LocalGuard: $login")
-                    login()
+                Log.d("TestLogin", "LocalGuard: $login")
+                login()
             },
             text = R.string.login,
             modifier = Modifier
@@ -208,7 +210,7 @@ fun LoginScreen(
                     style = SpanStyle()
                 )
                 {
-                    append(stringResource(id = R.string.do_not_have_an_account)+" ")
+                    append(stringResource(id = R.string.do_not_have_an_account) + " ")
                 }
                 withStyle(
                     style = SpanStyle(
@@ -227,7 +229,7 @@ fun LoginScreen(
                     )
                 )
                 {
-                    append(stringResource(id = R.string.partnership_text)+"\n")
+                    append(stringResource(id = R.string.partnership_text) + "\n")
                 }
                 withStyle(
                     style = SpanStyle(
@@ -245,7 +247,7 @@ fun LoginScreen(
                 ) {
                     append(stringResource(id = R.string.our_app))
                     Modifier.clickable {
-                      ourApp()
+                        ourApp()
                     }
                 }
             },
@@ -253,8 +255,8 @@ fun LoginScreen(
             style = MaterialTheme.typography.bodyMedium,
 
             )
-        }
     }
+}
 
 @Preview(name = "light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -263,11 +265,11 @@ fun LoginPreview() {
     KhomasiGuardTheme {
         val mockViewModel = MockLoginViewModel()
         LoginScreen(
-            updatePassword = mockViewModel::updatePassword,
-            updateEmail = mockViewModel::updateEmail,
+            updatePassword = {},
+            updateEmail = {},
             login = mockViewModel::login,
             loginState = mockViewModel.loginState,
-            uiState = mockViewModel.uiState,
+            loginUiState = mockViewModel.uiState,
             contactUs = mockViewModel::contactUs,
             ourApp = mockViewModel::ourApp
         )

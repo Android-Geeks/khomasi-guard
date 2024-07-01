@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -33,22 +34,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.company.khomasiguard.R
 import com.company.khomasiguard.presentation.components.LogoutBottomSheet
 import com.company.khomasiguard.presentation.home.HomeUiState
 import com.company.khomasiguard.theme.Cairo
 import com.company.khomasiguard.util.extractDateFromTimestamp
-import kotlinx.coroutines.flow.StateFlow
+import com.company.khomasiguard.util.navigateToCall
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopCard(
-    uiState: StateFlow<HomeUiState>,
+    uiState: HomeUiState,
     onLogout: () -> Unit
 ) {
-    val state = uiState.collectAsStateWithLifecycle().value
-    val date = extractDateFromTimestamp(state.date, format = "dd MMMM yyyy")
+    val context = LocalContext.current
+    val displayMatrices = context.resources.displayMetrics
+    val screenHeight = (displayMatrices.heightPixels / displayMatrices.density)
+    val date = extractDateFromTimestamp(uiState.date, format = "dd MMMM yyyy")
     var isOpen by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -62,7 +64,7 @@ fun TopCard(
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .height(247.dp)
+                .height((screenHeight * .25).dp)
                 .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
                 .background(
                     MaterialTheme.colorScheme.onBackground
@@ -180,7 +182,7 @@ fun TopCard(
                                     )
                                 )
                                 {
-                                    append(state.bookingListNum.toString())
+                                    append(uiState.bookingListNum.toString())
                                 }
                                 withStyle(
                                     style = SpanStyle(
@@ -217,7 +219,10 @@ fun TopCard(
                         Text(
                             text = stringResource(id = R.string.contact_us),
                             color = MaterialTheme.colorScheme.background,
-                            style = MaterialTheme.typography.bodySmall
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.clickable {
+                                context.navigateToCall("+201559019093")
+                            }
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.phone),

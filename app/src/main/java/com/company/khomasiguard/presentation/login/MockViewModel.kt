@@ -13,12 +13,7 @@ class MockLoginViewModel : ViewModel() {
     private val _loginState: MutableStateFlow<DataState<GuardLoginResponse>> =
         MutableStateFlow(DataState.Empty)
     val loginState: StateFlow<DataState<GuardLoginResponse>> = _loginState
-    fun updatePassword(newPassword: String) {
-    }
 
-    fun updateEmail(newEmail: String) {
-
-    }
     fun login() {
     }
 
