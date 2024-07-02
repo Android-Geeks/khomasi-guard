@@ -55,12 +55,12 @@ fun CalendarPager(updateSelectedDay: (Int) -> Unit) {
 
     val currentDate = LocalDate.now()
     val currentDaysList = remember {
-        (0..20).map { day -> (currentDate).plusDays(day.toLong()) }
+        (-20..20).map { day -> (currentDate).plusDays(day.toLong()) }
     }
     val selectedMonth = remember { mutableStateOf(currentDaysList[0].month) }
     val selectedYear = remember { mutableIntStateOf(currentDate.year) }
 
-    val pagerState = rememberPagerState(pageCount = { currentDaysList.size - 1 }, initialPage = 0)
+    val pagerState = rememberPagerState(pageCount = { currentDaysList.size - 1 }, initialPage = 20)
 
     LaunchedEffect(pagerState.currentPage) {
         if (pagerState.currentPage in currentDaysList.indices) {
